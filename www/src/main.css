@@ -1,0 +1,15 @@
+
+/* Bootstrap overrides */
+h1, .h1, h2, .h2, h3, .h3 {
+	margin-top:5px;
+}
+
+.panel {
+	margin:10px 10%;
+}
+
+/* Utilities */
+
+.pusher {
+	clear: both;
+}

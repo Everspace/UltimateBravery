@@ -1,0 +1,9 @@
+#Personal tool and such
+_*
+*.sublime-*
+
+#Generated json
+**/json/
+
+#Python
+**/__pycache__/
