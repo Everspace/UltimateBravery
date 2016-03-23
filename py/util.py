@@ -62,7 +62,7 @@ Puts the json in the file or else it gets the hose again
 
 can pretty it up if I want it
 '''
-def toJsonFile(jsonObj, filePath, pretty=False):
+def toJsonFile(jsonObj, filePath, pretty=True):
     mkdir(os.path.split(filePath)[0])
     jsonString = None
     if(pretty):

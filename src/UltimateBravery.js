@@ -1,3 +1,18 @@
+let dd_available_realms = ['br', 'eune', 'euw', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'jp'];
+let dd_version = localStorage.getItem('dd_version') || '6.5.1';
+let dd_language = localStorage.getItem('dd_language') || 'en_US';
+let dd_realm = localStorage.getItem('dd_realm') || 'na';
+let dd_cdn = localStorage.getItem('dd_cdn') || 'http://ddragon.leagueoflegends.com/cdn';
+
+championData = null
+itemData = null
+languageData = null
+
+$.when(
+  $.getJSON(`json/${dd_language}/item.json`, (data => itemData = data)),
+  $.getJSON(`json/${dd_language}/champion.json`, (data => championData = data)),
+  $.getJSON(`json/${dd_language}/language.json`, (data => languageData = data))
+).then( (data => console.log("All loaded!")) );
 /*
  https://ddragon.leagueoflegends.com/realms/na.json
  realms: [BR, EUNE, EUW, KR, LAN, LAS, NA, OCE, TR, RU]

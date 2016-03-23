@@ -7,3 +7,15 @@ _*
 
 #Python
 **/__pycache__/
+
+#Build directory
+build
+
+#node garbage
+node_modules
+
+npm-debug
+
+#other crap
+**/*.log
+
