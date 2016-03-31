@@ -5,7 +5,7 @@ class Icon extends React.Component {
 
 	render() {
 		return (
-			<div class="Icon {this.props.class ? this.props.class : ''}">
+			<div className={'Icon' + (this.props.class ? ' ' + this.props.class : '')}>
 				<SpriteImage 
 					dataDragon={this.props.dataDragon}
 					w={this.props.image.w}
@@ -14,7 +14,7 @@ class Icon extends React.Component {
 					y={this.props.image.y}
 					sprite={this.props.image.sprite}
 				/>
-			</div> 
+			</div>
 		);
 	}
 }
