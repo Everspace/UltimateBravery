@@ -16,7 +16,7 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin()//,
   ],
   
   module: {
@@ -24,6 +24,10 @@ module.exports = {
       test: /\.js$/,
       loaders: ['react-hot', 'babel'],
       include: path.resolve(__dirname, '..', 'src')
+    },{
+      test: /\.css$/,
+      loader: 'style-loader!css-loader',
+      //include: path.resolve(__dirname, '..', 'src')
     }]
   }
 };
