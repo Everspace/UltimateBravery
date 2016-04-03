@@ -5,6 +5,7 @@ import $ from 'jquery';
 
 // Things to do
 import ChampionPool from './app/ChampionPool'
+import UltimateBravery from './app/UltimateBravery'
 
 
 // ID of the DOM element to mount app on
@@ -34,7 +35,14 @@ $.getJSON(`json/realm_${localStorage.getItem('dd_realm') || 'na'}.json`, (data =
 	)
 	.then(function(x) {
 		ReactDOM.render(
-			<ChampionPool champions={championData.data} dataDragon={dd} />,
+		<div>
+			<UltimateBravery
+				champions={championData.data}
+				items={itemData.data}
+				dataDragon={dd}
+			/>
+			<ChampionPool champions={championData.data} dataDragon={dd} />
+		</div>,
 			document.getElementById(DOM_APP_EL_ID)
 		);
 	});
