@@ -13,8 +13,7 @@ build
 
 #node garbage
 node_modules
-
-npm-debug
+*npm-debug*
 
 #other crap
 **/*.log
