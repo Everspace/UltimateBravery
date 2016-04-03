@@ -10,9 +10,9 @@ export default class ChampionPool extends React.Component {
     let icons = Object.keys(champions)
         .map(champion =>
           <ChampionIcon
-           key={champion}
+           key={champions[champion].key}
+           champion={champions[champion]}
            dataDragon={this.props.dataDragon}
-           image={champions[champion].image}
           />
         )
 
