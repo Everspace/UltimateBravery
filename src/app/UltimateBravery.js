@@ -1,46 +1,85 @@
-import React, { PropType } from 'react'
-import ChampionIcon from '../lol/champion/ChampionIcon'
-import ItemIcon from '../lol/item/ItemIcon'
+import $ from 'jquery';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import MainDisplay from './MainDisplay'
+import ChampionPool from './ChampionPool'
 
-export default class UltimateBravery extends React.Component {
+class UltimateBravery {
 
-    constructor(props) {
-        super(props)
-        this.roll = this.roll.bind(this);
-    }
+    constructor() {
+        this.render = this.render.bind(this);
+        this.rerender = this.rerender.bind(this);
+        this.updateDataDragon = this.updateDataDragon.bind(this);
 
-    roll(dataCollection) {
-        let optionList = Object.keys(dataCollection)
-        let choice = Math.floor(Math.random() * optionList.length)
-        let item = dataCollection[optionList[choice]]
-        return item
+        if(global.UltimateBravery) {
+            console.alert('Something has gone horribly awry')
+        } else {
+            global.UltimateBravery = this
+        }
+
+        this.championData = {};
+        this.itemData = {};
+        this.languageData = {};
+        this.dd = {};
+        this.user = {
+            championData: {},
+            gameMode: 1,        //Is summoner's rift
+            summonerLevel: 30
+        }
+
+        this.userSummonerlevel = localStorage.getItem('userSummonerLevel') || 30;
+        localStorage.setItem('userSummonerlevel', this.userSummonerlevel);
+
+        this.updateDataDragon(null, null);
     }
 
     render() {
-        let items = this.props.items
-        let dd = this.props.dataDragon
-        let championData = this.roll(this.props.champions)
-        console.log(championData)
-        console.log(this.roll(items))
-        let chosenItems = Array.from({length: 5}, (v,k) => this.roll(items))
-        console.log(chosenItems)
-        return (
-            <div class="UltimateBravery">
-                <ChampionIcon
-                    key={championData.key}
-                    champion={championData}
-                    dataDragon={this.props.dataDragon}
-                />
-                {chosenItems.map(item =>
-                    <ItemIcon
-                    key={item.key}
-                    item={item}
-                    dataDragon={this.props.dataDragon}
-                    />
-                )}
-
-            </div>
-        )
+        ReactDOM.render(
+            <div>
+                <MainDisplay />
+                <ChampionPool />
+            </div>,
+            document.getElementById('app')
+        );
     }
 
+    rerender() {
+        let itemUpdated = $.getJSON(
+            `json/${this.dd.language}/item.json`,
+            (data => this.itemData = data)
+        );
+        let championUpdated = $.getJSON(
+            `json/${this.dd.language}/champion.json`,
+            (data => this.championData = data)
+        );
+        let languageUpdated = $.getJSON(
+            `json/${this.dd.language}/language.json`,
+            (data => this.languageData = data)
+        );
+
+        $.when(itemUpdated, championUpdated, languageUpdated).then(this.render);
+    }
+
+    updateDataDragon(realm, language) {
+        let selectedRealm = realm || localStorage.getItem('dd_realm') || 'na';
+        localStorage.setItem('dd_realm', selectedRealm);
+        let realmData = null;
+
+        $.getJSON(`json/realm_${selectedRealm}.json`, (data => realmData = data))
+         .then(function(x) {
+            let selectedLanguage = language || realmData.l || localStorage.getItem('dd_language') || 'en_US'
+            localStorage.setItem('dd_language', selectedLanguage)
+
+            //I mean this instead of the jquery this ehivh is different.
+            global.UltimateBravery.dd = {
+                available_realms: ['br', 'eune', 'euw', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'jp'],
+                cdn: realmData.cdn,
+                version: realmData.dd,
+                language: selectedLanguage,
+                version: realmData.v
+            };
+        }).then(this.rerender);
+    }
 }
+
+export default UltimateBravery;
