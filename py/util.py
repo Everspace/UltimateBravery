@@ -11,8 +11,9 @@ Convienience methods.
 Load a json from a url.
 '''
 def request(url):
+    print(url)
     return json.loads(
-        urlopen(url).read().decode('utf-8')
+        urlopen(url).read().decode('utf-8-sig') #Decode with -sig to get rid of BOM
     )
 
 '''
@@ -68,6 +69,7 @@ def toJsonFile(jsonObj, filePath, pretty=True):
     if(pretty):
         jsonString = json.dumps(
             jsonObj,
+            ensure_ascii=False,
             sort_keys=True,
             indent=2,
             separators=(',', ': ')
@@ -75,6 +77,7 @@ def toJsonFile(jsonObj, filePath, pretty=True):
     else:
         jsonString = json.dumps(
             jsonObj,
+            ensure_ascii=False,
             sort_keys=True,
             separators=(',', ':')
         )

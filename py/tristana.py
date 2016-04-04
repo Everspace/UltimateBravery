@@ -90,7 +90,11 @@ def getItems(realm, realmData, language):
 
     groomedAllItemData = {}
     for item in requestedAllItemData['data']:
-        groomedAllItemData[item] = groom(requestedAllItemData['data'][item], itemAcceptedData)
+        processedItem = groom(requestedAllItemData['data'][item], itemAcceptedData)
+        #Add the 'id' and 'key' so it spreads nicely over stuff.
+        processedItem['id'] = item
+        processedItem['key'] = item
+        groomedAllItemData[item] = processedItem
 
     requestedAllItemData['data'] = groomedAllItemData
     for thing in itemInfoPruned:
