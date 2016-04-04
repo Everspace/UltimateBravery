@@ -34,6 +34,7 @@ champAcceptedData = {
     'image': imageObject,
     'skins': None,
     'tags': None,
+    'partype': None,
     'spells': { #An array
         'id': None,
         'name': None,
@@ -65,13 +66,18 @@ itemAcceptedData = {
     'group': None,
     'colloq': None,
     'into': None,
+    'requiredChampion': None,
+    'depth': None,
     'image': imageObject,
     'gold': {
+        'purchasable': None,
         'total': None
     },
     'tags': None,
     'maps': None
 }
+
+itemInfoPruned = ['tree', 'basic']
 
 def getItems(realm, realmData, language):
     cdn = realmData['cdn'] #content delivery network
@@ -87,6 +93,8 @@ def getItems(realm, realmData, language):
         groomedAllItemData[item] = groom(requestedAllItemData['data'][item], itemAcceptedData)
 
     requestedAllItemData['data'] = groomedAllItemData
+    for thing in itemInfoPruned:
+        requestedAllItemData.pop(thing, None)
     toJsonFile(requestedAllItemData, os.path.join(jsonDir, language, 'item.json'))
 
     print('Completed item fetch %s : %s' % (realm, l))
@@ -98,7 +106,7 @@ def getLanguageConverters(realm, realmData, language):
 
     print('Starting language converter fetch %s : %s' % (realm, l))
     toJsonFile(
-        request(dataRequestString.format(cdn, dd, l, 'language')), 
+        request(dataRequestString.format(cdn, dd, l, 'language')),
         os.path.join(jsonDir, language, 'language.json')
     )
     print('Completed language converter fetch %s : %s' % (realm, l))

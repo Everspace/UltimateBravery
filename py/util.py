@@ -67,17 +67,19 @@ def toJsonFile(jsonObj, filePath, pretty=True):
     jsonString = None
     if(pretty):
         jsonString = json.dumps(
-            jsonObj, 
+            jsonObj,
             sort_keys=True,
             indent=2,
             separators=(',', ': ')
         )
     else:
         jsonString = json.dumps(
-            jsonObj, 
+            jsonObj,
             sort_keys=True,
             separators=(',', ':')
         )
 
     with codecs.open(filePath, mode='w', encoding='utf-8') as blob:
         blob.write(jsonString)
+
+    return filePath

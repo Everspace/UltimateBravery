@@ -28,7 +28,7 @@ def getAllTheThings():
 
     validVersions = request('https://ddragon.leagueoflegends.com/api/versions.json')
     toJsonFile(validVersions, os.path.join(tristana.jsonDir, 'versions.json'))
-    
+
     supportedLang = request('https://ddragon.leagueoflegends.com/cdn/languages.json')
     toJsonFile(supportedLang, os.path.join(tristana.jsonDir, 'languages.json'))
 
