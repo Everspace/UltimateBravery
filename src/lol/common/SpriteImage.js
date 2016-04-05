@@ -4,14 +4,14 @@ class SpriteImage extends React.Component {
 
 
     render() {
-    	let dd = this.props.dataDragon
+    	let dd = this.props.dd
 
     	let elementStyle = {
-		    width: this.props.w,
-		    height: this.props.h,
-		    background: `url('${dd.cdn}/${dd.version}/img/sprite/${this.props.sprite}')`,
-		    backgroundPositionX: -this.props.x,
-		    backgroundPositionY: -this.props.y,
+		    width: this.props.image.w,
+		    height: this.props.image.h,
+		    background: `url('${dd.cdn}/${dd.version}/img/sprite/${this.props.image.sprite}')`,
+		    backgroundPositionX: -this.props.image.x,
+		    backgroundPositionY: -this.props.image.y,
 		    backgroundRepeat: "no-repeat"
     	};
 
@@ -20,11 +20,7 @@ class SpriteImage extends React.Component {
 }
 
 SpriteImage.propTypes = {
-	w: PropTypes.number.isRequired,
-	h: PropTypes.number.isRequired,
-	x: PropTypes.number.isRequired,
-	y: PropTypes.number.isRequired,
-	sprite: PropTypes.string.isRequired
+    image: PropTypes.object.isRequired
 }
 
 export default SpriteImage;

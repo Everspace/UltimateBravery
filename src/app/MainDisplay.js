@@ -16,8 +16,6 @@ export default class MainDisplay extends React.Component {
         return item
     }
 
-
-
     brave() {
         this.selection = {
             champion: this.roll(this.props.champions),
@@ -33,15 +31,14 @@ export default class MainDisplay extends React.Component {
     }
 
     render() {
-        let ub = global.UltimateBravery
 
-        let championData = this.roll(ub.championData.data); //this.props.champions)
+        let championData = this.roll(this.props.championData.data); //this.props.champions)
         let chosenItems = []
 
         let i = 5
         let attemptedItem = null
         while(i > 0) {
-            attemptedItem = this.roll(ub.itemData.data)
+            attemptedItem = this.roll(this.props.itemData.data)
             if(!chosenItems.includes(attemptedItem)){
                 chosenItems.push(attemptedItem);
                 i--;
@@ -50,8 +47,8 @@ export default class MainDisplay extends React.Component {
 
         return (
             <div className="MainDisplay">
-                <ChampionIcon {...championData} />
-                {chosenItems.map(item => <ItemIcon {...item}/>)}
+                <ChampionIcon key={championData.key} image={championData.image} dd={this.props.dd} />
+                {chosenItems.map(item => <ItemIcon key={item.key} image={item.image} dd={this.props.dd}/>)}
             </div>
         )
     }

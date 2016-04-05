@@ -3,17 +3,16 @@ import SpriteImage from './SpriteImage'
 
 class Icon extends React.Component {
 
+
+
 	render() {
+		let classes = ['Icon']
+		if(this.props.addClass) {
+			classes.push(this.props.addClass)
+		}
 		return (
-			<div className={'Icon' + (this.props.class ? ' ' + this.props.class : '')}>
-				<SpriteImage 
-					dataDragon={this.props.dataDragon}
-					w={this.props.image.w}
-					h={this.props.image.h}
-					x={this.props.image.x}
-					y={this.props.image.y}
-					sprite={this.props.image.sprite}
-				/>
+			<div className={classes.join(' ')}>
+				<SpriteImage image={this.props.image} dd={this.props.dd}/>
 			</div>
 		);
 	}
