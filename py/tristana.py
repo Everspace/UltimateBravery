@@ -1,4 +1,5 @@
 from util import *
+import doran
 from sys import argv
 import os
 
@@ -99,6 +100,10 @@ def getItems(realm, realmData, language):
     requestedAllItemData['data'] = groomedAllItemData
     for thing in itemInfoPruned:
         requestedAllItemData.pop(thing, None)
+
+    actualItems = doran.judge(requestedAllItemData['data'])
+    requestedAllItemData['data'] = actualItems
+
     toJsonFile(requestedAllItemData, os.path.join(jsonDir, language, 'item.json'))
 
     print('Completed item fetch %s : %s' % (realm, l))

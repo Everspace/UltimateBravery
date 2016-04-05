@@ -29,7 +29,7 @@ def getAllTheThings():
     validVersions = request('https://ddragon.leagueoflegends.com/api/versions.json')
     toJsonFile(validVersions, os.path.join(tristana.jsonDir, 'versions.json'))
 
-    supportedLang = request('https://ddragon.leagueoflegends.com/cdn/languages.json')
+    supportedLang = ['en_US'] #request('https://ddragon.leagueoflegends.com/cdn/languages.json')
     toJsonFile(supportedLang, os.path.join(tristana.jsonDir, 'languages.json'))
 
     with mp.Pool(processes=4) as poolParty:
@@ -38,13 +38,13 @@ def getAllTheThings():
         for language in supportedLang:
             combo.append((thisServersRealm, realmData, language))
 
-        print('Updating languages')
-        poolParty.starmap(tristana.getLanguageConverters, combo)
+        #print('Updating languages')
+        #poolParty.starmap(tristana.getLanguageConverters, combo)
         print('Updating items')
         poolParty.starmap(tristana.getItems, combo)
-        print('Updating Champions')
-        poolParty.starmap(tristana.getChampions, combo)
-        print('Update complete')
+        #print('Updating Champions')
+        #poolParty.starmap(tristana.getChampions, combo)
+        #print('Update complete')
     pass;
 
 if __name__ == '__main__':
