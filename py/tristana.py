@@ -101,8 +101,39 @@ def getItems(realm, realmData, language):
     for thing in itemInfoPruned:
         requestedAllItemData.pop(thing, None)
 
+    #Filter out useless items like Faerie Charm and BFS
     actualItems = doran.judge(requestedAllItemData['data'])
     requestedAllItemData['data'] = actualItems
+
+    #Make some lists for convienience
+    #Can only belong to 1 of these
+    boots = list()
+    generic = list()
+    jungleItems = list()
+    champUnique = list()
+
+    for item in actualItems:
+        #If we are champion unique, seperate
+        if 'requiredChampion' in actualItems[item]:
+            champUnique.append(item)
+        #else lets analyze the group
+        elif 'group' in actualItems[item]:
+            #All the enchantments are of the form "Boots_____"
+            if actualItems[item]['group'].startswith('Boots'):
+                boots.append(item)
+
+            elif actualItems[item]['group'] == 'JungleItems':
+                jungleItems.append(item)
+        #So boring
+        else:
+            generic.append(item)
+
+    requestedAllItemData['lists'] = {
+        'boots': boots,
+        'generics': generic,
+        'jungleItems': jungleItems,
+        'champUniques': champUnique
+    }
 
     toJsonFile(requestedAllItemData, os.path.join(jsonDir, language, 'item.json'))
 
