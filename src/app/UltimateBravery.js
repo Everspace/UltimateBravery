@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import MainDisplay from './MainDisplay'
 import ChampionPool from './ChampionPool'
 import StorageManager from '../common/StorageManager'
+import ItemIcon from '../lol/item/ItemIcon'
 
 class UltimateBravery {
 
@@ -29,6 +30,7 @@ class UltimateBravery {
     loadUser() {
       let defaultUser = {
           championData: {},   //YOU HAVE NOTHING
+          itemData: {},
           gameMode: 1,        //Is summoner's rift
           summonerLevel: 30
       }
@@ -41,21 +43,54 @@ class UltimateBravery {
     }
 
     render() {
-        ReactDOM.render(
-            <div>
-                <MainDisplay
-                  championData={this.championData}
-                  itemData={this.itemData}
-                  dd={this.dd}
-                />
-                <ChampionPool
-                  userChampions={this.user.championData}
-                  championData={this.championData}
-                  dd={this.dd}
-                />
-            </div>,
-            document.getElementById('app')
-        );
+      let style = {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+      }
+
+      ReactDOM.render(
+        <div>
+          <MainDisplay
+            championData={this.championData}
+            itemData={this.itemData}
+            userData={this.userData}
+            dd={this.dd}
+          />
+          <br/>
+          <ChampionPool
+            userChampions={this.user.championData}
+          championData={this.championData}
+          dd={this.dd}
+          />
+
+          <h3>ALL THE ITEMS</h3>
+          <div style={style}>
+            {Object.keys(this.itemData.data).map( (item) =>
+              <ItemIcon key={this.itemData.data[item].key} image={this.itemData.data[item].image} dd={this.dd}/>
+            )}
+          </div>
+          <h3>BOOTS</h3>
+          <div style={style}>
+            {this.itemData.lists.boots.map( (item) =>
+              <ItemIcon key={this.itemData.data[item].key} image={this.itemData.data[item].image} dd={this.dd}/>
+            )}
+          </div>
+          <h3>ANYBODY (Any map)</h3>
+          <div style={style}>
+            {this.itemData.lists.generics.map( (item) =>
+              <ItemIcon key={this.itemData.data[item].key} image={this.itemData.data[item].image} dd={this.dd}/>
+            )}
+          </div>
+          <h3>JANGLE (Not implemented yet)</h3>
+          <div style={style}>
+            {this.itemData.lists.jungleItems.map( (item) =>
+              <ItemIcon key={this.itemData.data[item].key} image={this.itemData.data[item].image} dd={this.dd}/>
+            )}
+          </div>
+        </div>,
+        document.getElementById('app')
+      );
     }
 
     rerender() {
