@@ -59,7 +59,6 @@ def judge(itemDict):
             isGross = True;
 
         if isGross:
-            print('Gross: ' + itemDict[item]['name'])
             continue
 
         if not itemDict[item]['into']:
@@ -68,7 +67,7 @@ def judge(itemDict):
         else:
             item2 = itemDict[item]['into'][0]
             if not item2 in itemDict:
-                print('Weird: {0} {1} referenced {2}'.format(item, itemDict[item]['name'], item2))
+                print('Weird: {0} referenced non existant {1}'.format(item, item2))
                 continue
 
             if item in itemDict[item2]['into']:
