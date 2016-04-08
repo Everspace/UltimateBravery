@@ -4,36 +4,14 @@
 // - brave being the brave object for the current game/roll
 // - props which is an object that contains itemData, championData, and userData
 //   to source our selection from.
+import Random from '../common/Random'
+
 export default class ChampionRandomizers {
 
-  static roll(thing) {
-        if(thing instanceof Array) {
-            let index = Math.floor(Math.random() * thing.length)
-            return thing[index]
-        } else {
-            let list = Object.keys(thing)
-            let id = ChampionRandomizers.roll(list)
-            return thing[id]
-        }
-    }
-
-  static shuffle(list) {
-    let newList = []
-    for (var i in list) {
-      //Flip a coin and see if it goes to the front or back.
-      if (Math.random() < 0.5) {
-        newList.push(list[i])
-      } else {
-        newList.unshift(list[i])
-      }
-    }
-    return newList
-  }
-
   static getShoe(itemData) {
-      let id = ChampionRandomizers.roll(itemData.lists.boots)
-      let boot = itemData.data[id]
-      return boot
+    let id = Random.roll(itemData.lists.boots)
+    let boot = itemData.data[id]
+    return boot
   }
 
   /*---------------------
@@ -56,7 +34,7 @@ export default class ChampionRandomizers {
 
     brave.items.push(ChampionRandomizers.getShoe(props.itemData))
 
-    let serpentItems = ChampionRandomizers.shuffle(['3901','3902','3903'])
+    let serpentItems = Random.shuffle(['3901','3902','3903'])
     brave.extras = Array.from(serpentItems, (id) => props.itemData.data[id])
     return brave
   }

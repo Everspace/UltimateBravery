@@ -1,39 +1,20 @@
 import React, { PropType } from 'react'
+import Random from '../common/Random'
 import ChampionIcon from '../lol/champion/ChampionIcon'
 import ItemIcon from '../lol/item/ItemIcon'
 import ChampionRandomizers from './ChampionRandomizers'
 
 export default class MainDisplay extends React.Component {
 
-    state = {
-        brave: this.makeBrave()
-    }
-
     constructor(props) {
         super(props)
-        this.roll = this.roll.bind(this);
-        this.fillWithItems = this.fillWithItems.bind(this)
+        this.fillWithItems   = this.fillWithItems.bind(this)
         this.fillWithMastery = this.fillWithMastery.bind(this)
-        this.makeBrave = this.makeBrave.bind(this)
-        this.getShoe = this.getShoe.bind(this)
-        console.log(this)
+        this.makeBrave       = this.makeBrave.bind(this)
     }
 
-    roll(thing) {
-        if(thing instanceof Array) {
-            let index = Math.floor(Math.random() * thing.length)
-            return thing[index]
-        } else {
-            let list = Object.keys(thing)
-            let id = this.roll(list)
-            return thing[id]
-        }
-    }
-
-    getShoe() {
-        let id = this.roll(this.props.itemData.lists.boots)
-        let boot = this.props.itemData.data[id]
-        return boot
+    componentWillMount() {
+        this.makeBrave()
     }
 
     fillWithItems(brave) {
@@ -47,7 +28,7 @@ export default class MainDisplay extends React.Component {
         }
 
         while(chosenItems.length < maxItems) {
-            let id = this.roll(this.props.itemData.lists.generics)
+            let id = Random.roll(this.props.itemData.lists.generics)
             let attemptedItem = this.props.itemData.data[id]
 
             if(!chosenItems.includes(attemptedItem)){
@@ -66,7 +47,7 @@ export default class MainDisplay extends React.Component {
 
     makeBrave() {
         let brave = {
-            champion: this.roll(this.props.championData.data),
+            champion: Random.roll(this.props.championData.data),
             summonerspells: [],
             items: [],
             masteries: {
@@ -83,12 +64,12 @@ export default class MainDisplay extends React.Component {
         if(ChampionRandomizers[brave.champion.id]) {
             brave = ChampionRandomizers[brave.champion.id](brave, this.props, this.getShoe)
         } else {
-            brave.items.push(this.getShoe())
+            brave.items.push(ChampionRandomizers.getShoe(this.props.itemData))
         }
 
         brave = this.fillWithItems(brave)
 
-        return brave
+        this.setState({brave: brave})
     }
 
     render() {
@@ -102,12 +83,16 @@ export default class MainDisplay extends React.Component {
         return (
             <div>
                 <div className="MainDisplay" style={style}>
-                    <ChampionIcon key={this.state.brave.champion.key} image={this.state.brave.champion.image} dd={this.props.dd} />
+                    <ChampionIcon
+                        key={this.state.brave.champion.key}
+                        image={this.state.brave.champion.image}
+                        dd={this.props.dd}
+                    />
                     {this.state.brave.items.map(
                         item => <ItemIcon key={item.key} image={item.image} dd={this.props.dd}/>
                     )}
 
-                    <button onClick={() => this.setState({brave: this.makeBrave()})}>BRAVERY!</button>
+                    <button onClick={this.makeBrave}>BRAVERY!</button>
 
                     {this.state.brave.extras.map(
                         item => <ItemIcon key={item.key} image={item.image} dd={this.props.dd}/>
