@@ -11,7 +11,7 @@ class Icon extends React.Component {
 			classes.push(this.props.addClass)
 		}
 		return (
-			<div className={classes.join(' ')}>
+			<div onClick={this.props.onClick} className={classes.join(' ')}>
 				<SpriteImage image={this.props.image} dd={this.props.dd}/>
 			</div>
 		);
