@@ -11,10 +11,11 @@ export default class ChampionPool extends React.Component {
 
     for(let champ in champions) {
       let data = champions[champ]
-      let SAYMYNAME = () => { console.log(champ) }
+
       icons.push(
         <ChampionIcon
-          onClick={SAYMYNAME}
+          onClick={() => this.props.toggleChampion(champ)}
+          have={this.props.userChampionData[champ]}
           image={data.image}
           key={data.key}
           dd={this.props.dd}

@@ -18,7 +18,6 @@ export default class MainDisplay extends React.Component {
     }
 
     fillWithItems(brave) {
-        console.log(brave)
         let maxItems = 5
         let chosenItems = brave.items
 
@@ -46,8 +45,17 @@ export default class MainDisplay extends React.Component {
     }
 
     makeBrave() {
+
+        let allChamps  = this.props.championData.data
+        let userChamps = this.props.user.championData
+        let availableChamps = {}
+
+        Object.keys(allChamps).map(
+            (id) => { if(userChamps[id]) {availableChamps[id] = allChamps[id]} }
+        )
+
         let brave = {
-            champion: Random.roll(this.props.championData.data),
+            champion: Random.roll(availableChamps),
             summonerspells: [],
             items: [],
             masteries: {
@@ -87,6 +95,7 @@ export default class MainDisplay extends React.Component {
                         key={this.state.brave.champion.key}
                         image={this.state.brave.champion.image}
                         dd={this.props.dd}
+                        have={true}
                     />
                     {this.state.brave.items.map(
                         item => <ItemIcon key={item.key} image={item.image} dd={this.props.dd}/>
