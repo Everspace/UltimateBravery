@@ -1,19 +1,28 @@
 import $ from 'jquery';
 import React from 'react'
-import ReactDOM from 'react-dom'
 import MainDisplay from './MainDisplay'
 import ChampionPool from './ChampionPool'
 import StorageManager from '../common/StorageManager'
 import ItemIcon from '../lol/item/ItemIcon'
 
-class UltimateBravery {
+export default class UltimateBravery extends React.Component {
 
   constructor() {
-    this.updateDataDragon(null, null);
+    super()
+    console.log('Constructor begin')
+    this.loadUser = this.loadUser.bind(this)
+    this.saveUser = this.saveUser.bind(this)
+    this.updateDataDragon = this.updateDataDragon.bind(this)
+  }
+
+  componentWillMount(){
+    this.updateDataDragon();
   }
 
   saveUser() {
-    new StorageManager().saveObject('user', this.state.user)
+    if(this.state && this.state.user) {
+      StorageManager.saveObject('user', this.state.user)
+    }
   }
 
   loadUser() {
@@ -21,32 +30,29 @@ class UltimateBravery {
       championData: {},   //YOU HAVE NOTHING
       itemData: {},
       gameMode: 1,        //Is summoner's rift
-      summonerLevel: 30,
-      firstVisit: true
+      summonerLevel: 30
     }
 
-    if(user.firstVisit) {
-      for(let key in this.state.championData.data) {
+    let user = StorageManager.loadObject('user', defaultUser)
+
+    console.log(this.state)
+
+    for(let key in this.state.championData.data) {
+      let hasChampion = user.championData[key]
+      //If it's not there, let's say it is there.
+      if(hasChampion === null || hasChampion === undefined) {
         user.championData[key] = true
-        console.log(key)
       }
-      //user.firstVisit = false
     }
 
-    let user = new StorageManager().loadObject('user', defaultUser)
-
-    return user
+    this.setState({user: user})
   }
 
-  toggleChampion(champion) {
-    let state = this.state.user
-    if(state.championData[champion]) {
-      state.championData[champion] = false
-    } else {
-      state.championData[champion] = true
-    }
+  setChampionData(state) {
+    let tempState = this.state.user
+    tempState.championData = state
+    this.setState({user: tempState})
     this.saveUser()
-    this.render()
   }
 
   render() {
@@ -56,76 +62,85 @@ class UltimateBravery {
       justifyContent: 'center'
     }
 
-    ReactDOM.render(
+    if(!this.state) {
+      return null
+    }
+
+    return (
       <div>
         <MainDisplay
           user={this.state.user}
-          championData={this.championData}
-          itemData={this.itemData}
-          userData={this.userData}
-          dd={this.dd}
+          championData={this.state.championData}
+          itemData={this.state.itemData}
+          userData={this.state.userData}
+          dd={this.state.dd}
         />
         <br/>
         <ChampionPool
           userChampionData={this.state.user.championData}
-          championData={this.championData}
-          toggleChampion={this.toggleChampion.bind(this)}
-          dd={this.dd}
+          championData={this.state.championData}
+          setChampionData={this.setChampionData.bind(this)}
+          dd={this.state.dd}
         />
-      </div>,
-      document.getElementById('app')
-    );
+      </div>
+    )
   }
 
-  updateDataDragon(realm, language) {
+  //Resets the object's state by default if not provided a callback
+  updateDataDragon(realm=null, language=null, requestedCallback=null) {
     let selectedRealm = realm || localStorage.getItem('dd_realm') || 'na';
     localStorage.setItem('dd_realm', selectedRealm);
     let realmData = null;
-    let reallyThis = this
 
-    var dd = {}
-    var itemData = {}
-    var championData = {}
-    var languageData = {}
+    var callback
+    //Default response is to load the user's info
+    if(requestedCallback) {
+      callback = requestedCallback
+    } else {
+      //Rest the state, and fire-up the user
+      callback = (payload) => {this.state = payload; this.loadUser()}
+    }
+
+    //Will set state at the end
+    let dataHolder = {}
+
+    //Save the user's info before we go and diddle with it.
+    this.saveUser();
 
     $.getJSON(`json/realm_${selectedRealm}.json`, (data => realmData = data))
-     .then(()=>{
+     .then(()=> {
         let selectedLanguage = language || realmData.l || localStorage.getItem('dd_language') || 'en_US'
         localStorage.setItem('dd_language', selectedLanguage)
 
-        dd = {
+        let dd = {
           available_realms: ['br', 'eune', 'euw', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'jp'],
           cdn: realmData.cdn,
           version: realmData.dd,
           language: selectedLanguage,
           version: realmData.v
         }
-    }).then(() => {
-      let itemUpdated = $.getJSON(
-        `json/${dd.language}/item.json`,
-        (data => itemData = data)
-      );
-      let championUpdated = $.getJSON(
-        `json/${dd.language}/champion.json`,
-        (data => championData = data)
-      );
-      let languageUpdated = $.getJSON(
-        `json/${dd.language}/language.json`,
-        (data => languageData = data)
-      );
 
-      $.when(itemUpdated, championUpdated, languageUpdated)
-       .then(() => {
-          reallyThis.setState({
-            dd: dd,
-            itemData: itemData,
-            championData: championData,
-            languageData: languageData,
-            user: reallyThis.loadUser()
-          })
-       });
-    });
+        dataHolder.dd = dd
+      })
+     .then(()=> {
+        //List all the jsons we're going to get
+        let dataPoints = ['item', 'champion', 'language']
+        //Set up a list of the requests.
+        let differedItems = []
+        //And have them stick their juices here
+        //in the format {${datum}Data: jsonHarvest}
+
+        for (let index in dataPoints) {
+          let differ = $.getJSON(
+            `json/${dataHolder.dd.language}/${dataPoints[index]}.json`,
+            (data=> dataHolder[`${dataPoints[index]}Data`] = data)
+          )
+
+          differedItems.push(differ)
+        }
+
+        //Then wait for all the stuff we'll gather then execute the callback
+        $.when.apply($, differedItems).then(()=> callback(dataHolder))
+      });
   }
 }
-
-export default UltimateBravery;

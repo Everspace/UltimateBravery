@@ -7,7 +7,7 @@ export default class StorageManager {
 
   }
 
-  loadObject(location) {
+  static loadObject(location) {
     var object = {}
     let data = localStorage.getItem(`UltimateBravery_${location}`)
 
@@ -18,7 +18,7 @@ export default class StorageManager {
     return object
   }
 
-  loadObject(location, defaultValue) {
+  static loadObject(location, defaultValue) {
     var object = {}
     let data = localStorage.getItem(`UltimateBravery_${location}`)
 
@@ -36,14 +36,14 @@ export default class StorageManager {
     return object
   }
 
-  save(location, object) {
+  static save(location, object) {
     localStorage.setItem(
       `UltimateBravery_${location}`,
       object
     )
   }
 
-  saveObject(location, object) {
+  static saveObject(location, object) {
     localStorage.setItem(
       `UltimateBravery_${location}`,
       JSON.stringify(object)
