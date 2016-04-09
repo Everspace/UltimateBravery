@@ -4,7 +4,7 @@
 // - brave being the brave object for the current game/roll
 // - props which is an object that contains itemData, championData, and userData
 //   to source our selection from.
-import Random from '../common/Random'
+import Random from 'common/Random'
 
 export default class ChampionRandomizers {
 

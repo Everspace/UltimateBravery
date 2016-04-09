@@ -2,12 +2,20 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+var sourceDirectory = path.resolve(__dirname, '..', 'src');
+var outputDir       = path.resolve(__dirname, '..', 'build');
+
 module.exports = {
   entry: './src/main.js',
 
   output: {
-    path: path.resolve(__dirname, '..', 'build'),
+    path: outputDir,
     filename: 'bundle.js'
+  },
+
+  resolve: {
+    root: sourceDirectory,
+    extensions: ['', '.js', '.css']
   },
 
   plugins: [
@@ -35,20 +43,17 @@ module.exports = {
 	new webpack.optimize.OccurrenceOrderPlugin(),
     new ExtractTextPlugin('style.css')
   ],
-  
+
   module: {
     loaders: [{
       test: /\.js$/,
       loaders: ['babel'],
-      include: path.resolve(__dirname, '..', 'src')
+      include: sourceDirectory
     },{
       test: /\.css$/,
       loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
-      include: path.resolve(__dirname, '..', 'src')
+      include: sourceDirectory
     }]
-  },
-  resolve: {
-  	extensions: ['', '.js', '.css']
   }
 };
 

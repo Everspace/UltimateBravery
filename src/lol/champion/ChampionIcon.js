@@ -1,5 +1,5 @@
 import React from 'react'
-import Icon from '../common/Icon';
+import Icon from 'lol/common/Icon';
 import './ChampionIcon.css'
 
 export default class ChampionIcon extends React.Component  {

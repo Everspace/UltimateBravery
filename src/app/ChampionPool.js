@@ -1,7 +1,8 @@
 import React, { PropType } from 'react'
-import ChampionIcon from '../lol/champion/ChampionIcon'
-import './ChampionPool.css'
-import '../common/Common.css'
+import ChampionIcon from 'lol/champion/ChampionIcon'
+import './ChampionPool.js.css'
+
+
 
 export default class ChampionPool extends React.Component {
 

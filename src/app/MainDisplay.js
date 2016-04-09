@@ -1,8 +1,8 @@
 import React, { PropType } from 'react'
-import Random from '../common/Random'
-import ChampionIcon from '../lol/champion/ChampionIcon'
-import ItemIcon from '../lol/item/ItemIcon'
-import ChampionRandomizers from './ChampionRandomizers'
+import Random from 'common/Random'
+import ChampionIcon from 'lol/champion/ChampionIcon'
+import ItemIcon from 'lol/item/ItemIcon'
+import ChampionRandomizers from 'app/ChampionRandomizers'
 
 export default class MainDisplay extends React.Component {
 

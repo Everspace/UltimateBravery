@@ -1,6 +1,9 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var sourceDirectory = path.resolve(__dirname, '..', 'src');
+var outputDir       = path.resolve(__dirname, '..', 'build');
+
 module.exports = {
   devtool: 'eval',
   entry: [
@@ -9,8 +12,13 @@ module.exports = {
     './src/main'
   ],
 
+  resolve: {
+    root: sourceDirectory,
+    extensions: ['', '.js', '.css']
+  },
+
   output: {
-    path: path.resolve(__dirname, '..', 'build'),
+    path: outputDir,
     filename: 'bundle.js',
     publicPath: '/static/'
   },
@@ -23,7 +31,7 @@ module.exports = {
     loaders: [{
       test: /\.js$/,
       loaders: ['react-hot', 'babel'],
-      include: path.resolve(__dirname, '..', 'src')
+      include: sourceDirectory
     },{
       test: /\.css$/,
       loader: 'style-loader!css-loader',

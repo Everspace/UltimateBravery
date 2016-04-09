@@ -2,8 +2,8 @@ import $ from 'jquery';
 import React from 'react'
 import MainDisplay from './MainDisplay'
 import ChampionPool from './ChampionPool'
-import StorageManager from '../common/StorageManager'
-import ItemIcon from '../lol/item/ItemIcon'
+import StorageManager from 'common/StorageManager'
+import ItemIcon from 'lol/item/ItemIcon'
 
 export default class UltimateBravery extends React.Component {
 
