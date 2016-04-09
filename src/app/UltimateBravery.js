@@ -9,10 +9,10 @@ export default class UltimateBravery extends React.Component {
 
   constructor() {
     super()
-    console.log('Constructor begin')
     this.loadUser = this.loadUser.bind(this)
     this.saveUser = this.saveUser.bind(this)
     this.updateDataDragon = this.updateDataDragon.bind(this)
+    this.modifyUser = this.modifyUser.bind(this)
   }
 
   componentWillMount(){
@@ -29,13 +29,11 @@ export default class UltimateBravery extends React.Component {
     let defaultUser = {
       championData: {},   //YOU HAVE NOTHING
       itemData: {},
-      gameMode: 1,        //Is summoner's rift
+      lolMap: '11',        //Is current summoner's rift
       summonerLevel: 30
     }
 
     let user = StorageManager.loadObject('user', defaultUser)
-
-    console.log(this.state)
 
     for(let key in this.state.championData.data) {
       let hasChampion = user.championData[key]
@@ -49,8 +47,17 @@ export default class UltimateBravery extends React.Component {
   }
 
   setChampionData(state) {
+    this.modifyUser('championData', state)
+  }
+
+  setSelectedMap(state) {
+
+    this.modifyUser('lolMap', state)
+  }
+
+  modifyUser(key, value) {
     let tempState = this.state.user
-    tempState.championData = state
+    tempState[key] = value
     this.setState({user: tempState})
     this.saveUser()
   }
@@ -66,8 +73,24 @@ export default class UltimateBravery extends React.Component {
       return null
     }
 
+    let availableMaps = []
+    for(let index in this.state.maps) {
+      let key = 'Map' + this.state.maps[index]
+      let id = this.state.maps[index]
+      availableMaps.push(
+        <option value={id} key={key}>
+          {this.state.languageData.data[key]}
+        </option>
+      )
+
+    }
+
     return (
       <div>
+        <select defaultValue={this.state.user.lolMap}
+          onChange={(event)=>this.setSelectedMap(event.target.value)}
+        >{availableMaps}</select>
+
         <MainDisplay
           user={this.state.user}
           championData={this.state.championData}
@@ -99,7 +122,19 @@ export default class UltimateBravery extends React.Component {
       callback = requestedCallback
     } else {
       //Rest the state, and fire-up the user
-      callback = (payload) => {this.state = payload; this.loadUser()}
+      callback = (payload) => {
+        this.state = payload;
+
+        //Setup available maps
+        let maps = Object.keys(this.state.languageData.data)
+          .filter((key)=>key.startsWith('Map'))
+          .map((key)=>key.replace('Map',''))
+
+
+        this.state.maps = maps
+
+        this.loadUser()
+      }
     }
 
     //Will set state at the end
@@ -110,7 +145,7 @@ export default class UltimateBravery extends React.Component {
 
     $.getJSON(`json/realm_${selectedRealm}.json`, (data => realmData = data))
      .then(()=> {
-        let selectedLanguage = language || realmData.l || localStorage.getItem('dd_language') || 'en_US'
+        let selectedLanguage = language || localStorage.getItem('dd_language') || realmData.l ||  'en_US'
         localStorage.setItem('dd_language', selectedLanguage)
 
         let dd = {

@@ -12,10 +12,21 @@ export default class MainDisplay extends React.Component {
       this.fillWithMastery = this.fillWithMastery.bind(this)
       this.makeBrave       = this.makeBrave.bind(this)
       this.makeItemIcon    = this.makeItemIcon.bind(this)
+      this.deductGroupItem = this.deductGroupItem.bind(this)
   }
 
   componentWillMount() {
       this.makeBrave()
+  }
+
+  deductGroupItem(itemsPerGroup, item) {
+    if(item.group) {
+      itemsPerGroup[item.group] -= 1
+      if(itemsPerGroup[item.group] < 0) {
+        itemsPerGroup[item.group] = 0
+      }
+    }
+    return itemsPerGroup
   }
 
   fillWithItems(brave) {
@@ -27,12 +38,31 @@ export default class MainDisplay extends React.Component {
           return brave
       }
 
-      while(chosenItems.length < maxItems) {
-          let id = Random.roll(this.props.itemData.lists.generics)
-          let attemptedItem = this.props.itemData.data[id]
+      let maxItemPerGroup = Object.assign({}, this.props.itemData.itemsPerGroup)
 
-          if(!chosenItems.includes(attemptedItem)){
-              chosenItems.push(attemptedItem);
+      //Lets find out what we can do now...
+      for(let index in chosenItems) {
+        maxItemPerGroup = this.deductGroupItem(maxItemPerGroup, chosenItems[index])
+      }
+
+      let selectedMap = this.props.user.lolMap
+      let possibleItems = this.props.itemData.lists.generics
+        .filter(
+          (id)=> this.props.itemData.data[id].maps[selectedMap]
+        )
+
+      while(chosenItems.length < maxItems) {
+          let id = Random.roll(possibleItems)
+          let attemptedItem = this.props.itemData.data[id]
+          var groupAllowed = true
+
+          if(attemptedItem.group) {
+            groupAllowed = maxItemPerGroup[attemptedItem.group] > 0
+          }
+
+          if( groupAllowed && !chosenItems.includes(attemptedItem)){
+            maxItemPerGroup = this.deductGroupItem(maxItemPerGroup, attemptedItem);
+            chosenItems.push(attemptedItem);
           }
       }
 
@@ -75,7 +105,7 @@ export default class MainDisplay extends React.Component {
 
       //If we have a randomizer tailored for that id, use it.
       if(ChampionRandomizers[brave.champion.id]) {
-          brave = ChampionRandomizers[brave.champion.id](brave, this.props, this.getShoe)
+          brave = ChampionRandomizers[brave.champion.id](brave, this.props, this.fillWithItems)
       } else {
           brave.items.push(ChampionRandomizers.getShoe(this.props.itemData))
       }
@@ -106,13 +136,14 @@ export default class MainDisplay extends React.Component {
 
     return (
       <div className="MainDisplay">
+        <h3>{this.state.brave.champion.name}</h3>
         <ChampionIcon
           key={this.state.brave.champion.key}
           image={this.state.brave.champion.image}
           dd={this.props.dd}
           have={true}
         />
-        <h3>{this.state.brave.champion.name}</h3>
+        <button onClick={this.makeBrave}>BRAVERY!</button>
 
         <h3>{this.props.languageData.data.RecommendedItems}</h3>
         <div style={containerStyle}>
@@ -128,7 +159,6 @@ export default class MainDisplay extends React.Component {
           :null
         }
 
-        <button onClick={this.makeBrave}>BRAVERY!</button>
       </div>
     )
   }
