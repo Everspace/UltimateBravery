@@ -45,7 +45,6 @@ export default class MainDisplay extends React.Component {
     }
 
     makeBrave() {
-
         let allChamps  = this.props.championData.data
         let userChamps = this.props.user.championData
         let availableChamps = {}
@@ -53,6 +52,11 @@ export default class MainDisplay extends React.Component {
         Object.keys(allChamps).map(
             (id) => { if(userChamps[id]) {availableChamps[id] = allChamps[id]} }
         )
+
+        //In the case we have nothing...
+        if(!Object.keys(availableChamps).length) {
+            availableChamps = this.props.championData.data
+        }
 
         let brave = {
             champion: Random.roll(availableChamps),
@@ -68,7 +72,6 @@ export default class MainDisplay extends React.Component {
             extras: [] //Like Gangplank's special stuff
         }
 
-        //If ywe have a
         if(ChampionRandomizers[brave.champion.id]) {
             brave = ChampionRandomizers[brave.champion.id](brave, this.props, this.getShoe)
         } else {
