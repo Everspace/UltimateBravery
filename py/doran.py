@@ -19,7 +19,9 @@ no = {
         'BWMercOffense3',
         'BWMercUpgrade1',
         'BWMercUpgrade2',
-        'BWMercUpgrade3'
+        'BWMercUpgrade3',
+        #wha
+        '_ItemGroupDefaults.txt'
     ],
     'tags': [
         'Consumable'
