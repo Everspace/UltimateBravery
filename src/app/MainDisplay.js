@@ -99,8 +99,8 @@ export default class MainDisplay extends React.Component {
 
     let items = this.state.brave.items.map(this.makeItemIcon)
 
-    var extras = false
-    if (this.state.brave.extras) {
+    var extras = []
+    if (this.state.brave.extras.length) {
       extras = this.state.brave.extras.map(this.makeItemIcon)
     }
 
@@ -118,10 +118,16 @@ export default class MainDisplay extends React.Component {
         <div style={containerStyle}>
           {items}
         </div>
-        <h3>{this.state.brave.extras ? this.props.languageData.data.Details_ : null}</h3>
-        <div style={containerStyle}>
-          {extras}
-        </div>
+        {this.state.brave.extras.length ?
+          <div>
+            <h3>{this.props.languageData.data.Details_}</h3>
+            <div style={containerStyle}>
+              {extras}
+            </div>
+          </div>
+          :null
+        }
+
         <button onClick={this.makeBrave}>BRAVERY!</button>
       </div>
     )
