@@ -34,7 +34,11 @@ excludedItemIDs = [
     '1083'
 ]
 
-def judge(itemDict):
+def logDiscard(willLog, item, reason='just because'):
+    if(willLog):
+        print('Discarded %s because %s' % (item['name'], reason))
+
+def judge(itemDict, debug=False):
 
     approvedItems = dict()
 
@@ -42,6 +46,7 @@ def judge(itemDict):
         isGross = False
 
         if item in excludedItemIDs:
+            logDiscard(debug, itemDict[item], 'I excluded exactly this item')
             continue
 
         for prop in no:
@@ -49,13 +54,20 @@ def judge(itemDict):
                 if type(itemDict[item][prop]) is list:
                     theForbiddenThings = set(itemDict[item][prop]).intersection(no[prop])
                     if theForbiddenThings:
+                        logDiscard(
+                            debug,
+                            itemDict[item],
+                            'It was part of a group(s) I didn\'t like %s' % itemDict[item][prop]
+                        )
                         isGross = True
 
                 else:
                     if itemDict[item][prop] in no[prop]:
+                        logDiscard(debug, itemDict[item], 'It has a property I don\'t like %s' % no[prop])
                         isGross = True
 
         if not itemDict[item]['gold']['purchasable']:
+            logDiscard(debug, itemDict[item], 'It was not purchasable')
             isGross = True;
 
         if isGross:
@@ -68,6 +80,7 @@ def judge(itemDict):
             item2 = itemDict[item]['into'][0]
             if not item2 in itemDict:
                 print('Weird: {0} referenced non existant {1}'.format(item, item2))
+                logDiscard(debug, itemDict[item], 'It was weird')
                 continue
 
             if item in itemDict[item2]['into']:
@@ -79,6 +92,7 @@ def judge(itemDict):
                 approvedItems[item] = itemDict[item]
                 continue
             else:
+                logDiscard(debug, itemDict[item], 'It builds into something')
                 continue
 
     return approvedItems
