@@ -73,6 +73,7 @@ export default class UltimateBravery extends React.Component {
           championData={this.state.championData}
           itemData={this.state.itemData}
           userData={this.state.userData}
+          languageData={this.state.languageData}
           dd={this.state.dd}
         />
         <br/>
