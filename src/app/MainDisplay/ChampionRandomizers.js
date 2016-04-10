@@ -1,42 +1,28 @@
-//A util to do some pre-processing on a champion's items.
-//Each function is of the format:
-// ID(brave, props)
-// - brave being the brave object for the current game/roll
-// - props which is an object that contains itemData, championData, and userData
-//   to source our selection from.
 import Random from 'common/Random'
 
+//A class to hold functions that match the champion.id
+
+//This allows each champion to have a chance to say
+//what is special and unique about them, and modify the roll before
+//it is rendered.
+
+//Each function is of the form "id(braveFactory)",
+//where braveFactory is an object of BraveFactory
 export default class ChampionRandomizers {
 
-  static getShoe(itemData) {
-    let id = Random.roll(itemData.lists.boots)
-    let boot = itemData.data[id]
-    return boot
-  }
-
-  /*---------------------
-
-      Champions
-
-  -----------------------*/
-
-  static Viktor(brave, props) {
-
-    brave.items.push(ChampionRandomizers.getShoe(props.itemData))
+  static Viktor(braveFactory) {
+    //TODO: make braveFactory conform to this sort of callPatern
+    braveFactory.addShoe()
 
     //Add a perfect hex-core to our chosen items
-    brave.items.push(props.itemData.data['3198'])
-
-    return brave
+    braveFactory.addItems('3198')
   }
 
-  static Gangplank(brave, props) {
-
-    brave.items.push(ChampionRandomizers.getShoe(props.itemData))
+  static Gangplank(braveFactory) {
+    braveFactory.addShoe()
 
     let serpentItems = Random.shuffle(['3901','3902','3903'])
-    brave.extras = Array.from(serpentItems, (id) => props.itemData.data[id])
-    return brave
+    braveFactory.addExtraItems(serpentItems)
   }
 
 }
