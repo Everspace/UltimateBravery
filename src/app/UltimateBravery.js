@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import React from 'react'
-import MainDisplay from './MainDisplay'
+import MainDisplay from 'app/MainDisplay/MainDisplay'
 import ChampionPool from './ChampionPool'
 import StorageManager from 'common/StorageManager'
 import ItemIcon from 'lol/item/ItemIcon'
