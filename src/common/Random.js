@@ -12,17 +12,18 @@ export default class Random {
         }
     }
 
-  static shuffle(list) {
-    let newList = []
-    for (var i in list) {
-      //Flip a coin and see if it goes to the front or back.
-      if (Math.random() < 0.5) {
-        newList.push(list[i])
-      } else {
-        newList.unshift(list[i])
-      }
+  //Durstenfeld shuffle
+  //Thanks http://stackoverflow.com/a/12646864
+  static shuffle(array) {
+
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
     }
-    return newList
+
+    return array;
   }
 
 }
