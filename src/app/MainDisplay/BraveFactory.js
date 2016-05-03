@@ -1,4 +1,5 @@
 import Brave from 'app/MainDisplay/Brave'
+import Random from 'common/Random'
 import ChampionRandomizers from 'app/MainDisplay/ChampionRandomizers'
 
 //A class to wrap the construction of braves that doesn't really
@@ -7,95 +8,150 @@ import ChampionRandomizers from 'app/MainDisplay/ChampionRandomizers'
 export default class BraveFactory {
 
   constructor(props) {
+    this.maxItems = 6
+    //Recieve the MainDisplay's props
+    this.props = props;
+    //Start clean
+    this.maxItemPerGroup = {}
 
+    //Bind methods
+    this.completeBravery = this.completeBravery.bind(this)
+    this.fillWithItems = this.fillWithItems.bind(this)
+
+    this.addShoe = this.addShoe.bind(this)
+
+    this.addItem = this.addItem.bind(this)
+    this.addItemById = this.addItemById.bind(this)
   }
 
-  getShoe(itemData) {
-    let id = Random.roll(itemData.lists.boots)
-    let boot = itemData.data[id]
-    return boot
+  addShoe() {
+    this.addItemById(
+      Random.roll(this.props.itemData.lists.boots)
+    )
   }
 
-  deductGroupItem(itemsPerGroup, item) {
+  /**
+  * Add the item by it's string id ('3014').
+  */
+  addItemById(id) {
+    console.log(this.props.itemData.data[id])
+    this.addItem(this.props.itemData.data[id])
+  }
+
+  /**
+  * Add an item object, checking to see if we can, and not if we can't.
+  */
+  addItem(attemptedItem) {
+    if(typeof attemptedItem !== 'object'){
+      console.log("idiot")
+    }
+    let groupAllowed = true
+
+    if(attemptedItem.group) {
+      groupAllowed = this.maxItemPerGroup[attemptedItem.group] > 0
+    }
+
+    if(groupAllowed && !this.brave.items.includes(attemptedItem)){
+      this.deductGroupItem(attemptedItem);
+      this.brave.items.push(attemptedItem);
+      return true
+    }
+
+    return false;
+  }
+
+  /**
+  * Add an item to the extraItems of the brave
+  */
+  addExtraItemById(id) {
+    this.brave.extraItems.push(
+      this.props.itemData.data[id]
+    )
+  }
+
+  /**
+  * Do everything to fill up the rest of the Brave object
+  * ADDS SHOES
+  */
+  completeBravery() {
+
+    let hasShoes = this.brave.items.find(
+      (id)=> this.props.itemData.lists.boots.includes(id)
+    )
+
+    if(!hasShoes && this.brave.items.length < this.maxItems) {
+      this.addShoe()
+    }
+
+    this.fillWithItems();
+  }
+
+  deductGroupItem(item) {
     if(item.group) {
-      itemsPerGroup[item.group] -= 1
-      if(itemsPerGroup[item.group] < 0) {
+      this.maxItemPerGroup[item.group] -= 1
+      if(this.maxItemPerGroup[item.group] < 0) {
         itemsPerGroup[item.group] = 0
       }
     }
-
-    return itemsPerGroup
   }
 
   makeBrave() {
+    //Initialize the allowed items for this run.
+    this.maxItemPerGroup = Object.assign({}, this.props.itemData.itemsPerGroup)
+
     let allChamps  = this.props.championData.data
     let userChamps = this.props.user.championData
     let availableChamps = {}
+
     this.brave = new Brave()
 
+    //Get a list of all the champion ids the user has listed.
     Object.keys(allChamps).map(
       (id) => { if(userChamps[id]) {availableChamps[id] = allChamps[id]} }
     )
 
     //In the case we have nothing...
     if(!Object.keys(availableChamps).length) {
+      //Use everything!
       availableChamps = this.props.championData.data
     }
 
-    let brave = {
-      champion: Random.roll(availableChamps)
-    }
+    //Pick a championID
+    this.brave.champion = Random.roll(availableChamps);
 
     //If we have a randomizer tailored for that id, use it.
-    if(ChampionRandomizers[brave.champion.id]) {
-        brave = ChampionRandomizers[brave.champion.id](brave, this.props, this.fillWithItems)
+    let randomizerMethod = ChampionRandomizers[this.brave.champion.id]
+    if(randomizerMethod) {
+      randomizerMethod(this)
     } else {
-        brave.items.push(ChampionRandomizers.getShoe(this.props.itemData))
+      this.completeBravery();
     }
 
-    brave = this.fillWithItems(brave)
+    return this.brave
   }
 
+  fillWithItems() {
 
-  fillWithItems(brave, props) {
-    let maxItems = 5
-    let chosenItems = brave.items
-
-    if(chosenItems.length >= maxItems) {
+    if(this.brave.items.length >= this.maxItems) {
         //What are you doing here?!
-        return brave
-    }
-
-    let maxItemPerGroup = Object.assign({}, this.props.itemData.itemsPerGroup)
-
-    //Lets find out what we can do now...
-    for(let index in chosenItems) {
-      maxItemPerGroup = this.deductGroupItem(maxItemPerGroup, chosenItems[index])
+        return this.brave
     }
 
     let selectedMap = this.props.user.lolMap
+    //Each item contains a list of legal maps it has.
+    //So all possible items are ones that are legal on this
+    //map after we filter every generic item.
     let possibleItems = this.props.itemData.lists.generics
       .filter(
         (id)=> this.props.itemData.data[id].maps[selectedMap]
       )
 
-    while(chosenItems.length < maxItems) {
-        let id = Random.roll(possibleItems)
-        let attemptedItem = this.props.itemData.data[id]
-        var groupAllowed = true
-
-        if(attemptedItem.group) {
-          groupAllowed = maxItemPerGroup[attemptedItem.group] > 0
-        }
-
-        if( groupAllowed && !chosenItems.includes(attemptedItem)){
-          maxItemPerGroup = this.deductGroupItem(maxItemPerGroup, attemptedItem);
-          chosenItems.push(attemptedItem);
-        }
+    while(this.brave.items.length < this.maxItems) {
+      this.addItemById(
+        Random.roll(possibleItems)
+      )
     }
 
-    brave.items = chosenItems
-
-    return brave
+    return this.brave
   }
 }

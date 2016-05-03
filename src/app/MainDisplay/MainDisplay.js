@@ -10,15 +10,18 @@ export default class MainDisplay extends React.Component {
 
   constructor(props) {
     super(props)
-    this.makeBrave       = this.makeBrave.bind(this)
-    this.makeItemIcon    = this.makeItemIcon.bind(this)
+    this.makeItemIcon   = this.makeItemIcon.bind(this)
     this.braveFactory   = new BraveFactory(this.props)
   }
 
   componentWillMount() {
-    return {
+    this.setState({
       brave: this.braveFactory.makeBrave()
-    }
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.braveFactory = new BraveFactory(nextProps);
   }
 
   makeItemIcon(item) {
@@ -35,9 +38,9 @@ export default class MainDisplay extends React.Component {
 
     let items = this.state.brave.items.map(this.makeItemIcon)
 
-    var extras = []
-    if (this.state.brave.extras.length) {
-      extras = this.state.brave.extras.map(this.makeItemIcon)
+    var extraItems = []
+    if (this.state.brave.extraItems.length) {
+      extraItems = this.state.brave.extraItems.map(this.makeItemIcon)
     }
 
     return (
@@ -49,17 +52,17 @@ export default class MainDisplay extends React.Component {
           dd={this.props.dd}
           have={true}
         />
-        <button onClick={this.makeBrave}>BRAVERY!</button>
+        <button onClick={()=>this.setState({brave: this.braveFactory.makeBrave()})}>BRAVERY!</button>
 
         <h3>{this.props.languageData.data.RecommendedItems}</h3>
         <div style={containerStyle}>
           {items}
         </div>
-        {this.state.brave.extras.length ?
+        {this.state.brave.extraItems.length ?
           <div>
             <h3>{this.props.languageData.data.Details_}</h3>
             <div style={containerStyle}>
-              {extras}
+              {extraItems}
             </div>
           </div>
           :null
