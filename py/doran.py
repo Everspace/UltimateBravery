@@ -51,6 +51,11 @@ def judge(itemDict, debug=False):
             logDiscard(debug, itemDict[item], 'I excluded exactly this item')
             continue
 
+        #If you are a boot, we like you
+        if ('group' in itemDict[item] and itemDict[item]['group']  == 'BootsUpgrades'):
+            approvedItems[item] = itemDict[item]
+            continue
+
         for prop in no:
             if prop in itemDict[item]:
                 if type(itemDict[item][prop]) is list:
@@ -76,11 +81,13 @@ def judge(itemDict, debug=False):
             continue
 
         if not itemDict[item]['into']:
+            #you don't build into anything, you're good.
             approvedItems[item] = itemDict[item]
             continue
         else:
             item2 = itemDict[item]['into'][0]
             if not item2 in itemDict:
+                #Phantom item?
                 print('Weird: {0} referenced non existant {1}'.format(item, item2))
                 logDiscard(debug, itemDict[item], 'It was weird')
                 continue

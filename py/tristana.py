@@ -13,8 +13,11 @@ and how to massage the data once we aquire it.
 #BR = Brazil
 #LA N/S = Latin America North/South
 #TR = Turkey
+#OCE = Oceana
+#RU = Russa
+#JP = Japan
 allRealms = ['NA', 'BR', 'EUNE', 'EUW', 'KR', 'LAN', 'LAS', 'OCE', 'TR', 'RU', 'JP']
-jsonDir = mkdir(os.curdir, 'json')
+canUpdate = ['LanguageConverters', 'Items', 'Champions']
 dataRequestString = '{0}/{1}/data/{2}/{3}.json'
 
 imageObject = {
@@ -44,7 +47,14 @@ champAcceptedData = {
     }
 }
 
-def getChampions(realm, realmData, language):
+def init(args):
+    global outputDir
+    outputDir = mkdir(os.curdir, args.output_dir)
+
+    global prettyPrint
+    prettyPrint = args.pretty
+
+def getChampions(realm, realmData, language, outputDir='json', prettyPrint=False):
     cdn = realmData['cdn'] #content delivery network
     dd = realmData['dd'] #datadragon version
     l = language
@@ -58,7 +68,11 @@ def getChampions(realm, realmData, language):
         groomedAllChampData[champion] = groom(champData, champAcceptedData)
 
     requestedAllChampData['data'] = groomedAllChampData
-    toJsonFile(requestedAllChampData, os.path.join(jsonDir, language, 'champion.json'))
+    toJsonFile(
+        requestedAllChampData,
+        os.path.join(outputDir, language, 'champion.json'),
+        pretty=prettyPrint
+    )
 
     print('Completed champion fetch %s : %s' % (realm, l))
 
@@ -80,11 +94,11 @@ itemAcceptedData = {
 
 itemInfoPruned = ['tree', 'basic']
 
-def getItems(realm, realmData, language):
+def getItems(realm, realmData, language, outputDir='json', prettyPrint=False):
     cdn = realmData['cdn'] #content delivery network
     dd = realmData['dd'] #datadragon version
     l = language
-    dest = mkdir(jsonDir, language)
+    dest = mkdir(outputDir, language)
 
     print('Starting item fetch %s : %s' % (realm, l))
     requestedAllItemData = request(dataRequestString.format(cdn, dd, l, 'item'))
@@ -119,7 +133,7 @@ def getItems(realm, realmData, language):
             champUnique.append(item)
         #else lets analyze the group
         elif 'group' in actualItems[item]:
-            #All the enchantments are of the form "Boots_____"
+            #All the boots are of the form "Boots_____"
             if actualItems[item]['group'].startswith('Boots'):
                 boots.append(item)
 
@@ -158,7 +172,11 @@ def getItems(realm, realmData, language):
     del requestedAllItemData['groups']
 
 
-    toJsonFile(requestedAllItemData, os.path.join(jsonDir, language, 'item.json'))
+    toJsonFile(
+        requestedAllItemData,
+        os.path.join(outputDir, language, 'item.json'),
+        pretty=prettyPrint
+    )
 
     print('Completed item fetch %s : %s' % (realm, l))
 
@@ -216,7 +234,7 @@ keyTranslation = {
     'Map1': 'Map11' #New summoner rift is map 11. But lang still says 1.
 }
 
-def getLanguageConverters(realm, realmData, language):
+def getLanguageConverters(realm, realmData, language, outputDir='json', prettyPrint=False):
     cdn = realmData['cdn'] #content delivery network
     dd = realmData['dd'] #datadragon version
     l = language
@@ -239,6 +257,7 @@ def getLanguageConverters(realm, realmData, language):
 
     toJsonFile(
         requestedData,
-        os.path.join(jsonDir, language, 'language.json')
+        os.path.join(outputDir, language, 'language.json'),
+        pretty=prettyPrint
     )
     print('Completed language converter fetch %s : %s' % (realm, l))

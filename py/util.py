@@ -55,7 +55,8 @@ to ensure a path is there
 '''
 def mkdir(*path):
     p = os.path.join(*path)
-    os.makedirs(p , exist_ok=True)
+    p = os.path.normpath(p)
+    os.makedirs(p, exist_ok=True)
     return p
 
 '''
@@ -63,7 +64,7 @@ Puts the json in the file or else it gets the hose again
 
 can pretty it up if I want it
 '''
-def toJsonFile(jsonObj, filePath, pretty=True):
+def toJsonFile(jsonObj, filePath, pretty=False):
     mkdir(os.path.split(filePath)[0])
     jsonString = None
     if(pretty):
