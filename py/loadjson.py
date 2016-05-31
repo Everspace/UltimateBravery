@@ -46,7 +46,7 @@ def updateRealmData():
     for realm in tristana.allRealms:
         toJsonFile(
             request('https://ddragon.leagueoflegends.com/realms/%s.json' % realm.lower() ),
-            os.path.join(tristana.jsonDir, 'realm_%s.json' % realm.lower() )
+            os.path.join(args.output_dir, 'realm_%s.json' % realm.lower() )
         )
     print('Finished updating realm data')
 
@@ -60,6 +60,8 @@ if __name__ == '__main__':
 
     supportedLang = request('https://ddragon.leagueoflegends.com/cdn/languages.json')
     toJsonFile(supportedLang, os.path.join(args.output_dir, 'languages.json'))
+
+    updateRealmData()
 
     langToDo = supportedLang
     if args.languages:
