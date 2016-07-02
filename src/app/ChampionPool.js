@@ -2,8 +2,6 @@ import React, { PropType } from 'react'
 import ChampionIcon from 'lol/champion/ChampionIcon'
 import './ChampionPool.js.css'
 
-
-
 export default class ChampionPool extends React.Component {
 
   setAllChampions(status) {
@@ -28,32 +26,37 @@ export default class ChampionPool extends React.Component {
     this.props.setChampionData(championData)
   }
 
-  render() {
-    let champions = this.props.championData.data
+  makePoolIcons() {
+    let champions = Object.keys(this.props.championData.data)
+      .map(key => this.props.championData.data[key])
+      .sort((a, b) => a.name.localeCompare(b.name))
 
     let icons = new Array()
-
-    for(let champ in champions) {
-      let data = champions[champ]
-
+    for(let id in champions) {
       icons.push(
         <ChampionIcon
-          onClick={() => this.toggleChampion(champ)}
-          have={this.props.userChampionData[champ]}
-          image={data.image}
-          key={data.key}
+          onClick={() => this.toggleChampion(id)}
+          have={this.props.userChampionData[id]}
+          image={champions[id].image}
+          key={id}
           dd={this.props.dd}
         />
       )
     }
 
+    return icons
+  }
+
+  render() {
+
     return (
-      <div className='ChampionPool'>
-        {icons}
-        <div className='Pusher'>
-          <button onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
-          <button onClick={() => this.setAllChampions(false)} >DISABLE ALL</button>
+      <div>
+        <div className='ChampionPool'>
+          {this.makePoolIcons()}
+          <div key="pusher" className='Pusher'></div>
         </div>
+        <button key="enableAll" onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
+        <button key="disableAll" onClick={() => this.setAllChampions(false)} >DISABLE ALL</button>
       </div>
     );
   }
