@@ -26,6 +26,15 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '-r', '--regions',
+    help='considers the particular regions for updating',
+    default=tristana.allRealms,
+    choices=tristana.allRealms,
+    type=str,
+    nargs='*'
+)
+
+parser.add_argument(
     '-l', '--languages',
     help='considers the particular languages only for updating',
     type=str,
@@ -46,7 +55,7 @@ def updateRealmData():
     for realm in tristana.allRealms:
         toJsonFile(
             request('https://ddragon.leagueoflegends.com/realms/%s.json' % realm.lower() ),
-            os.path.join(tristana.jsonDir, 'realm_%s.json' % realm.lower() )
+            os.path.join(args.output_dir, 'realm_%s.json' % realm.lower() )
         )
     print('Finished updating realm data')
 
@@ -54,6 +63,8 @@ if __name__ == '__main__':
     mp.freeze_support()
 
     thisServersRealm = 'NA'
+
+    updateRealmData()
 
     validVersions = request('https://ddragon.leagueoflegends.com/api/versions.json')
     toJsonFile(validVersions, os.path.join(args.output_dir, 'versions.json'))
@@ -65,7 +76,7 @@ if __name__ == '__main__':
     if args.languages:
         langToDo = args.languages
 
-    with mp.Pool(processes=4) as poolParty:
+    with mp.Pool(processes=32) as poolParty:
         combo = []
         realmData = request('https://ddragon.leagueoflegends.com/realms/{0}.json'.format(thisServersRealm.lower()))
 

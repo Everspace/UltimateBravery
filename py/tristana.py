@@ -17,7 +17,12 @@ and how to massage the data once we aquire it.
 #RU = Russa
 #JP = Japan
 allRealms = ['NA', 'BR', 'EUNE', 'EUW', 'KR', 'LAN', 'LAS', 'OCE', 'TR', 'RU', 'JP']
-canUpdate = ['LanguageConverters', 'Items', 'Champions']
+
+#List of available datagrab methods
+canUpdate = ['LanguageConverters', 'Items', 'Champions', 'SummonerSpells', 'Masteries']
+
+#Format for static data.
+#0 = CDN, 1 = version (1.0.0), 2 = lang (en_US), 3 = specsfic item (summoner)
 dataRequestString = '{0}/{1}/data/{2}/{3}.json'
 
 imageObject = {
@@ -46,13 +51,6 @@ champAcceptedData = {
         'image': imageObject
     }
 }
-
-def init(args):
-    global outputDir
-    outputDir = mkdir(os.curdir, args.output_dir)
-
-    global prettyPrint
-    prettyPrint = args.pretty
 
 def getChampions(realm, realmData, language, outputDir='json', prettyPrint=False):
     cdn = realmData['cdn'] #content delivery network
@@ -171,7 +169,6 @@ def getItems(realm, realmData, language, outputDir='json', prettyPrint=False):
     requestedAllItemData['itemsPerGroup'] = itemsPerGroup
     del requestedAllItemData['groups']
 
-
     toJsonFile(
         requestedAllItemData,
         os.path.join(outputDir, language, 'item.json'),
@@ -261,3 +258,52 @@ def getLanguageConverters(realm, realmData, language, outputDir='json', prettyPr
         pretty=prettyPrint
     )
     print('Completed language converter fetch %s : %s' % (realm, l))
+
+
+summonerAcceptedData = {
+    'id': None,
+    'key': None,
+    'name': None,
+    'description': None,
+    'image': imageObject,
+    'summonerLevel': None,
+    'modes': None
+}
+
+def getSummonerSpells(realm, realmData, language, outputDir='json', prettyPrint=False):
+    cdn = realmData['cdn'] #content delivery network
+    dd = realmData['dd'] #datadragon version
+    l = language
+    dest = mkdir(outputDir, language)
+
+    requestedAllSummonerData = request(dataRequestString.format(cdn, dd, l, 'summoner'))
+
+    groomedAllSummonerData = {}
+    for item in requestedAllSummonerData['data']:
+        processedItem = groom(requestedAllSummonerData['data'][item], summonerAcceptedData)
+        groomedAllSummonerData[item] = processedItem
+
+    requestedAllSummonerData['data'] = groomedAllSummonerData
+
+    toJsonFile(
+        requestedAllSummonerData,
+        os.path.join(outputDir, language, 'mastery.json'),
+        pretty=prettyPrint
+    )
+
+    print('Finished summoner spell fetch %s : %s' % (realm, l))
+
+
+def getMasteries(realm, realmData, language, outputDir='json', prettyPrint=False):
+    cdn = realmData['cdn'] #content delivery network
+    dd = realmData['dd'] #datadragon version
+    l = language
+    dest = mkdir(outputDir, language)
+
+    toJsonFile(
+        request(dataRequestString.format(cdn, dd, l, 'mastery')),
+        os.path.join(outputDir, language, 'mastery.json'),
+        pretty=prettyPrint
+    )
+
+    print('Finished mastery fetch %s : %s' % (realm, l))
