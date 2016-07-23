@@ -72,6 +72,8 @@ if __name__ == '__main__':
     supportedLang = request('https://ddragon.leagueoflegends.com/cdn/languages.json')
     toJsonFile(supportedLang, os.path.join(args.output_dir, 'languages.json'))
 
+    updateRealmData()
+
     langToDo = supportedLang
     if args.languages:
         langToDo = args.languages
