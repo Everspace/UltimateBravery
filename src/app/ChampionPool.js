@@ -32,12 +32,13 @@ export default class ChampionPool extends React.Component {
       .sort((a, b) => a.name.localeCompare(b.name))
 
     let icons = new Array()
-    for(let id in champions) {
+    for(let index in champions) {
+      let id = champions[index].id
       icons.push(
         <ChampionIcon
           onClick={() => this.toggleChampion(id)}
           have={this.props.userChampionData[id]}
-          image={champions[id].image}
+          image={champions[index].image}
           key={id}
           dd={this.props.dd}
         />
