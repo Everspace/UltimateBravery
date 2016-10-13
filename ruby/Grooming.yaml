@@ -1,0 +1,132 @@
+#What is allowed in our computed JSON blob.
+#if a key is not empty, it referrs to a base key instead.
+image:
+  #image alone
+  full: ""
+  #big farking blob of them together
+  #for optimization if you draw all the champions/items
+  sprite: ""
+  #What type of thing is this, used to sub in the
+  #data request string
+  #"item/spell/champion"
+  group: ""
+  #location of the image in the sprite
+  x: ""
+  y: ""
+  w: ""
+  h: ""
+
+skin:
+  #lets occasionally show a skin instead of the normal
+  #portrait
+  chromas: ""
+  id: ""
+  name: "" #default or otherwise...
+  num: ""
+
+champion:
+  image: "image"
+  #an array IN ORDER
+  # of the QWER skills
+  spells: "spell"
+  #Unique Number ID
+  id: ""
+  #Internal name (MonkeyKing)
+  key: ""
+  #Localized name (Wukong)
+  name: ""
+  #Champions COOL EPITHET
+  #Soandso "The cool guy"
+  title: ""
+  #Array of skins available
+  #skins[0] is the default look
+  skins: ""
+  #Brawler/Mage/Whatever
+  tags: ""
+  #What the resource bar is.
+  #MP, or something else like "Rage"
+  partype: ""
+
+spell:
+  key: ""
+  name: ""
+  image: "image"
+  #Raw discription with html
+  description: ""
+  #No html description
+  sanitizedDescription: ""
+  #In case of Udyrs
+  #SOMETIMES helps differentiate ults
+  maxrank: ""
+
+item:
+  name: ""
+  image: "image"
+  #Unique group thing tag.
+  #Like "boots" or "jungle"
+  group: ""
+  #colloquialisms. Like "tri" for triforce
+  colloq: ""
+  #id(s) to other object that this turns into
+  #can be an array
+  into: ""
+  #Item's "tier", do you have to build
+  # subcomponents, or is it all by itself?
+  # Triforce is a 3 depth item, and ruby crystal is 1
+  depth: ""
+  #Where can this item be built.
+  maps: ""
+  #???
+  tags: ""
+  #Viktor/Gangplank only item?
+  requiredChampion: ""
+
+language:
+  #The word for "Champion" or "Item"
+  categoryChampion: ""
+  categoryItem: ""
+  categoryMastery: ""
+  categorySummoner: ""
+  Abilities: ""
+  Gold: ""
+  Level: ""
+  #Categories? 'Details:'
+  Details_: ""
+  Rank_: ""
+  Require_: ""
+  #I'm terrible at reccomending things
+  recommended_essential: ""
+  #Available maps
+  Map1: "" #Origional Gangster Summoner's Rift
+  Map11: "" #New Summoner's Rift
+  Map8: "" #The Crystal Scar (Dominion Map)
+  Map4: "" #Origional Gangster Twisted Treeline
+  Map10: "" #New Twisted Treeline
+  Map12: "" #ARAMAMAMAMAMAMA
+  Map14: "" #Butcher's Bridge
+  #Language names for other languages
+  native_bg: ""
+  native_cs: ""
+  native_de: ""
+  native_el: ""
+  native_en: ""
+  native_es: ""
+  native_fr: ""
+  native_hu: ""
+  native_id: ""
+  native_it: ""
+  native_ja: ""
+  native_ko: ""
+  native_nl: ""
+  native_pl: ""
+  native_pt: ""
+  native_ro: ""
+  native_ru: ""
+  native_th: ""
+  native_tr: ""
+  native_vn: ""
+  native_zh: ""
+  native_zh_CN: ""
+  native_zh_MY: ""
+  native_zh_TW: ""
+  native_﻿ar': ""

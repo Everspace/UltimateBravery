@@ -1,0 +1,27 @@
+#North America
+- "NA"
+#Latin America 'N'orth/'S'outh
+- "LAN"
+- "LAS"
+#Brazil
+- "BR"
+#European Union NorthEast (Nordic)/West
+- "EUNE"
+- "EUW"
+#Russa
+- "RU"
+#Turkey
+- "TR"
+#Japan
+- "JP"
+#Korea
+- "KR"
+#Oceana which contains:
+# - Australia
+# - New Zealand
+# - Guam
+# - New Caledonia
+# - French Polynesia,
+# - Fiji
+# - Northern Mariana Islands
+- "OCE"

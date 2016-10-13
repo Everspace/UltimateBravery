@@ -1,39 +1,12 @@
 class Tristana
 
-  @@ALL_REALMS = [
-    'NA',
-    'BR',
-    'EUNE',
-    'EUW',
-    'KR',
-    #Latin America 'N'orth/'S'outh
-    'LAN', 'LAS',
-    'OCE',
-    #Turkey
-    'TR',
-    'RU',
-    'JP'
-  ]
-
   @@UPDATEABLE_THINGS = [
-    'LanguageConverters',
-    'Items',
-    'Champions',
-    'SummonerSpells'
-    'Masteries'
+    :LanguageConverters,
+    :Items,
+    :Champions,
+    :SummonerSpells,
+    :Masteries
   ]
-
-  @@GROOMING_DICTIONARIES = {
-    image: {
-      full: nil,
-      sprite: nil,
-      group: nil,
-      x: nil,
-      y: nil,
-      w: nil,
-      h: nil
-    }
-  }
 
   @@DATA_REQUEST_STRING = '{0}/{1}/data/{2}/{3}.json'
 
