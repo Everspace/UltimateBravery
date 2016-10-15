@@ -1,3 +1,7 @@
+require_relative './lol/DataDragon'
+require 'yaml'
+require 'threadparty'
+
 class Tristana
 
   @@UPDATEABLE_THINGS = [
@@ -8,48 +12,120 @@ class Tristana
     :Masteries
   ]
 
-  @@DATA_REQUEST_STRING = '{0}/{1}/data/{2}/{3}.json'
+  @realm_info = {}
 
-  @realmData = {}
-  @language = 'en_US'
-  @options = {}
+  def initialize()
+    @realm_info = DataDragon.get_realm_info
+  end
 
-  def initialize(language, realmData, options)
+  def self.grooming_dictionary(file:'./Grooming.yaml')
+    dict = YAML::load_file(file)
 
+    #substitute "spell" or "image" placeholders
+    #for other keys. I really hope this doesn't get
+    #super recursive at some point in the future
+    dict.each do |category, grooming_dictionary|
+      grooming_dictionary.each do |key, value|
+        if dict.has_key? value
+          dict[category][key] = dict[value]
+        end
+      end
+    end
+    return dict
   end
 
   def getChampions()
     groomed_data = {}
+    p 'Getting champions'
+    dd_options = {realm_info: @realm_info}
 
-    url = DATA_REQUEST_STRING.format(cdn, ddver, lang, 'champion')
-    base_all_champs = request(url)
+    ThreadParty.new do
+      ProcessQueue do
+        queue ['en_US'] #YAML::load_file('./Languages.yaml')
+        perform do |lang|
+          o = dd_options.merge({language: lang})
+          dd = DataDragon.new(**o)
 
-    groomed_data = {}
+          #We grab the 'all champion' json just to get
+          #the names of all champions, and then get the specifics
+          base_champ_data = dd.get('champion')
 
-    q = Queue.new(base_all_champs[:data].keys)
-    threads = (0..4).each do
-      Thread.new do
-        while champ = q.pop(false)
-          url = DATA_REQUEST_STRING(cdn, ddver, lang, "champions/#{champ}")
-          data = base_all_champs[:data][champ] + request(url)[:data]
-          groomed_data[champ] = groom(@@GROOMING_DICTIONARIES[:Champions], data)
+          champ_data = ThreadParty.new do
+            ProcessQueue do
+              queue base_champ_data['data'].keys
+              perform do |champ_id|
+                champ_dd = DataDragon.new(**o)
+                champ_dd.get("champion/#{champ_id}")
+              end
+            end
+          end
+
+          data = Tristana.mergify champ_data.iteratively
+
+          {lang => data}
         end
       end
-    end
+    end.iteratively
   end
 
-  def request(url)
-    JSON.parse(
-      Httparty.request(url)
-    )
+  def self.mergify(raw_blobs)
+
+    data_compilation = raw_blobs.first
+
+    raw_blobs.each do |blob|
+      #unpack the data we care about from the goop
+      data = blob['data']
+      type = blob['type']
+      data.each do |key, values|
+        data_compilation['data'][key] = Tristana.groom values, Tristana.grooming_dictionary[type]
+      end
+    end
+    return data_compilation
+  end
+
+  def self.groom(source_hash, allowed_hash)
+    final_hash = {}
+
+    allowed_hash.keys.each do |key|
+      next unless source_hash.has_key? key
+      case allowed_hash[key]
+      when Hash #if the allowed_hash is a complex type..
+        case source_hash[key]
+        when Array #if the source_hash is a array of things...
+          #we need to iterate and groom each item in array
+          temp_array = Array.new
+          source_hash[key].each do |item|
+            temp_array << Tristana.groom(item, allowed_hash[key])
+          end
+          final_hash[key] = temp_array
+        else #the source_hash[key] is a hash as well
+          #so groom it as well before adding
+          final_hash[key] = Tristana.groom(source_hash[key], allowed_hash[key])
+        end
+      else
+        final_hash[key] = source_hash[key]
+      end
+    end
+
+    #got to the end without recursing!!
+    return final_hash
   end
 
   def write(dict, path)
     Dir.mkdir_f File.oppositeOfBaseName path
-    File.open(path, "w") { |file|
+    File.open(path, "w") do |file|
       file.puts JSON.dump(dict)
-    }
-    return path
+    end
   end
 
+  def self.dump(dict, name)
+    File.open("#{name}.yaml", 'w') do |f|
+      f.write dict.to_yaml
+    end
+  end
 end
+
+Tristana.dump(
+ Tristana.new().getChampions(),
+ 'output'
+)
