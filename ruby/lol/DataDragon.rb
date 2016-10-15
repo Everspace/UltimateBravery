@@ -16,13 +16,20 @@ class DataDragon
   #DDragon definition about the realm for reuse.
   @realm_info
 
-  #You should do realm based on your current IP, not nessisarily
-  #Where you're going.
-  def initialize(realm='NA')
+  #Method to get data so that we're not repeatedly fetching data all the time.
+  def self.get_realm_info(realm: 'NA')
     realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
     p realm_info_url
-    r = HTTParty.get(realm_info_url)
-    @realm_info = JSON.parse(r.body, symbolize_names: true)
+    r = HTTParty.get realm_info_url
+    JSON.parse(r.body, symbolize_names: true)
+  end
+
+  #You should do realm based on your current IP, not nessisarily
+  #Where you're going.
+  def initialize(realm_info: {}, language: 'en_US')
+    raise ArgumentException, 'No realm_info provided!' unless realm_info || !realm_info.empty?
+    @realm_info = realm_info
+    set_language language
   end
 
   def set_language(lang)
