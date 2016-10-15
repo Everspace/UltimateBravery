@@ -40,7 +40,7 @@ champion:
   title: ""
   #Array of skins available
   #skins[0] is the default look
-  skins: ""
+  skins: "skin"
   #Brawler/Mage/Whatever
   tags: ""
   #What the resource bar is.
@@ -99,9 +99,12 @@ language:
   #Available maps
   Map1: "" #Origional Gangster Summoner's Rift
   Map11: "" #New Summoner's Rift
-  Map8: "" #The Crystal Scar (Dominion Map)
+
+  Map8: "" #The Crystal Scar (Dominion Map) rip
+
   Map4: "" #Origional Gangster Twisted Treeline
   Map10: "" #New Twisted Treeline
+
   Map12: "" #ARAMAMAMAMAMAMA
   Map14: "" #Butcher's Bridge
   #Language names for other languages
