@@ -34,7 +34,7 @@ class Tristana
     return dict
   end
 
-  def getChampions()
+  def get_champions()
     groomed_data = {}
     p 'Getting champions'
     dd_options = {realm_info: @realm_info}
@@ -48,14 +48,14 @@ class Tristana
 
           #We grab the 'all champion' json just to get
           #the names of all champions, and then get the specifics
+          #afterwards
           base_champ_data = dd.get('champion')
 
           champ_data = ThreadParty.new do
             ProcessQueue do
               queue base_champ_data['data'].keys
               perform do |champ_id|
-                champ_dd = DataDragon.new(**o)
-                champ_dd.get("champion/#{champ_id}")
+                Tristana.groom_blob dd.get("champion/#{champ_id}")
               end
             end
           end
@@ -69,17 +69,24 @@ class Tristana
   end
 
   def self.mergify(raw_blobs)
-
     data_compilation = raw_blobs.first
-
     raw_blobs.each do |blob|
-      #unpack the data we care about from the goop
-      data = blob['data']
-      type = blob['type']
-      data.each do |key, values|
-        data_compilation['data'][key] = Tristana.groom values, Tristana.grooming_dictionary[type]
-      end
+      data_compilation['data'] = data_compilation['data'].merge! blob['data']
     end
+    return data_compilation
+  end
+
+  def self.groom_blob(datadragon_blob)
+    data_compilation = datadragon_blob.dup
+
+    #unpack the data we care about from the goop
+    data = datadragon_blob['data']
+    type = datadragon_blob['type']
+
+    data.each do |key, values|
+      data_compilation['data'][key] = Tristana.groom values, Tristana.grooming_dictionary[type]
+    end
+
     return data_compilation
   end
 
@@ -124,8 +131,3 @@ class Tristana
     end
   end
 end
-
-Tristana.dump(
- Tristana.new().getChampions(),
- 'output'
-)
