@@ -17,7 +17,7 @@ class DataDragon
   @realm_info
 
   #Method to get data so that we're not repeatedly fetching data all the time.
-  def self.get_realm_info(realm: 'NA')
+  def self.get_realm_info(realm = 'NA')
     realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
     p realm_info_url
     r = HTTParty.get realm_info_url
