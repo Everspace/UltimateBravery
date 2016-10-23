@@ -14,24 +14,25 @@ class DataDragon
   URL_FORMAT = "%{cdn}/%{dd}/data/%{l}/%{item}.json"
 
   #DDragon definition about the realm for reuse.
-  @realm_info
+  @realm_info = {}
+
+  @@realm_infos = {}
 
   #Method to get data so that we're not repeatedly fetching data all the time.
-  def self.get_realm_info(realm = 'NA')
+  def self.cache_realm_info(realm)
     realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
     r = HTTParty.get realm_info_url
-    JSON.parse(r.body, symbolize_names: true)
+    @@realm_infos[realm] = JSON.parse(r.body, symbolize_names: true)
   end
 
   #You should do realm based on your current IP, not nessisarily
   #Where you're going.
-  def initialize(realm_info: {}, language: 'en_US')
-    raise ArgumentException, 'No realm_info provided!' unless realm_info || !realm_info.empty?
-    @realm_info = realm_info
-    set_language language
+  def initialize(realm = 'NA', language)
+    @realm_info = if @@realm_infos[realm] then @@realm_infos[realm] else DataDragon.cache_realm_info realm end
+    set_language! language if language
   end
 
-  def set_language(lang)
+  def set_language!(lang)
     @realm_info[:l] = lang
   end
 

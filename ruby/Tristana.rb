@@ -8,7 +8,6 @@ require 'threadparty'
 
 class Tristana
 
-
   @@UPDATEABLE_THINGS = [
     #:language_converters,
     #:items,
@@ -21,67 +20,45 @@ class Tristana
     @@UPDATEABLE_THINGS
   end
 
-  attr_accessor :groomer
-  attr_accessor :is_pretty
-  attr_accessor :languages_to_fetch
-  attr_accessor :output_dir
-  attr_accessor :realm_info
+  attr_reader :groomer
+  attr_reader :pretty
+  attr_reader :languages_to_fetch
+  attr_reader :output_directory
+  attr_reader :data_dragon
 
   def initialize(
+    language: 'en_US',
     realm: 'NA',
-    is_pretty: false,
-    languages:,
-    config_directory: './config',
-    output_dir: './output'
+    config_directory: './config'
   )
-
     @groomer = Groomer.new "#{config_directory}/Grooming.yaml"
-    @is_pretty = is_pretty
-    @languages_to_fetch = if languages then languages else
-        YAML::load_file("#{config_directory}/Languages.yaml")
-      end
-    @output_dir = output_dir
-    @realm_info = DataDragon.get_realm_info realm
-
+    @pretty = pretty
+    @output_directory = output_directory
+    @data_dragon = DataDragon.new realm, language
   end
 
   def get_champions
-    groomed_data = {}
-    dd_options = {realm_info: @realm_info}
-    trist = self
-    ThreadParty.new do
+    data_dragon = @data_dragon
+    groomer = @groomer
+
+    #We grab the 'all champion' json just to get
+    #the names of all champions, and then get the specifics
+    #afterwards
+    base_champ_data = data_dragon.get('champion')
+    data = ThreadParty.new do
       ProcessQueue do
-        queue trist.languages_to_fetch
-        perform do |lang|
-          o = dd_options.merge({language: lang})
-          dd = DataDragon.new(**o)
+        queue base_champ_data['data'].keys
+        perform do |champ_id|
+          groomer.groom_blob data_dragon.get("champion/#{champ_id}")
+        end
+      end
+    end.iteratively.reduce do |compiled, blob|
+      data_compiled = compiled['data']
+      data_blob = blob['data']
+      compiled['data'] = data_compiled.merge data_blob
+      compiled
+    end
 
-          #We grab the 'all champion' json just to get
-          #the names of all champions, and then get the specifics
-          #afterwards
-          base_champ_data = dd.get('champion')
-
-          data = ThreadParty.new do
-            ProcessQueue do
-              queue base_champ_data['data'].keys
-              perform do |champ_id|
-                trist.groomer.groom_blob dd.get("champion/#{champ_id}")
-              end
-            end
-          end.iteratively.reduce do |compiled, blob|
-            data_compiled = compiled['data']
-            data_blob = blob['data']
-            compiled['data'] = data_compiled.merge data_blob
-            compiled
-          end
-
-          Utils.write(
-            data,
-            "#{trist.output_dir}/#{lang}/champion.json",
-            trist.is_pretty
-          )
-        end #end perform
-      end #end process queue
-    end.iteratively
+    return data
   end
 end

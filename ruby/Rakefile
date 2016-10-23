@@ -1,0 +1,151 @@
+require './Tristana'
+require './Utils'
+#require 'threadparty'
+require 'benchmark'
+require 'rake/clean'
+
+config_directory = File.expand_path(ENV['config_directory'] || './config')
+output_directory = File.expand_path(ENV['output_directory'] || './build')
+node_dir = File.expand_path '../node'
+CLEAN << output_directory
+
+all_languages = YAML::load_file("#{config_directory}/Languages.yaml")
+
+multitask :package => ['dd:download:all', 'node:package'] do
+  puts 'Copying artifacts around'
+end
+
+namespace :aws do
+  task :upload => ['package'] do
+    puts 'Pushing to AWS bucket'
+  end
+end
+
+namespace :node do
+  CLOBBER << "#{node_dir}/node_modules"
+  directory "#{node_dir}/node_modules" do |t|
+    Dir.chdir node_dir do |d|
+      puts "Running npm install"
+      system("npm install --progress=false")
+    end
+  end
+
+  task :build => ["#{node_dir}/node_modules"] do
+    Dir.chdir node_dir do |d|
+      puts 'Building web page bundles'
+      system("npm run build")
+      puts 'Finished building web page bundles'
+    end
+  end
+
+  assets = FileList["#{node_dir}/static", "#{node_dir}/static/**/*"]
+
+  task :package => ["^clean", :build] do
+    puts "I cleaned?"
+  end
+
+end
+
+namespace :dd do
+  namespace :download do
+    download_all_languages = all_languages.collect do |lang|
+      things_to_do = []
+      trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
+
+      things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
+        method_name = "get_#{thing}".to_sym
+        task "#{lang}:#{thing}" do |t|
+          Utils.write(
+            trist.send(method_name),
+            "#{output_directory}/json/#{lang}/#{thing}.json",
+            if ENV['pretty'] then true else false end
+          )
+        end
+
+        "#{lang}:#{thing}"
+      end
+
+      multitask "#{lang}" => things_to_update do
+        puts "Downloaded #{lang}"
+      end
+
+      "#{lang}"
+    end
+
+    desc "download everything from data dragon"
+    multitask "all" => download_all_languages
+  end
+end
+
+namespace :dev do
+  #Temp area for when doing dev work because webserver
+  dev_json_dir = "#{node_dir}/static/json"
+  CLEAN << dev_json_dir
+
+  directory dev_json_dir
+
+  task :update, [:language] => [dev_json_dir] do |t, args|
+    args.with_defaults({language: 'en_US'})
+
+    puts "Updating local server's '#{args[:language]}' data"
+
+    case args[:language]
+    when 'all'
+      Rake::Task["dd:download:#{args[:language]}"].invoke()
+      cp_r "#{output_directory}/json", File.dirname(dev_json_dir)
+    else
+      args[:language].split(' ').flatten.each do |lang|
+        Rake::Task["dd:download:#{lang}"].invoke()
+        cp_r "#{output_directory}/json/#{lang}", dev_json_dir
+      end
+    end
+  end
+
+  lockfile = '_server_pid'
+  logfile = '_log.txt'
+
+  task :start => ["#{node_dir}/node_modules"] do
+    raise "Oi mate, you already have a server up! run 'rake dev:stop'" if File.exist? lockfile
+    puts "Starting local server"
+    rm logfile, force: true
+    opts = {
+      chdir: node_dir,
+    }
+    case RUBY_PLATFORM.downcase
+    when /win[0-9]+/, /i386-mingw32/
+      opts[:new_pgroup] = true
+    else
+
+    end
+    pid = spawn("npm", "start", [:out, :err] => logfile, **opts)
+    File.open(lockfile, "w") { |io| io.puts pid }
+    Process.detach pid
+  end
+
+  task :stop, [:i_really_mean_it] do |t, args|
+    args.with_defaults(i_really_mean_it: false)
+    raise "Oi mate, you don't have a server up you git! run 'rake dev:start" unless File.exist? lockfile
+    pid = nil
+    File.open(lockfile) { |io| pid = io.read.to_i }
+    puts "Murdering #{pid} and all it's children"
+    case RUBY_PLATFORM.downcase
+    when /win[0-9+]/, /i386-mingw32/
+      #god damn it windows you idiot
+      `taskkill /T /F /PID #{pid}`
+      if $?.success?
+        puts "Removing lockfile now"
+        rm lockfile
+      end
+    else
+      begin
+        Process.kill("TERM", pid)
+        Process.wait(pid)
+        puts "Removing lockfile now"
+        rm lockfile
+      rescue Errno::ESRCH
+        puts "#{pid} wasn't running, removing lock"
+        rm lockfile
+      end
+    end
+  end
+end
