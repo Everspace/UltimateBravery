@@ -19,7 +19,6 @@ class DataDragon
   #Method to get data so that we're not repeatedly fetching data all the time.
   def self.get_realm_info(realm = 'NA')
     realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
-    p realm_info_url
     r = HTTParty.get realm_info_url
     JSON.parse(r.body, symbolize_names: true)
   end
@@ -37,7 +36,6 @@ class DataDragon
   end
 
   def get(item)
-    p URL_FORMAT % @realm_info.merge({item: item})
     JSON.parse(
       HTTParty.get(URL_FORMAT % @realm_info.merge({item: item})).body
     )

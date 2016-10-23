@@ -1,6 +1,9 @@
 require_relative './lol/DataDragon'
 require_relative './lol/Groomer'
+require_relative './Utils'
+
 require 'yaml'
+require 'benchmark'
 require 'threadparty'
 
 class Tristana
@@ -31,28 +34,25 @@ class Tristana
     config_directory: './config',
     output_dir: './output'
   )
-    @groomer = Groomer.new "./config/Grooming.yaml"
+
+    @groomer = Groomer.new "#{config_directory}/Grooming.yaml"
     @is_pretty = is_pretty
     @languages_to_fetch = if languages then languages else
         YAML::load_file("#{config_directory}/Languages.yaml")
       end
     @output_dir = output_dir
     @realm_info = DataDragon.get_realm_info realm
+
   end
 
-  def get_champions()
+  def get_champions
     groomed_data = {}
     dd_options = {realm_info: @realm_info}
     trist = self
-
-    p trist
-
-    puts 'Grabbing Champions'
     ThreadParty.new do
       ProcessQueue do
         queue trist.languages_to_fetch
         perform do |lang|
-          p lang
           o = dd_options.merge({language: lang})
           dd = DataDragon.new(**o)
 

@@ -9,7 +9,7 @@ class Utils
   end
 
   def self.dump(dict, name)
-    File.open("#{name}.yaml", 'w') do |f|
+    File.open("_dump_#{name}.yaml", 'w') do |f|
       f.write dict.to_yaml
     end
   end
