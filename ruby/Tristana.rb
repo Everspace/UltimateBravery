@@ -5,13 +5,18 @@ require 'threadparty'
 
 class Tristana
 
-  @@UPDATEABLE_THINGS = {
-    LanguageConverters: nil,
-    Items: nil,
-    Champions: :get_champions,
-    SummonerSpells: nil,
-    Masteries: nil
-  }
+
+  @@UPDATEABLE_THINGS = [
+    #:language_converters,
+    #:items,
+    :champions
+    #:summoner_spells,
+    #:masteries
+  ].freeze
+
+  def self.UPDATEABLE_THINGS
+    @@UPDATEABLE_THINGS
+  end
 
   attr_accessor :groomer
   attr_accessor :is_pretty
