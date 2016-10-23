@@ -61,32 +61,27 @@ class Tristana
           #afterwards
           base_champ_data = dd.get('champion')
 
-          champ_data = ThreadParty.new do
+          data = ThreadParty.new do
             ProcessQueue do
               queue base_champ_data['data'].keys
               perform do |champ_id|
                 trist.groomer.groom_blob dd.get("champion/#{champ_id}")
               end
             end
+          end.iteratively.reduce do |compiled, blob|
+            data_compiled = compiled['data']
+            data_blob = blob['data']
+            compiled['data'] = data_compiled.merge data_blob
+            compiled
           end
-
-          data = Tristana.mergify(champ_data.iteratively)
 
           Utils.write(
             data,
             "#{trist.output_dir}/#{lang}/champion.json",
             trist.is_pretty
           )
-        end
-      end
+        end #end perform
+      end #end process queue
     end.iteratively
-  end
-
-  def self.mergify(raw_blobs)
-    data_compilation = raw_blobs.first
-    raw_blobs.each do |blob|
-      data_compilation['data'] = data_compilation['data'].merge!(blob['data'])
-    end
-    return data_compilation
   end
 end
