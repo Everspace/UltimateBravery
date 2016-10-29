@@ -70,6 +70,8 @@ item:
   #id(s) to other object that this turns into
   #can be an array
   into: ""
+  #Purchace information
+  gold: ""
   #Item's "tier", do you have to build
   # subcomponents, or is it all by itself?
   # Triforce is a 3 depth item, and ruby crystal is 1

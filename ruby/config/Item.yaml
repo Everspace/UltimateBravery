@@ -1,0 +1,19 @@
+Rejected properties:
+  group:
+    #Intro items that are no fun
+    - "DoransItems"
+    - "GuardianItems"
+  tags:
+    - "Consumable"
+Excluded ids:
+  #Get out of here kalista with your spear
+  - "3599" #The Black Spear
+
+  - "1083" #Cull
+
+  #Bogus enchantments
+  #They just show up as shoes
+  - "3675"
+  - "3672"
+  - "3673"
+  - "3671"
