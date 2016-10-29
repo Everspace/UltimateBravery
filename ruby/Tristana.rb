@@ -22,7 +22,6 @@ class Tristana
 
   attr_reader :groomer
   attr_reader :pretty
-  attr_reader :languages_to_fetch
   attr_reader :output_directory
   attr_reader :data_dragon
   attr_reader :item_info_dict
