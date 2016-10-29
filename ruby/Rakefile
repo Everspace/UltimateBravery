@@ -50,11 +50,11 @@ namespace :dd do
   namespace :download do
     download_all_languages = all_languages.collect do |lang|
       things_to_do = []
-      trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
 
       things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
         method_name = "get_#{thing}".to_sym
         task "#{lang}:#{thing}" do |t|
+          trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
           Utils.write(
             trist.send(method_name),
             "#{output_directory}/json/#{lang}/#{thing}.json",
