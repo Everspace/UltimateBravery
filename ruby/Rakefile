@@ -1,6 +1,6 @@
 require './Tristana'
 require './Utils'
-#require 'threadparty'
+
 require 'benchmark'
 require 'rake/clean'
 
