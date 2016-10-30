@@ -8,8 +8,10 @@ require 'rake/clean'
 
 config_directory = File.expand_path(ENV['config_directory'] || './config')
 output_directory = File.expand_path(ENV['output_directory'] || './build')
-node_dir = File.expand_path '../node'
 CLEAN << output_directory
+
+node_dir = File.expand_path '../node'
+dev_url = "http://localhost:9001/static/index.html"
 
 #TODO: Handle being offline
 all_languages = DataDragon.get_generic "cdn/languages.json"
@@ -29,18 +31,37 @@ end
 
 namespace :node do
   CLOBBER << "#{node_dir}/node_modules"
+
+  #Note that we have to do run npm in a seperate process
+  #lest other tasks blow up if we just cd'ed into the directory
+
+  #invoke npm
+  # - starting in the directory NODE_DIR
+  # - passing our current environment to it
+  # - staying until it stops,
+  # - without making a new window
+  windows_npm = "START /D \"#{node_dir}\" /I /WAIT /B npm"
+
   directory "#{node_dir}/node_modules" do |t|
-    Dir.chdir node_dir do |d|
-      puts "Running npm install"
-      system("npm install --progress=false")
+    puts "node_modules missing, running npm install"
+
+    case RUBY_PLATFORM.downcase
+    when /win[0-9+]/, /i386-mingw32/
+      #make a window named npm, passing our current environment to it
+      #staying until it stops, starting in the directory NODE_DIR
+      system("#{windows_npm} install --progress=false")
+    else
+      raise NotImplementedException
     end
   end
 
   task :build => ["#{node_dir}/node_modules"] do
-    Dir.chdir node_dir do |d|
-      puts 'Building web page bundles'
-      system("npm run build")
-      puts 'Finished building web page bundles'
+
+    case RUBY_PLATFORM.downcase
+    when /win[0-9+]/, /i386-mingw32/
+      system("#{windows_npm} run build")
+    else
+      raise NotImplementedException
     end
   end
 
@@ -117,8 +138,11 @@ namespace :dev do
   dev_json_dir = "#{node_dir}/static/json"
   CLEAN << dev_json_dir
 
-  directory dev_json_dir
+  directory dev_json_dir do #always have en_US on hand
+    Rake::Task["dev:update"].invoke()
+  end
 
+  desc "Update data for use in local development"
   task :update, [:language] => [dev_json_dir] do |t, args|
     args.with_defaults({language: 'en_US'})
 
@@ -136,51 +160,16 @@ namespace :dev do
     end
   end
 
-  lockfile = '_server_pid'
-  logfile = '_log.txt'
-
-  task :start => ["#{node_dir}/node_modules"] do
-    raise "Oi mate, you already have a server up! run 'rake dev:stop'" if File.exist? lockfile
-    puts "Starting local server"
-    rm logfile, force: true
-    opts = {
-      chdir: node_dir,
-    }
-    case RUBY_PLATFORM.downcase
-    when /win[0-9]+/, /i386-mingw32/
-      opts[:new_pgroup] = true
-    else
-
+  case RUBY_PLATFORM.downcase
+  when /win[0-9]+/, /i386-mingw32/
+    desc "Run the dev webserver and pop open the website"
+    multitask :start => ["#{node_dir}/node_modules", dev_json_dir] do
+      system("START /D \"#{node_dir}\" npm start")
+      system("START \"\" \"#{dev_url}\"")
     end
-    pid = spawn("npm", "start", [:out, :err] => logfile, **opts)
-    File.open(lockfile, "w") { |io| io.puts pid }
-    Process.detach pid
+  else
+    #I don't know how this would work on *nixes
+    raise NotImplementedException
   end
 
-  task :stop, [:i_really_mean_it] do |t, args|
-    args.with_defaults(i_really_mean_it: false)
-    raise "Oi mate, you don't have a server up you git! run 'rake dev:start" unless File.exist? lockfile
-    pid = nil
-    File.open(lockfile) { |io| pid = io.read.to_i }
-    puts "Murdering #{pid} and all it's children"
-    case RUBY_PLATFORM.downcase
-    when /win[0-9+]/, /i386-mingw32/
-      #god damn it windows you idiot
-      `taskkill /T /F /PID #{pid}`
-      if $?.success?
-        puts "Removing lockfile now"
-        rm lockfile
-      end
-    else
-      begin
-        Process.kill("TERM", pid)
-        Process.wait(pid)
-        puts "Removing lockfile now"
-        rm lockfile
-      rescue Errno::ESRCH
-        puts "#{pid} wasn't running, removing lock"
-        rm lockfile
-      end
-    end
-  end
 end
