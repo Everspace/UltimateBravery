@@ -1,5 +1,7 @@
 Rejected Properties:
   group:
+    #I won't make you pick your relic
+    - RelicBase
     #Intro items that are no fun
     - DoransItems
     - GuardianItems

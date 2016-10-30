@@ -3,13 +3,16 @@
 image:
   #image alone
   full: ""
+
   #big farking blob of them together
   #for optimization if you draw all the champions/items
   sprite: ""
+
   #What type of thing is this, used to sub in the
   #data request string
   #"item/spell/champion"
   group: ""
+
   #location of the image in the sprite
   x: ""
   y: ""
@@ -26,23 +29,30 @@ skin:
 
 champion:
   image: "image"
+
   #an array IN ORDER
   # of the QWER skills
   spells: "spell"
+
   #Unique Number ID
   id: ""
+
   #Internal name (MonkeyKing)
   key: ""
   #Localized name (Wukong)
   name: ""
+
   #Champions COOL EPITHET
   #Soandso "The cool guy"
   title: ""
+
   #Array of skins available
   #skins[0] is the default look
   skins: "skin"
+
   #Brawler/Mage/Whatever
   tags: ""
+
   #What the resource bar is.
   #MP, or something else like "Rage"
   partype: ""
@@ -51,10 +61,13 @@ spell:
   key: ""
   name: ""
   image: "image"
+
   #Raw discription with html
   description: ""
+
   #No html description
   sanitizedDescription: ""
+
   #In case of Udyrs
   #SOMETIMES helps differentiate ults
   maxrank: ""
@@ -62,24 +75,36 @@ spell:
 item:
   name: ""
   image: "image"
+
   #Unique group thing tag.
   #Like "boots" or "jungle"
   group: ""
+
   #colloquialisms. Like "tri" for triforce
   colloq: ""
+
   #id(s) to other object that this turns into
   #can be an array
   into: ""
+
   #Purchace information
   gold: ""
+
+  #Is searchable in game
+  #not very useful now, but could be in the future
+  #hideFromAll: ""
+
   #Item's "tier", do you have to build
   # subcomponents, or is it all by itself?
   # Triforce is a 3 depth item, and ruby crystal is 1
   depth: ""
+
   #Where can this item be built.
   maps: ""
+
   #???
   tags: ""
+
   #Viktor/Gangplank only item?
   requiredChampion: ""
 
@@ -92,23 +117,26 @@ language:
   Abilities: ""
   Gold: ""
   Level: ""
+
   #Categories? 'Details:'
   Details_: ""
   Rank_: ""
   Require_: ""
+
   #I'm terrible at reccomending things
   recommended_essential: ""
+
   #Available maps
-  Map1: "" #Origional Gangster Summoner's Rift
-  Map11: "" #New Summoner's Rift
-
-  Map8: "" #The Crystal Scar (Dominion Map) rip
-
-  Map4: "" #Origional Gangster Twisted Treeline
+  Map8: ""  #The Crystal Scar (Dominion Map) rip in pepperionies
   Map10: "" #New Twisted Treeline
-
+  Map11: "" #New Summoner's Rift
   Map12: "" #ARAMAMAMAMAMAMA
-  Map14: "" #Butcher's Bridge
+
+  #Discontinued maps, but here for sanity's sake
+  #Map1: "" Origional Gangster Summoner's Rift
+  #Map4: "" #Origional Gangster Twisted Treeline
+  #Map14: "" #Butcher's Bridge
+
   #Language names for other languages
   native_bg: ""
   native_cs: ""
