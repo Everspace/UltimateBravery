@@ -1,4 +1,5 @@
 require './Tristana'
+require './Doran'
 require './Utils'
 
 require 'benchmark'
@@ -52,11 +53,14 @@ namespace :dd do
       things_to_do = []
 
       things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
-        method_name = "get_#{thing}".to_sym
+
         task "#{lang}:#{thing}" do |t|
           trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
+          blob = trist.send("get_#{thing}".to_sym)
+          blob = Doran.send("refine_#{thing}".to_sym, blob) if Doran.REFINEABLE_THINGS.include? thing
+
           Utils.write(
-            trist.send(method_name),
+            blob,
             "#{output_directory}/json/#{lang}/#{thing}.json",
             if ENV['pretty'] then true else false end
           )

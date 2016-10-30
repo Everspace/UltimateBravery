@@ -127,15 +127,6 @@ class Tristana
 
     # end
     items['data'] = idata
-    items.delete "groups"
-    items.delete "basic"
-    items.delete "tree"
-    Utils.dump(
-      items['data'].reject{|id, info| not info['maps']["11"] }.collect { |id, info|
-        "#{info['name']} => id: #{id} hide: #{info['hideFromAll']} #{info['group']}"
-      }.sort,
-      'items'
-    )
     items
   end
 
