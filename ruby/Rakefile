@@ -1,6 +1,7 @@
 require './Tristana'
 require './Doran'
 require './Utils'
+require './lol/DataDragon'
 
 require 'benchmark'
 require 'rake/clean'
@@ -10,7 +11,8 @@ output_directory = File.expand_path(ENV['output_directory'] || './build')
 node_dir = File.expand_path '../node'
 CLEAN << output_directory
 
-all_languages = YAML::load_file("#{config_directory}/Languages.yaml")
+#TODO: Handle being offline
+all_languages = DataDragon.get_generic "cdn/languages.json"
 all_realms = YAML::load_file("#{config_directory}/Realms.yaml")
 
 multitask :package => ['dd:download:all', 'node:package'] do

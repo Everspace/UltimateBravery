@@ -18,18 +18,27 @@ class DataDragon
 
   @@realm_infos = {}
 
+  def self.get_generic(item)
+    url = "#{DDRAGON_URL}/#{item}"
+    r = HTTParty.get url
+    JSON.parse(r.body, symbolize_names: true)
+  end
+
   #Method to get data so that we're not repeatedly fetching data all the time.
   def self.cache_realm_info(realm)
-    realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
-    r = HTTParty.get realm_info_url
-    @@realm_infos[realm] = JSON.parse(r.body, symbolize_names: true)
+    @@realm_infos[realm] = @@realm_infos[realm] || get_generic("realms/#{realm.downcase}.json")
     @@realm_infos[realm]
+  end
+
+  #
+  def self.get_languages
+    "#{DDRAGON_URL}/cdn/languages.json"
   end
 
   #You should do realm based on your current IP, not nessisarily
   #Where you're going.
   def initialize(realm = 'NA', language)
-    @realm_info = if @@realm_infos[realm] then @@realm_infos[realm] else DataDragon.cache_realm_info realm end
+    @realm_info = @@realm_infos[realm] || DataDragon.cache_realm_info(realm)
     set_language! language if language
   end
 
