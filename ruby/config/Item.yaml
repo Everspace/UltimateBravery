@@ -2,9 +2,36 @@ Rejected Properties:
   group:
     #I won't make you pick your relic
     - RelicBase
+
     #Intro items that are no fun
     - DoransItems
     - GuardianItems
+
+    #Get out of here kalista with your spear
+    - TheBlackSpear
+
+    #Neither are pots and such
+    - HealthPotion
+    - ManaPotion
+    - PinkWards
+    - GreenWards
+    - PoroSnax
+
+    #Bilgewater plz
+    - BWMerc11
+    - BWMerc12
+    - BWMerc13
+    - BWMerc14
+    - BWMercDefense1
+    - BWMercDefense2
+    - BWMercDefense3
+    - BWMercOffense1
+    - BWMercOffense2
+    - BWMercOffense3
+    - BWMercUpgrade1
+    - BWMercUpgrade2
+    - BWMercUpgrade3
+
     #Siege mode is the new bilgewater
     - SiegeTimefieldGroup
     - SiegeFlashZoneGroup
@@ -15,13 +42,16 @@ Rejected Properties:
     - SiegeLaserAffixGroup
     - SiegeEmergencyShieldGroup
     - SiegePortableBarracksGroup
-  tags:
-    - Consumable
+    - SiegeMissileBarrageGroup
+
+    #what
+    - _ItemGroupDefaults.txt
+    - AllLegendaries #I think this is just how many slots you have
+    - Impact
+    - Flasks #not to be confused with "FlaskGroup" which is different
 
 #Quote Excluded IDs since they are strings in the json blob.
 Excluded IDs:
-  #Get out of here kalista with your spear
-  - "3599" #The Black Spear
 
   #The Cull is a "DoransItems" without the tag
   - "1083" #Cull
