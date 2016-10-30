@@ -64,14 +64,28 @@ class Tristana
   end
 
   def get_items
-    Utils.dump(@data_dragon.get('item'), 'item_raw')
     items = @groomer.groom_blob @data_dragon.get('item')
+
+    remove_inapproprate_items_from items
+
+    #While we're here, lets axe groups where we've removed items from
+    items['groups'].reject! { |blob| item_info_dict['Rejected Properties']['group'].include? blob['id'] }
+
+    items
+  end
+
+  #
+  # Handles removing items that are not "full build only" from items['data']
+  #
+  def remove_inapproprate_items_from(items)
     idata = items['data']
     #Remove things we said are not ok
     item_info_dict['Excluded IDs'].each{|id| idata.delete id}
 
     #Things that can't be baught are things we aren't interested in
     idata.reject!{|id, info| not info.dig('gold', 'purchasable') }
+
+    idata.keep_if{|id, info| info.dig('depth').to_i > 1 }
 
     #take snapshot of keys to iterate while we muck with the poor thing.
     ids = idata.keys.dup
@@ -124,8 +138,6 @@ class Tristana
         idata.delete id
       end
     end
-
-    # end
     items['data'] = idata
     items
   end
