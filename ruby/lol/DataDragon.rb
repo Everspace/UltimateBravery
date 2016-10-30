@@ -23,6 +23,7 @@ class DataDragon
     realm_info_url = "#{DDRAGON_URL}/realms/#{realm.downcase}.json"
     r = HTTParty.get realm_info_url
     @@realm_infos[realm] = JSON.parse(r.body, symbolize_names: true)
+    @@realm_infos[realm]
   end
 
   #You should do realm based on your current IP, not nessisarily

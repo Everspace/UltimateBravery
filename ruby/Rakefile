@@ -11,6 +11,7 @@ node_dir = File.expand_path '../node'
 CLEAN << output_directory
 
 all_languages = YAML::load_file("#{config_directory}/Languages.yaml")
+all_realms = YAML::load_file("#{config_directory}/Realms.yaml")
 
 multitask :package => ['dd:download:all', 'node:package'] do
   puts 'Copying artifacts around'
@@ -44,11 +45,12 @@ namespace :node do
   task :package => ["^clean", :build] do
     puts "I cleaned?"
   end
-
 end
 
 namespace :dd do
   namespace :download do
+
+    #Actual language data
     download_all_languages = all_languages.collect do |lang|
       things_to_do = []
 
@@ -76,8 +78,20 @@ namespace :dd do
       "#{lang}"
     end
 
+    download_all_realms = all_realms.collect do |realm|
+      task "realm:#{realm}" do |t|
+        Utils.write(
+          DataDragon.cache_realm_info(realm),
+          "#{output_directory}/json/realm_#{realm.downcase}.json",
+          if ENV['pretty'] then true else false end
+        )
+      end
+
+      "realm:#{realm}"
+    end
+
     desc "download everything from data dragon"
-    multitask "all" => download_all_languages
+    multitask "all" => download_all_languages | download_all_realms
   end
 end
 
