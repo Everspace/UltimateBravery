@@ -68,7 +68,7 @@ class Tristana
     items = @groomer.groom_blob @data_dragon.get('item')
     idata = items['data']
     #Remove things we said are not ok
-    item_info_dict['Excluded ids'].each{|id| idata.delete id}
+    item_info_dict['Excluded IDs'].each{|id| idata.delete id}
 
     #Things that can't be baught are things we aren't interested in
     idata.reject!{|id, info| not info.dig('gold', 'purchasable') }
@@ -78,7 +78,7 @@ class Tristana
 
     #Drop items that have groups or tags I think are stupid.
     ids.each do |id|
-      item_info_dict['Rejected properties'].each do |rejected_property, rejected_info|
+      item_info_dict['Rejected Properties'].each do |rejected_property, rejected_info|
         item_property = idata.dig(id, rejected_property)
         case item_property
         when Array

@@ -1,14 +1,27 @@
-Rejected properties:
+Rejected Properties:
   group:
     #Intro items that are no fun
-    - "DoransItems"
-    - "GuardianItems"
+    - DoransItems
+    - GuardianItems
+    #Siege mode is the new bilgewater
+    - SiegeTimefieldGroup
+    - SiegeFlashZoneGroup
+    - SiegeTeleportPadGroup
+    - SiegeShieldGeneratorGroup
+    - SiegeSniperCannonGroup
+    - SiegeRefundGroup
+    - SiegeLaserAffixGroup
+    - SiegeEmergencyShieldGroup
+    - SiegePortableBarracksGroup
   tags:
-    - "Consumable"
-Excluded ids:
+    - Consumable
+
+#Quote Excluded IDs since they are strings in the json blob.
+Excluded IDs:
   #Get out of here kalista with your spear
   - "3599" #The Black Spear
 
+  #The Cull is a "DoransItems" without the tag
   - "1083" #Cull
 
   #Bogus enchantments
