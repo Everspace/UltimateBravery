@@ -54,6 +54,17 @@ end
 namespace :dd do
   namespace :download do
 
+    all_tasks = []
+
+    task "versions" do
+      Utils.write(
+        DataDragon.get_generic("api/versions.json"),
+        "#{output_directory}/json/versions.json",
+        is_pretty
+      )
+    end
+    all_tasks << "versions"
+
     #Actual language data
     download_all_languages = all_languages.collect do |lang|
       things_to_do = []
@@ -81,6 +92,7 @@ namespace :dd do
 
       "#{lang}"
     end
+    all_tasks |= download_all_languages
 
     download_all_realms = all_realms.collect do |realm|
       task "realm:#{realm}" do |t|
@@ -93,9 +105,10 @@ namespace :dd do
 
       "realm:#{realm}"
     end
+    all_tasks |= download_all_realms
 
     desc "download everything from data dragon"
-    multitask "all" => download_all_languages | download_all_realms
+    multitask "all" => all_tasks
   end
 end
 
