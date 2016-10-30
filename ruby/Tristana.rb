@@ -85,8 +85,6 @@ class Tristana
     #Things that can't be baught are things we aren't interested in
     idata.reject!{|id, info| not info.dig('gold', 'purchasable') }
 
-    idata.keep_if{|id, info| info.dig('depth').to_i > 1 }
-
     #take snapshot of keys to iterate while we muck with the poor thing.
     ids = idata.keys.dup
 
