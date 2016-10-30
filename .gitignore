@@ -9,10 +9,10 @@ _*
 **/__pycache__/
 
 #Build directory
-build
+**/build/
 
 #node garbage
-node_modules
+**/node_modules/
 *npm-debug*
 
 #other crap
