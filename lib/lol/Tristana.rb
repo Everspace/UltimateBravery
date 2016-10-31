@@ -107,11 +107,20 @@ class Tristana
       end
     end
 
+    #clean up the "into" category with only things that exist
+    idata.each do |key, info|
+      info['into'].keep_if {|id| idata.has_key? id}
+    end
+
     ids = idata.keys.dup
 
     #handle things that build into themselves?
     ids.each do |id|
       info = idata.dig(id)
+
+      #doesn't have an into, so doesn't build into anything
+      next if info['into'].empty?
+
       info['into'].each do |possible_id|
         possible_info = idata.dig(possible_id)
 
