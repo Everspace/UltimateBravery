@@ -9,7 +9,7 @@ require 'threadparty'
 class Tristana
 
   @@UPDATEABLE_THINGS = [
-    #:language_converters,
+    :languages,
     :items,
     :champions
     #:summoner_spells,
@@ -36,6 +36,10 @@ class Tristana
     @pretty = pretty
     @output_directory = output_directory
     @data_dragon = DataDragon.new realm, language
+  end
+
+  def get_languages
+    @groomer.groom_blob @data_dragon.get('language')
   end
 
   def get_champions
