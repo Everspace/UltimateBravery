@@ -79,7 +79,17 @@ class Doran
     item_create_maps_structure items
     item_sanitize_groups items
     item_create_champion_unique_structure items
+    item_create_shoes_list items
     return items
+  end
+
+  #omg, ['shoes']
+  def self.item_create_shoes_list(items)
+    items[@@NAMESPACE_KEY]['boots'] = items['data'].inject([]) do |a, key_value|
+      id, info = key_value
+      a << id if info['tags'].include? 'Boots'
+      a
+    end
   end
 
   #
