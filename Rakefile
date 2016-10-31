@@ -1,7 +1,9 @@
-require './Tristana'
-require './Doran'
-require './Utils'
-require './lol/DataDragon'
+$LOAD_PATH.unshift File.expand_path('lib', File.dirname(__FILE__))
+
+require 'Utils'
+require 'lol/DataDragon'
+require 'lol/Doran'
+require 'lol/Tristana'
 
 require 'benchmark'
 require 'rake/clean'
@@ -10,7 +12,7 @@ config_directory = File.expand_path(ENV['config_directory'] || './config')
 output_directory = File.expand_path(ENV['output_directory'] || './build')
 CLEAN << output_directory
 
-node_dir = File.expand_path '../node'
+node_dir = File.expand_path 'node'
 dev_url = "http://localhost:9001/static/index.html"
 
 #TODO: Handle being offline

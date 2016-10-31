@@ -1,4 +1,4 @@
-require_relative './Utils'
+require 'Utils'
 
 # Crunches data blobs after they have been groomed
 # and raised by Tristana.

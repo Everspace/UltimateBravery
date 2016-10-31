@@ -1,6 +1,6 @@
-require_relative './lol/DataDragon'
-require_relative './lol/Groomer'
-require_relative './Utils'
+require 'Utils'
+require 'lol/DataDragon'
+require 'lol/Groomer'
 
 require 'yaml'
 require 'benchmark'
