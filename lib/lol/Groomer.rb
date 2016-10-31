@@ -39,8 +39,13 @@ class Groomer
     data = datadragon_blob['data']
     type = datadragon_blob['type']
 
-    data.each do |key, values|
-      data_compilation['data'][key] = groom(values, @grooming_dictionary[type])
+    data.each do |key, value|
+      case value
+      when Hash
+        data_compilation['data'][key] = groom(value, @grooming_dictionary[type])
+      else
+        data_compilation['data'][key] = value if @grooming_dictionary[type].has_key? key
+      end
     end
 
     return data_compilation
