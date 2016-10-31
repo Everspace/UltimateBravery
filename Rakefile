@@ -171,7 +171,7 @@ namespace :dev do
       else
         args[:language].split(' ').flatten.each do |lang|
           Rake::Task["dd:download:#{lang}"].invoke()
-          cp_r "#{output_directory}/json/#{lang}", "#{dev_json_dir}/#{lang}"
+          cp_r "#{output_directory}/json/#{lang}", dev_json_dir
         end
       end
     end
