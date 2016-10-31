@@ -80,11 +80,13 @@ namespace :dd do
     all_tasks = []
 
     task "versions" do
+      puts "Downloading versions.json"
       Utils.write(
         DataDragon.get_generic("api/versions.json"),
         "#{output_directory}/json/versions.json",
         is_pretty
       )
+      puts "Finished downloading versions.json"
     end
     all_tasks << "versions"
 
@@ -95,6 +97,7 @@ namespace :dd do
       things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
 
         task "#{lang}:#{thing}" do |t|
+          puts "Updating #{lang}:#{thing}"
           trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
           blob = trist.send("get_#{thing}".to_sym)
           blob = Doran.send("refine_#{thing}".to_sym, blob) if Doran.REFINEABLE_THINGS.include? thing
@@ -104,13 +107,14 @@ namespace :dd do
             "#{output_directory}/json/#{lang}/#{thing}.json",
             is_pretty
           )
+          puts "Finished updating #{lang}:#{thing}"
         end
 
         "#{lang}:#{thing}"
       end
 
       multitask "#{lang}" => things_to_update do
-        puts "Downloaded #{lang}"
+        puts "Finished updating all of #{lang}"
       end
 
       "#{lang}"
@@ -119,11 +123,13 @@ namespace :dd do
 
     download_all_realms = all_realms.collect do |realm|
       task "realm:#{realm}" do |t|
+        puts "Downloading realm #{realm}"
         Utils.write(
           DataDragon.cache_realm_info(realm),
           "#{output_directory}/json/realm_#{realm.downcase}.json",
           is_pretty
         )
+        puts "Finished downloading realm #{realm}"
       end
 
       "realm:#{realm}"
@@ -131,7 +137,9 @@ namespace :dd do
     all_tasks |= download_all_realms
 
     desc "download everything from data dragon"
-    multitask "all" => all_tasks
+    multitask "all" => all_tasks do
+      puts "Finished updating all the DataDragon!"
+    end
   end
 end
 
@@ -140,24 +148,31 @@ namespace :dev do
   dev_json_dir = "#{node_dir}/static/json"
   CLEAN << dev_json_dir
 
-  directory dev_json_dir do #always have en_US on hand
-    Rake::Task["dev:update"].invoke()
+  directory dev_json_dir do
+    Rake::Task["dev:update:everything"].invoke()
   end
 
   desc "Update data for use in local development"
-  task :update, [:language] => [dev_json_dir] do |t, args|
-    args.with_defaults({language: 'en_US'})
-
-    puts "Updating local server's '#{args[:language]}' data"
-
-    case args[:language]
-    when 'all'
-      Rake::Task["dd:download:#{args[:language]}"].invoke()
+  namespace :update do
+    task :everything do
+      Rake::Task['dd:download:all'].invoke()
       cp_r "#{output_directory}/json", File.dirname(dev_json_dir)
-    else
-      args[:language].split(' ').flatten.each do |lang|
-        Rake::Task["dd:download:#{lang}"].invoke()
-        cp_r "#{output_directory}/json/#{lang}", dev_json_dir
+    end
+
+    task :language, [:language] do |t, args|
+      args.with_defaults({language: 'en_US'})
+
+      puts "Updating local server's '#{args[:language]}' data"
+
+      case args[:language]
+      when 'all'
+        Rake::Task["dd:download:#{args[:language]}"].invoke()
+        cp_r "#{output_directory}/json", File.dirname(dev_json_dir)
+      else
+        args[:language].split(' ').flatten.each do |lang|
+          Rake::Task["dd:download:#{lang}"].invoke()
+          cp_r "#{output_directory}/json/#{lang}", "#{dev_json_dir}/#{lang}"
+        end
       end
     end
   end
