@@ -21,7 +21,6 @@ class Tristana
   end
 
   attr_reader :groomer
-  attr_reader :pretty
   attr_reader :output_directory
   attr_reader :data_dragon
   attr_reader :item_info_dict
@@ -33,7 +32,6 @@ class Tristana
   )
     @groomer = Groomer.new "#{config_directory}/Grooming.yaml"
     @item_info_dict = YAML::load_file "#{config_directory}/Item.yaml"
-    @pretty = pretty
     @output_directory = output_directory
     @data_dragon = DataDragon.new realm, language
   end
