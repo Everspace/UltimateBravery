@@ -38,7 +38,7 @@ class DataDragon
   #You should do realm based on your current IP, not nessisarily
   #Where you're going.
   def initialize(realm = 'NA', language)
-    @realm_info = @@realm_infos[realm] || DataDragon.cache_realm_info(realm)
+    @realm_info = (@@realm_infos[realm] || DataDragon.cache_realm_info(realm)).dup
     set_language! language if language
   end
 
