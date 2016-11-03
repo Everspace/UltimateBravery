@@ -26,7 +26,7 @@ export default class BraveFactory {
 
   addShoe() {
     this.addItemById(
-      Random.roll(this.props.itemData.lists.boots)
+      Random.roll(this.props.itemData.ubrave.boots)
     )
   }
 
@@ -34,7 +34,6 @@ export default class BraveFactory {
   * Add the item by it's string id ('3014').
   */
   addItemById(id) {
-    console.log(this.props.itemData.data[id])
     this.addItem(this.props.itemData.data[id])
   }
 
@@ -64,6 +63,7 @@ export default class BraveFactory {
   * Add an item to the extraItems of the brave
   */
   addExtraItemById(id) {
+    console.log(`Adding #{id}`)
     this.brave.extraItems.push(
       this.props.itemData.data[id]
     )
@@ -76,10 +76,14 @@ export default class BraveFactory {
   completeBravery() {
 
     let hasShoes = this.brave.items.find(
-      (id)=> this.props.itemData.lists.boots.includes(id)
+      (id)=> this.props.itemData.ubrave.boots.includes(id)
     )
+    if(!hasShoes){
+      console.log("No shoes")
+    }
 
     if(!hasShoes && this.brave.items.length < this.maxItems) {
+      console.log("added shoe")
       this.addShoe()
     }
 
@@ -96,8 +100,9 @@ export default class BraveFactory {
   }
 
   makeBrave() {
+    console.log("Making things brave!")
     //Initialize the allowed items for this run.
-    this.maxItemPerGroup = Object.assign({}, this.props.itemData.itemsPerGroup)
+    this.maxItemPerGroup = Object.assign({}, this.props.groups)
 
     let allChamps  = this.props.championData.data
     let userChamps = this.props.user.championData
@@ -141,9 +146,9 @@ export default class BraveFactory {
     //Each item contains a list of legal maps it has.
     //So all possible items are ones that are legal on this
     //map after we filter every generic item.
-    let possibleItems = this.props.itemData.lists.generics
+    let possibleItems = this.props.itemData.ubrave.maps[selectedMap]
       .filter(
-        (id)=> this.props.itemData.data[id].maps[selectedMap]
+        (id) => !this.props.itemData.ubrave.champion_unique.all.includes(id)
       )
 
     while(this.brave.items.length < this.maxItems) {
