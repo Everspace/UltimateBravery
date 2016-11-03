@@ -4,13 +4,12 @@ import Random from 'common/Random'
 import BraveFactory from 'app/MainDisplay/BraveFactory'
 
 import ChampionIcon from 'lol/champion/ChampionIcon'
-import ItemIcon from 'lol/item/ItemIcon'
+import SpriteImage from 'lol/common/SpriteImage'
 
 export default class MainDisplay extends React.Component {
 
   constructor(props) {
     super(props)
-    this.makeItemIcon   = this.makeItemIcon.bind(this)
     this.braveFactory   = new BraveFactory(this.props)
   }
 
@@ -22,10 +21,9 @@ export default class MainDisplay extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.braveFactory = new BraveFactory(nextProps);
-  }
-
-  makeItemIcon(item) {
-    return <ItemIcon key={item.key} image={item.image} dd={this.props.dd}/>
+    this.setState({
+      brave: this.braveFactory.makeBrave()
+    })
   }
 
   render() {
@@ -34,13 +32,6 @@ export default class MainDisplay extends React.Component {
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'left'
-    }
-
-    let items = this.state.brave.items.map(this.makeItemIcon)
-
-    var extraItems = []
-    if (this.state.brave.extraItems.length) {
-      extraItems = this.state.brave.extraItems.map(this.makeItemIcon)
     }
 
     return (
@@ -52,17 +43,32 @@ export default class MainDisplay extends React.Component {
           dd={this.props.dd}
           have={true}
         />
-        <button onClick={()=>this.setState({brave: this.braveFactory.makeBrave()})}>BRAVERY!</button>
-
+        <button
+          onClick={()=>this.setState({brave: this.braveFactory.makeBrave()})}
+        >BRAVERY!</button>
         <h3>{this.props.languageData.data.RecommendedItems}</h3>
         <div style={containerStyle}>
-          {items}
+          {this.state.brave.items.map((item)=>{
+            return <SpriteImage
+                      name={item.name}
+                      key={item.name}
+                      image={item.image}
+                      dd={this.props.dd}
+                    />
+          })}
         </div>
         {this.state.brave.extraItems.length ?
           <div>
             <h3>{this.props.languageData.data.Details_}</h3>
             <div style={containerStyle}>
-              {extraItems}
+              {this.state.brave.extraItems.map((id)=>{
+                return <SpriteImage
+                      name={item.name}
+                      key={item.key}
+                      image={item.image}
+                      dd={this.props.dd}
+                    />
+              })}
             </div>
           </div>
           :null

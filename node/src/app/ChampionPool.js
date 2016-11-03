@@ -5,55 +5,33 @@ import './ChampionPool.js.css'
 export default class ChampionPool extends React.Component {
 
   setAllChampions(status) {
-    let championData = this.props.userChampionData
-    let champions = this.props.championData.data
-
-    for(let champ in champions) {
-      championData[champ] = status
-    }
-
-    this.props.setChampionData(championData)
+    this.props.setChampionData(
+      this.props.championData.ubrave.ids.reduce((obj, id)=>{
+        obj[id] = status
+        return obj
+      }, {})
+    )
   }
 
   toggleChampion(champion) {
-    let championData = this.props.userChampionData
-    if(championData[champion]) {
-      championData[champion] = false
-    } else {
-      championData[champion] = true
-    }
-
-    this.props.setChampionData(championData)
-  }
-
-  makePoolIcons() {
-    let champions = Object.keys(this.props.championData.data)
-      .map(key => this.props.championData.data[key])
-      .sort((a, b) => a.name.localeCompare(b.name))
-
-    let icons = new Array()
-    for(let index in champions) {
-      let id = champions[index].id
-      icons.push(
-        <ChampionIcon
-          onClick={() => this.toggleChampion(id)}
-          have={this.props.userChampionData[id]}
-          image={champions[index].image}
-          key={id}
-          dd={this.props.dd}
-        />
-      )
-    }
-
-    return icons
+    let obj = Object.create(this.props.userChampionData)
+    obj[champion] = !this.props.userChampionData[champion]
+    this.props.setChampionData(obj)
   }
 
   render() {
-
     return (
       <div>
         <div className='ChampionPool'>
-          {this.makePoolIcons()}
+          {this.props.championData.ubrave.ids.map((id)=>{
+            return <ChampionIcon
+              key={id}
+              onClick={() => this.toggleChampion(id)}
+              have={this.props.userChampionData[id]}
+              image={this.props.championData.data[id].image}
+              dd={this.props.dd}
+            />
+          })}
           <div key="pusher" className='Pusher'></div>
         </div>
         <button key="enableAll" onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
