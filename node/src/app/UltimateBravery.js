@@ -1,10 +1,14 @@
 import $ from 'jquery';
 import React from 'react'
 import MainDisplay from 'app/MainDisplay/MainDisplay'
+import DebugItems from 'app/DebugItems'
 import ChampionPool from './ChampionPool'
 import DataDragon from './DataDragon'
+import PleaseWait from './PleaseWait'
 import StorageManager from 'common/StorageManager'
 import DropdownSelector from 'common/DropdownSelector'
+
+import './UltimateBravery.js.css'
 
 export default class UltimateBravery extends React.Component {
 
@@ -21,6 +25,9 @@ export default class UltimateBravery extends React.Component {
     this.modifyUser = this.modifyUser.bind(this)
     this.dataDragonUpdated = this.dataDragonUpdated.bind(this)
     this.init = this.init.bind(this)
+    this.state = {
+      display: 'PleaseWait'
+    }
   }
 
   componentDidMount() {
@@ -30,12 +37,12 @@ export default class UltimateBravery extends React.Component {
   init() {
     this.setState({
       user: this.loadUser(),
+      display: 'MainDisplay',
       champions: window.dat.champions,
       languages: window.dat.languages,
       items: window.dat.items,
       dd: window.dd
     })
-
   }
 
   saveUser() {
@@ -94,6 +101,7 @@ export default class UltimateBravery extends React.Component {
     console.log("DataDragon updated, refangling state")
     this.setState({
       items: window.dat.items,
+      display: 'MainDisplay',
       champions: window.dat.champions,
       languages: window.dat.languages,
       dd: window.dd
@@ -107,47 +115,77 @@ export default class UltimateBravery extends React.Component {
       justifyContent: 'center'
     }
 
-    if(!window.dat) {
-      return null
+    let defaultProps = {
+      user: this.state.user,
+      championData: this.state.champions,
+      itemData: this.state.items,
+      userData: this.state.user,
+      languageData: this.state.languages,
+      dd: this.state.dd
     }
 
-    return (
-      <div>
-        <DropdownSelector
-          items={this.state.items.ubrave.available_maps}
-          defaultValue={'11'}
-          languageData={this.state.languages.data}
-          transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
-          events={{
-            onChange: (event)=>this.setSelectedMap(event.target.value)
-          }}
-        />
-        <select
-          defaultValue={window.dd.language}
-          onChange={(event)=>DataDragon.update(null, event.target.value, this.dataDragonUpdated)}
-        >
-          {['en_US', 'ja_JP', 'es_MX'].map((langID)=>{
-            return <option value={langID} key={langID}>
-              {langID}
-            </option>
-          })}
-        </select>
-        <MainDisplay
-          user={this.state.user}
-          championData={this.state.champions}
-          itemData={this.state.items}
-          userData={this.state.user}
-          languageData={this.state.languages}
-          dd={this.state.dd}
-        />
-        <br/>
-        <ChampionPool
-          userChampionData={this.state.user.championData}
-          championData={this.state.champions}
-          setChampionData={this.setChampionData.bind(this)}
-          dd={this.state.dd}
-        />
-      </div>
-    )
+    let choices = {
+      MainDisplay: {
+        item: MainDisplay
+      },
+      DebugItems: {
+        item: DebugItems
+      },
+      PleaseWait: {
+        item: PleaseWait
+      },
+      ChampionPool: {
+        item: ChampionPool,
+        props: {
+          setChampionData: this.setChampionData.bind(this)
+        }
+      }
+    }
+    let choice = choices[this.state.display]
+    let DisplayedThing = choice.item
+    let combinedProps = Object.assign({}, defaultProps, choice.props)
+
+    switch(this.state.display){
+      case 'PleaseWait':
+        return(<DisplayedThing/>)
+        break;
+      default:
+        return(
+          <div className='UltimateBravery'>
+            <DropdownSelector
+              items={this.state.items.ubrave.available_maps}
+              defaultValue={'11'}
+              languageData={this.state.languages.data}
+              transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
+              events={{
+                onChange: (event)=>{
+                  console.log(event.target.value)
+                  this.setSelectedMap(event.target.value)
+                }
+              }}
+            />
+            <DropdownSelector
+              items={['en_US', 'ja_JP', 'es_MX']}
+              defaultValue={window.dd.language}
+              languageData={this.state.languages.data}
+              transformKey={(lang)=>`native_${lang.split('_')[0]}`}
+              events={{
+                onChange: (event)=>{
+                  DataDragon.update(null, event.target.value, this.dataDragonUpdated)
+                  this.setState({display:'PleaseWait'})
+                }
+              }}
+            />
+            <DropdownSelector
+              items={Object.keys(choices)}
+              events={{
+                onChange: (event)=>this.setState({display: event.target.value})
+              }}
+            />
+            <DisplayedThing {...combinedProps} />
+          </div>
+      )
+      break;
+    }
   }
 }
