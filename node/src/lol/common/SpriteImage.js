@@ -18,7 +18,7 @@ class SpriteImage extends React.Component {
       className={this.props.className}
       onClick={this.props.onClick}
       name={this.props.name}
-      style={style}
+      style={Object.assign({},style,this.props.style)}
     />;
   }
 }
