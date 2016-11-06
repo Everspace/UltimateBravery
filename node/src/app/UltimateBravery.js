@@ -4,6 +4,7 @@ import MainDisplay from 'app/MainDisplay/MainDisplay'
 import ChampionPool from './ChampionPool'
 import DataDragon from './DataDragon'
 import StorageManager from 'common/StorageManager'
+import DropdownSelector from 'common/DropdownSelector'
 
 export default class UltimateBravery extends React.Component {
 
@@ -100,17 +101,15 @@ export default class UltimateBravery extends React.Component {
 
     return (
       <div>
-        <select
+        <DropdownSelector
+          items={this.state.items.ubrave.available_maps}
           defaultValue={'11'}
-          onChange={(event)=>this.setSelectedMap(event.target.value)}
-        >
-          {window.dat.items.ubrave.available_maps.map((mapID)=>{
-            mapID = (mapID === '11') ? '1' : mapID
-            return <option value={mapID} key={`Map${mapID}`}>
-              {window.dat.languages.data[`Map${mapID}`]}
-            </option>
-          })}
-        </select>
+          languageData={this.state.languages.data}
+          transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
+          events={{
+            onChange: (event)=>this.setSelectedMap(event.target.value)
+          }}
+        />
         <select
           defaultValue={window.dd.language}
           onChange={(event)=>DataDragon.update(null, event.target.value, this.dataDragonUpdated)}
