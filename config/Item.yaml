@@ -52,9 +52,13 @@ Rejected Properties:
 
 #Quote Excluded IDs since they are strings in the json blob.
 Excluded IDs:
-
   #The Cull is a "DoransItems" without the tag
   - "1083" #Cull
+
+  #O-Extract is a consumable that is not a health potion or the like
+  #I don't exclude all consumables because it includes the Eyes
+  #Or flasks which I think are ok.
+  - "2047" #Oracle's Extract
 
   #Bogus enchantments
   #They just show up as shoes
@@ -62,3 +66,10 @@ Excluded IDs:
   - "3672"
   - "3673"
   - "3671"
+
+Remove from Map:
+  #Quick Charge is only for certain events in SR
+  "3007": #Archangel's Staff (Quick Charge)
+    - '11' #Summoner's Rift
+  "3008": #Manamune (Quick Charge)
+    - '11' #Summoner's Rift
