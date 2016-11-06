@@ -56,7 +56,8 @@ export default class UltimateBravery extends React.Component {
     let user = StorageManager.loadObject('user', defaultUser)
     console.log(user)
     user.championData = window.dat.champions.ubrave.ids.reduce((mem,id)=>{
-        mem[id] = (user.championData[id] === null || user.championData[id] === undefined)
+        let champStatus = user.championData[id]
+        mem[id] = champStatus || false
         return mem
       },{})
 
@@ -72,9 +73,20 @@ export default class UltimateBravery extends React.Component {
   }
 
   modifyUser(key, value) {
-    let tempState = this.state.user
-    tempState[key] = value
-    this.setState({user: tempState})
+    let newUserState = {}
+
+    if(value instanceof Object) {
+      //Merge the key target and the new values togethereerrrr
+      newUserState[key] = Object.assign({}, this.state.user[key], value)
+    } else {
+      newUserState[key] = value
+    }
+
+
+    //Glue new and old state together
+    this.setState({
+      user: Object.assign({}, this.state.user, newUserState)
+    })
     this.saveUser()
   }
 
