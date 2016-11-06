@@ -8,10 +8,10 @@ class DropdownSelector extends React.Component {
   }
 
   makeOption(id) {
-    let key = (this.props.transformKey) ? this.props.transformKey(id) : key
+    let key = (this.props.transformKey) ? this.props.transformKey(id) : id
     let text = (this.props.languageData) ? this.props.languageData[key] : key
     return (
-      <option value={id} key={key}>
+      <option value={id} key={id}>
         {text}
       </option>
     )

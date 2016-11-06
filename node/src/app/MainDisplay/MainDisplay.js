@@ -61,7 +61,7 @@ export default class MainDisplay extends React.Component {
           <div>
             <h3>{this.props.languageData.data.Details_}</h3>
             <div style={containerStyle}>
-              {this.state.brave.extraItems.map((id)=>{
+              {this.state.brave.extraItems.map((item)=>{
                 return <SpriteImage
                       name={item.name}
                       key={item.key}

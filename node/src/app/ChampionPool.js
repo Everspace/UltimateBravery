@@ -14,8 +14,8 @@ export default class ChampionPool extends React.Component {
   }
 
   toggleChampion(champion) {
-    let obj = Object.create(this.props.userChampionData)
-    obj[champion] = !this.props.userChampionData[champion]
+    let obj = Object.create(this.props.user.championData)
+    obj[champion] = !this.props.user.championData[champion]
     this.props.setChampionData(obj)
   }
 
@@ -27,7 +27,7 @@ export default class ChampionPool extends React.Component {
             return <ChampionIcon
               key={id}
               onClick={() => this.toggleChampion(id)}
-              have={this.props.userChampionData[id]}
+              have={this.props.user.championData[id]}
               image={this.props.championData.data[id].image}
               dd={this.props.dd}
             />
