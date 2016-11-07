@@ -1,0 +1,65 @@
+native:
+  #Language names for other languages
+  #Corrisponds to Groomer:language:native_.* keys
+  cs: cs_CZ
+  de: de_DE
+  el: el_GR
+  en: en_US
+  #Mexico spanish rather than Spain spanish
+  #/shrug
+  es: es_MX
+  fr: fr_FR
+  hu: hu_HU
+  id: id_ID
+  it: it_IT
+  ja: ja_JP
+  ko: ko_KR
+  pl: en_PL
+  pt: pt_BR
+  ro: ro_RO
+  ru: ru_RU
+  th: th_TH
+  tr: tr_TR
+  vn: vn_VN
+  zh: zh_CN
+  zh_CN: zh_CN
+  zh_MY: zh_MY
+  zh_TW: zh_TW
+  ﻿ar: es_AR
+
+  #Doesn't have an explicit language yet...
+  bg: ro_RO #Bulgaria
+  nl: en_US #Netherlands
+
+
+#Unused for now, this is a nice reference however
+All Languages:
+- cs_CZ #Czech (Czech Republic)
+- de_DE #German (Germany)
+- el_GR #Greek (Greece)
+- en_AU #English (Australia)
+- en_GB #English (United Kingdom)
+- en_PH #English (Republic of the Philippines)
+- en_PL #English (Poland)
+- en_SG #English (Singapore)
+- en_US #English (United States)
+- es_AR #Spanish (Argentina)
+- es_ES #Spanish (Spain)
+- es_MX #Spanish (Mexico)
+- fr_FR #French (France)
+- hu_HU #Hungarian (Hungary)
+- id_ID #Indonesian (Indonesia)
+- it_IT #Italian (Italy)
+- ja_JP #Japanese (Japan)
+- ko_KR #Korean (Korea)
+- ms_MY #Malay (Malaysia)
+- pl_PL #Polish (Poland)
+- pt_BR #Portuguese (Brazil)
+- ro_RO #Romanian (Romania)
+- ru_RU #Russian (Russia)
+- th_TH #Thai (Thailand)
+- tr_TR #Turkish (Turkey)
+- vn_VN #Vietnamese (Viet Nam)
+- zh_CN #Chinese (China)
+- zh_MY #Chinese (Malaysia)
+- zh_TW #Chinese (Taiwan)

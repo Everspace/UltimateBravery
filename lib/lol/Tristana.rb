@@ -110,6 +110,13 @@ class Tristana
       info['into'].keep_if {|id| idata.has_key? id}
     end
 
+    #remove items from certain maps
+    item_info_dict['Remove from Map'].each do |itemID, maps|
+      maps.each do |mapID|
+        idata[itemID]['maps'][mapID] = false
+      end
+    end
+
     ids = idata.keys.dup
 
     #handle things that build into themselves?

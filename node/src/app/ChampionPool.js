@@ -4,60 +4,109 @@ import './ChampionPool.js.css'
 
 export default class ChampionPool extends React.Component {
 
-  setAllChampions(status) {
-    let championData = this.props.userChampionData
-    let champions = this.props.championData.data
-
-    for(let champ in champions) {
-      championData[champ] = status
+  constructor() {
+    super()
+    this.textUpdate = this.textUpdate.bind(this);
+    this.state = {
+      filter: ""
     }
+  }
 
-    this.props.setChampionData(championData)
+  setAllChampions(status) {
+    this.props.setChampionData(
+      this.props.championData.ubrave.ids.reduce((obj, id)=>{
+        obj[id] = status
+        return obj
+      }, {})
+    )
+  }
+
+  setManyChampions(champions, state) {
+    this.props.setChampionData(
+      this.props.championData.ubrave.ids.reduce((obj, id)=>{
+        if(champions.indexOf(id) > -1) {
+          obj[id] = state
+        }
+        return obj
+      }, {})
+    )
+  }
+
+  setChampion(champion, state) {
+    console.log(`Setting ${champion} to ${state}`)
+    let obj = Object.create(this.props.user.championData)
+    obj[champion] = state
+    this.props.setChampionData(obj)
   }
 
   toggleChampion(champion) {
-    let championData = this.props.userChampionData
-    if(championData[champion]) {
-      championData[champion] = false
-    } else {
-      championData[champion] = true
-    }
-
-    this.props.setChampionData(championData)
+    this.setChampion(champion, !this.props.user.championData[champion])
   }
 
-  makePoolIcons() {
-    let champions = Object.keys(this.props.championData.data)
-      .map(key => this.props.championData.data[key])
-      .sort((a, b) => a.name.localeCompare(b.name))
+  activateOnlyRole(role) {
+    this.setManyChampions(
+      this.props.championData.ubrave.ids.filter((id)=>{
+        return this.props.championData.data[id].tags.indexOf(role) > -1
+      }),
+      true
+    )
+  }
 
-    let icons = new Array()
-    for(let index in champions) {
-      let id = champions[index].id
-      icons.push(
-        <ChampionIcon
-          onClick={() => this.toggleChampion(id)}
-          have={this.props.userChampionData[id]}
-          image={champions[index].image}
-          key={id}
-          dd={this.props.dd}
-        />
-      )
-    }
-
-    return icons
+  textUpdate(event) {
+    this.setState({filter: event.target.value})
   }
 
   render() {
+    let roles = [
+      "Assassin",
+      "Fighter",
+      "Marksman",
+      "Mage",
+      "Support",
+      "Tank"
+    ]
 
     return (
       <div>
+        <div>
+          <input
+            //inputmode={(this.props.languageData.language === 'ja_JP')?kana:latin}
+            placeholder='🔎'
+            type='text'
+            autoCorrect='off'
+            spellCheck={false}
+            onChange={this.textUpdate}
+            onKeyUp={this.textUpdate}
+            ref="Search"
+          />
+          <button onClick={()=>{this.textUpdate({target:{value: ''}}); this.refs.Search.value = ''}}>X</button>
+        </div>
+        <div>
+          {roles.map((type)=>{
+            return <button
+              key={type}
+              value={type}
+              onClick={()=>this.activateOnlyRole(type)}
+              >{this.props.languageData.data[type]}</button>
+          })}
+          <button key="enableAll" onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
+          <button key="disableAll" onClick={() => this.setAllChampions(false)} >DISABLE ALL</button>
+        </div>
         <div className='ChampionPool'>
-          {this.makePoolIcons()}
+          {this.props.championData.ubrave.ids.filter((id)=>{
+            let champName = this.props.championData.ubrave.convert.id[id]
+            return champName.search(this.state.filter) > -1
+          }).map((id)=>{
+            return <ChampionIcon
+              key={id}
+              onClick={() => this.toggleChampion(id)}
+              have={this.props.user.championData[id]}
+              image={this.props.championData.data[id].image}
+              dd={this.props.dd}
+            />
+          })}
           <div key="pusher" className='Pusher'></div>
         </div>
-        <button key="enableAll" onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
-        <button key="disableAll" onClick={() => this.setAllChampions(false)} >DISABLE ALL</button>
       </div>
     );
   }

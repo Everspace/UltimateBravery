@@ -1,22 +1,48 @@
 import $ from 'jquery';
 import React from 'react'
 import MainDisplay from 'app/MainDisplay/MainDisplay'
+import DebugItems from 'app/DebugItems'
 import ChampionPool from './ChampionPool'
+import DataDragon from './DataDragon'
+import PleaseWait from './PleaseWait'
 import StorageManager from 'common/StorageManager'
-import ItemIcon from 'lol/item/ItemIcon'
+import DropdownSelector from 'common/DropdownSelector'
+
+import './UltimateBravery.js.css'
 
 export default class UltimateBravery extends React.Component {
+
+  // changeLanguage(newLanguage)
+  //    this.changeState({window: <PlzWait />}
+  //    DataDragon.new(this.realm, newLanguage, this.onLanguageUpdate)
+  // onLanguageUpdate(ddrag)
+  //    this.changeState({window: <BraveryWindow />})
 
   constructor() {
     super()
     this.loadUser = this.loadUser.bind(this)
     this.saveUser = this.saveUser.bind(this)
-    this.updateDataDragon = this.updateDataDragon.bind(this)
     this.modifyUser = this.modifyUser.bind(this)
+    this.dataDragonUpdated = this.dataDragonUpdated.bind(this)
+    this.init = this.init.bind(this)
+    this.state = {
+      display: 'PleaseWait'
+    }
   }
 
-  componentWillMount(){
-    this.updateDataDragon();
+  componentDidMount() {
+    DataDragon.update(null, null, this.init)
+  }
+
+  init() {
+    this.setState({
+      user: this.loadUser(),
+      display: 'MainDisplay',
+      champions: window.dat.champions,
+      languages: window.dat.languages,
+      items: window.dat.items,
+      dd: window.dd
+    })
   }
 
   saveUser() {
@@ -26,6 +52,7 @@ export default class UltimateBravery extends React.Component {
   }
 
   loadUser() {
+    console.log("loading user")
     let defaultUser = {
       championData: {},   //YOU HAVE NOTHING
       itemData: {},
@@ -34,16 +61,14 @@ export default class UltimateBravery extends React.Component {
     }
 
     let user = StorageManager.loadObject('user', defaultUser)
+    console.log(user)
+    user.championData = window.dat.champions.ubrave.ids.reduce((mem,id)=>{
+        let champStatus = user.championData[id]
+        mem[id] = champStatus || false
+        return mem
+      },{})
 
-    for(let key in this.state.championData.data) {
-      let hasChampion = user.championData[key]
-      //If it's not there, let's say it is there.
-      if(hasChampion === null || hasChampion === undefined) {
-        user.championData[key] = true
-      }
-    }
-
-    this.setState({user: user})
+    return user
   }
 
   setChampionData(state) {
@@ -51,15 +76,36 @@ export default class UltimateBravery extends React.Component {
   }
 
   setSelectedMap(state) {
-
     this.modifyUser('lolMap', state)
   }
 
   modifyUser(key, value) {
-    let tempState = this.state.user
-    tempState[key] = value
-    this.setState({user: tempState})
+    let newUserState = {}
+
+    if(value instanceof Object) {
+      //Merge the key target and the new values togethereerrrr
+      newUserState[key] = Object.assign({}, this.state.user[key], value)
+    } else {
+      newUserState[key] = value
+    }
+
+
+    //Glue new and old state together
+    this.setState({
+      user: Object.assign({}, this.state.user, newUserState)
+    })
     this.saveUser()
+  }
+
+  dataDragonUpdated() {
+    console.log("DataDragon updated, refangling state")
+    this.setState({
+      items: window.dat.items,
+      display: 'MainDisplay',
+      champions: window.dat.champions,
+      languages: window.dat.languages,
+      dd: window.dd
+    });
   }
 
   render() {
@@ -69,114 +115,77 @@ export default class UltimateBravery extends React.Component {
       justifyContent: 'center'
     }
 
-    if(!this.state) {
-      return null
+    let defaultProps = {
+      user: this.state.user,
+      championData: this.state.champions,
+      itemData: this.state.items,
+      userData: this.state.user,
+      languageData: this.state.languages,
+      dd: this.state.dd
     }
 
-    let availableMaps = []
-    for(let index in this.state.maps) {
-      let key = 'Map' + this.state.maps[index]
-      let id = this.state.maps[index]
-      availableMaps.push(
-        <option value={id} key={key}>
-          {this.state.languageData.data[key]}
-        </option>
-      )
-
-    }
-
-    return (
-      <div>
-        <select defaultValue={this.state.user.lolMap}
-          onChange={(event)=>this.setSelectedMap(event.target.value)}
-        >{availableMaps}</select>
-
-        <MainDisplay
-          user={this.state.user}
-          championData={this.state.championData}
-          itemData={this.state.itemData}
-          userData={this.state.userData}
-          languageData={this.state.languageData}
-          dd={this.state.dd}
-        />
-        <br/>
-        <ChampionPool
-          userChampionData={this.state.user.championData}
-          championData={this.state.championData}
-          setChampionData={this.setChampionData.bind(this)}
-          dd={this.state.dd}
-        />
-      </div>
-    )
-  }
-
-  //Resets the object's state by default if not provided a callback
-  updateDataDragon(realm=null, language=null, requestedCallback=null) {
-    let selectedRealm = realm || localStorage.getItem('dd_realm') || 'na';
-    localStorage.setItem('dd_realm', selectedRealm);
-    let realmData = null;
-
-    var callback
-    //Default response is to load the user's info
-    if(requestedCallback) {
-      callback = requestedCallback
-    } else {
-      //Rest the state, and fire-up the user
-      callback = (payload) => {
-        this.state = payload;
-
-        //Setup available maps
-        let maps = Object.keys(this.state.languageData.data)
-          .filter((key)=>key.startsWith('Map'))
-          .map((key)=>key.replace('Map',''))
-
-
-        this.state.maps = maps
-
-        this.loadUser()
+    let choices = {
+      MainDisplay: {
+        item: MainDisplay
+      },
+      DebugItems: {
+        item: DebugItems
+      },
+      PleaseWait: {
+        item: PleaseWait
+      },
+      ChampionPool: {
+        item: ChampionPool,
+        props: {
+          setChampionData: this.setChampionData.bind(this)
+        }
       }
     }
+    let choice = choices[this.state.display]
+    let DisplayedThing = choice.item
+    let combinedProps = Object.assign({}, defaultProps, choice.props)
 
-    //Will set state at the end
-    let dataHolder = {}
-
-    //Save the user's info before we go and diddle with it.
-    this.saveUser();
-
-    $.getJSON(`json/realm_${selectedRealm}.json`, (data => realmData = data))
-     .then(()=> {
-        let selectedLanguage = language || localStorage.getItem('dd_language') || realmData.l ||  'en_US'
-        localStorage.setItem('dd_language', selectedLanguage)
-
-        let dd = {
-          available_realms: ['br', 'eune', 'euw', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'jp'],
-          cdn: realmData.cdn,
-          version: realmData.dd,
-          language: selectedLanguage,
-          version: realmData.v
-        }
-
-        dataHolder.dd = dd
-      })
-     .then(()=> {
-        //List all the jsons we're going to get
-        let dataPoints = ['item', 'champion', 'language']
-        //Set up a list of the requests.
-        let differedItems = []
-        //And have them stick their juices here
-        //in the format {${datum}Data: jsonHarvest}
-
-        for (let index in dataPoints) {
-          let differ = $.getJSON(
-            `json/${dataHolder.dd.language}/${dataPoints[index]}.json`,
-            (data=> dataHolder[`${dataPoints[index]}Data`] = data)
-          )
-
-          differedItems.push(differ)
-        }
-
-        //Then wait for all the stuff we'll gather then execute the callback
-        $.when.apply($, differedItems).then(()=> callback(dataHolder))
-      });
+    switch(this.state.display){
+      case 'PleaseWait':
+        return(<DisplayedThing/>)
+        break;
+      default:
+        return(
+          <div className='UltimateBravery'>
+            <DropdownSelector
+              items={this.state.items.ubrave.available_maps}
+              defaultValue={'11'}
+              languageData={this.state.languages.data}
+              transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
+              events={{
+                onChange: (event)=>{
+                  console.log(event.target.value)
+                  this.setSelectedMap(event.target.value)
+                }
+              }}
+            />
+            <DropdownSelector
+              items={['en_US', 'ja_JP', 'es_MX']}
+              defaultValue={window.dd.language}
+              languageData={this.state.languages.data}
+              transformKey={(lang)=>`native_${lang.split('_')[0]}`}
+              events={{
+                onChange: (event)=>{
+                  DataDragon.update(null, event.target.value, this.dataDragonUpdated)
+                  this.setState({display:'PleaseWait'})
+                }
+              }}
+            />
+            <DropdownSelector
+              items={Object.keys(choices)}
+              events={{
+                onChange: (event)=>this.setState({display: event.target.value})
+              }}
+            />
+            <DisplayedThing {...combinedProps} />
+          </div>
+      )
+      break;
+    }
   }
 }

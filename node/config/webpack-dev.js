@@ -35,7 +35,8 @@ module.exports = {
       include: sourceDirectory
     },{
       test: /\.css$/,
-      loader: 'style-loader!css-loader',
+      loaders: ['style', 'css?sourceMap'],
+      include: sourceDirectory
       //include: path.resolve(__dirname, '..', 'src')
     }]
   }

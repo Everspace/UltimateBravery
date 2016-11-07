@@ -19,9 +19,11 @@ dev_url = "http://localhost:9001/static/index.html"
 all_languages = DataDragon.get_generic "cdn/languages.json"
 all_realms = YAML::load_file("#{config_directory}/Realms.yaml")
 
-is_pretty = if ENV['pretty'] then true else false end
-
-multitask :package => ['dd:download:all', 'node:package'] do
+task :uglify_data do
+  ENV['pretty'] = nil
+  Rake::Task['dd:download:all'].invoke()
+end
+multitask :package => [:uglify_data, 'node:package'] do
   puts 'Copying artifacts around'
 end
 
@@ -84,7 +86,7 @@ namespace :dd do
       Utils.write(
         DataDragon.get_generic("api/versions.json"),
         "#{output_directory}/json/versions.json",
-        is_pretty
+        if ENV['pretty'] then true else false end
       )
       puts "Finished downloading versions.json"
     end
@@ -105,7 +107,7 @@ namespace :dd do
           Utils.write(
             blob,
             "#{output_directory}/json/#{lang}/#{thing}.json",
-            is_pretty
+            if ENV['pretty'] then true else false end
           )
           puts "Finished updating #{lang}:#{thing}"
         end
@@ -127,7 +129,7 @@ namespace :dd do
         Utils.write(
           DataDragon.cache_realm_info(realm),
           "#{output_directory}/json/realm_#{realm.downcase}.json",
-          is_pretty
+          if ENV['pretty'] then true else false end
         )
         puts "Finished downloading realm #{realm}"
       end
@@ -159,11 +161,16 @@ namespace :dev do
       cp_r "#{output_directory}/json", File.dirname(dev_json_dir)
     end
 
-    task :language, [:language] do |t, args|
+    all_languages.collect do |lang|
+      task lang do
+        Rake::Task["dev:update:languages"].invoke(lang)
+      end
+    end
+
+    task :languages, [:language] do |t, args|
       args.with_defaults({language: 'en_US'})
-
+      ENV['pretty'] = 'true'
       puts "Updating local server's '#{args[:language]}' data"
-
       case args[:language]
       when 'all'
         Rake::Task["dd:download:#{args[:language]}"].invoke()
