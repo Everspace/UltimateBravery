@@ -1,12 +1,4 @@
 export default class StorageManager {
-  load(location) {
-
-  }
-
-  load(location, defaultValue) {
-
-  }
-
   static loadObject(location) {
     var object = {}
     let data = localStorage.getItem(`UltimateBravery_${location}`)
