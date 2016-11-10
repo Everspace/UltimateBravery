@@ -1,6 +1,6 @@
 import React from 'react'
 import SpriteImage from 'lol/common/SpriteImage';
-import './ChampionIcon.css'
+import './ChampionIcon.less'
 
 export default class ChampionIcon extends React.Component  {
   render() {

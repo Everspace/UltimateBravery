@@ -8,7 +8,7 @@ import PleaseWait from './PleaseWait'
 import StorageManager from 'common/StorageManager'
 import DropdownSelector from 'common/DropdownSelector'
 
-import './UltimateBravery.js.css'
+import './UltimateBravery.less'
 
 export default class UltimateBravery extends React.Component {
 

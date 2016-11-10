@@ -14,7 +14,7 @@ module.exports = {
 
   resolve: {
     root: sourceDirectory,
-    extensions: ['', '.js', '.css']
+    extensions: ['', '.js', '.less']
   },
 
   output: {
@@ -33,11 +33,10 @@ module.exports = {
       test: /\.js$/,
       loaders: ['react-hot', 'babel'],
       include: sourceDirectory
-    },{
-      test: /\.css$/,
-      loaders: ['style', 'css?sourceMap'],
-      include: sourceDirectory
-      //include: path.resolve(__dirname, '..', 'src')
+    },
+    {
+      test: /\.less$/,
+      loaders: ['style', 'css', 'less']
     }]
   }
 };

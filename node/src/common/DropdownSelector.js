@@ -1,4 +1,5 @@
 import React from 'react'
+import './DropdownSelector.less'
 
 class DropdownSelector extends React.Component {
 
@@ -19,7 +20,7 @@ class DropdownSelector extends React.Component {
 
   render() {
     return (
-      <select
+      <select className="DropdownSelector"
         defaultValue={(this.props.defaultValue) ? this.props.defaultValue : this.props.items[0]}
         {...this.props.events}
       >

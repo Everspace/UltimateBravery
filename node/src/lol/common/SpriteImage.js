@@ -7,7 +7,9 @@ class SpriteImage extends React.Component {
 
     let style = {
       width: this.props.image.w,
+      minWidth: this.props.image.w,
       height: this.props.image.h,
+      minHeight: this.props.image.h,
       //Currently not using backgroundPositionX or Y because it sometimes
       //doesn't set the style attribute on the div correctly
       background: `${url} ${-this.props.image.x}px ${-this.props.image.y}px`,
@@ -24,7 +26,7 @@ class SpriteImage extends React.Component {
 }
 
 SpriteImage.propTypes = {
-    image: PropTypes.object.isRequired
+  image: PropTypes.object.isRequired
 }
 
 export default SpriteImage;
