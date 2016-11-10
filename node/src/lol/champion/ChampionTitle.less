@@ -1,0 +1,35 @@
+@import '~main.less';
+@import '~pallet.less';
+
+.ChampionTitle {
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	margin-top: 1em;
+	margin-bottom:  1em;
+
+	.Text {
+		.header;
+
+		margin-left: 1em;
+
+		h1 {
+			color: @color-text-active;
+		}
+
+		h3 {
+			color: @color-text-active - #555;
+		}
+
+		h1, h3 {
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+
+	.ChampionIcon {
+		zoom: 145%;
+	}
+}

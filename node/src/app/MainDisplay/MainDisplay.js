@@ -3,6 +3,7 @@ import Random from 'common/Random'
 
 import BraveFactory from 'app/MainDisplay/BraveFactory'
 
+import ChampionTitle from 'lol/champion/ChampionTitle'
 import ChampionIcon from 'lol/champion/ChampionIcon'
 import SpriteImage from 'lol/common/SpriteImage'
 
@@ -36,12 +37,9 @@ export default class MainDisplay extends React.Component {
 
     return (
       <div className="MainDisplay">
-        <h3>{this.state.brave.champion.name}</h3>
-        <ChampionIcon
-          key={this.state.brave.champion.key}
-          image={this.state.brave.champion.image}
+        <ChampionTitle
+          champion={this.state.brave.champion}
           dd={this.props.dd}
-          have={true}
         />
         <button
           onClick={()=>this.setState({brave: this.braveFactory.makeBrave()})}
