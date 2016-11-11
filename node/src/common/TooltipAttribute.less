@@ -1,0 +1,94 @@
+/**
+* Makes a tooltip from the data in an attribute, and shows it on hover
+* A refined LESS version of the following fiddle: http://codepen.io/team/css-tricks/pen/RPmpYa
+*
+* @attribute-name
+*    the attribute to be rendered in the tooltip, add it in the HTML
+* @fly-in-height
+*    how far away it starts from it's resting place
+* @resting-height
+*    how far above the doodad does it sit
+* @main-body-style { }
+*    style to apply to the main body
+* @main-body-slide
+*    shift the body left or right
+* @pointer-size
+*    how girthy is the pointer
+* @pointer-slide
+*    shift what it's pointing at
+* @pointer-peek
+*    how far out of the bubble does come. Note that this makes it look very big very fast.
+*/
+.tooltip-attribute(
+  @attribute-name: tooltip-data,
+  @fly-in-height: 40%,
+  @resting-height: -5%,
+  @main-body-style: {},
+  @main-body-slide: 5%,
+  @pointer-color: white,
+  @pointer-size: 0.5em,
+  @pointer-slide: 10%,
+  @pointer-peek: 15%
+) {
+  &[@{attribute-name}] {
+    //RIGHT ON TOP OF THING I'M POINTING TO IS 100%
+    @main-body-ending-height: 100% + @resting-height;
+    //And how high I start the party at above that in order to fall
+    @main-body-starting-height: @main-body-ending-height + @fly-in-height;
+
+    //100% is just touching the top of the pointed thing
+    @pointer-ending-height: 100% + @resting-height - @pointer-peek;
+    @pointer-starting-height: @pointer-ending-height + @fly-in-height;
+
+    //[Attributed] style
+      position: relative;
+        //Other stuff from fiddle that I'm not sure what do:
+        //  display: inline-block;/*bug fix*/
+        //  text-decoration: none;
+
+    //from states
+    &:after, &:before {
+      z-index: 1;
+      position: absolute;
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+
+    //Main body
+    &:after {
+      content: attr(@attribute-name);
+      white-space: nowrap;
+
+      bottom: @main-body-starting-height;
+      left: @main-body-slide;
+
+      //z-index: 1;
+
+      @main-body-style();
+    }
+
+    //pointer
+    &:before {
+      content: "";
+      //Abuse of borders to draw a filled v
+      border-top: @pointer-size solid @pointer-color;
+      border-left: @pointer-size solid transparent;
+      border-right: @pointer-size solid transparent;
+      left: @pointer-slide;
+      bottom: @pointer-starting-height;
+    }
+
+    //To states
+    &:hover{
+      &:before, &:after {
+        opacity: 1;
+      }
+      &:before {
+        bottom: @pointer-ending-height;
+      }
+      &:after {
+        bottom: @main-body-ending-height;
+      }
+    }
+  }
+}

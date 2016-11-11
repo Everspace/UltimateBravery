@@ -1,0 +1,34 @@
+//Contains mediaquery wrappers that allow me to go
+//if/else roughly
+
+//Swap between two simple styles depending on what's going on for the device in question
+.mobile_switch(@on_mobile) {
+	/*Hopefully -webkit-min-device-pixel-ratio is just all the
+		mobile things */
+	@media screen and (-webkit-min-device-pixel-ratio: 1.3) {@on_mobile();}
+}
+
+.mobile_switch(@on_mobile, @else) {
+	.mobile_switch(@on_mobile);
+	@media screen and (-webkit-min-device-pixel-ratio: 1.0) {@else();}
+}
+
+//Apply the following style only if
+//the device is capable of it;
+//Thanks http://www.javascriptkit.com/dhtmltutors/sticky-hover-issue-solutions.shtml
+.if_hoverable(@DO_THE_THINGS) {
+	@media (hover:hover) {
+		&:hover {
+			@DO_THE_THINGS();
+		}
+	}
+}
+
+.if_hoverable(@DO_THE_THINGS, @else) {
+	.if_hoverable(@DO_THE_THINGS);
+	@media not (hover:hover) {
+		&:hover {
+			@else();
+		}
+	}
+}
