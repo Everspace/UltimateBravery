@@ -1,27 +1,6 @@
 @import '~pallet.less';
 .ChampionIcon
 {
-	@hover-opacity: 0.8;
-	@disable-opacity: 0.4;
-
-  	transition: all 0.2s ease 0s;
 	border: 1px solid;
 	border-color: @color-border-intrest-base;
-	opacity: 1;
-
-	&:active {
-		border-color: @color-border-intrest-high;
-	}
-
-	&:hover {
-	 	opacity: @hover-opacity;
-	}
-
-	&.Disabled {
-		opacity: 0.4;
-
-		&:hover {
-	 		opacity: @hover-opacity;
-		}
-	}
 }
