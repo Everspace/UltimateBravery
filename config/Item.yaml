@@ -1,64 +1,26 @@
 Rejected Properties:
-  group:
-    #I won't make you pick your relic
-    - RelicBase
+  tags:
+    # Tronket upgrades
+    - Trinket
 
-    #Intro items that are no fun
-    - DoransItems
-    - GuardianItems
+    #Includes
+    # - Flask items (Corrupting Potion)
+    # - Doran's Items
+    # - Guardian (ARAM Doran)
+    # - Cull
+    - Lane
 
-    #Get out of here kalista with your spear
-    - TheBlackSpear
-
-    #Neither are pots and such
-    - HealthPotion
-    - ManaPotion
-    - PinkWards
-    - GreenWards
-    - PoroSnax
-
-    #Bilgewater plz
-    - BWMerc11
-    - BWMerc12
-    - BWMerc13
-    - BWMerc14
-    - BWMercDefense1
-    - BWMercDefense2
-    - BWMercDefense3
-    - BWMercOffense1
-    - BWMercOffense2
-    - BWMercOffense3
-    - BWMercUpgrade1
-    - BWMercUpgrade2
-    - BWMercUpgrade3
-
-    #Siege mode is the new bilgewater
-    - SiegeTimefieldGroup
-    - SiegeFlashZoneGroup
-    - SiegeTeleportPadGroup
-    - SiegeShieldGeneratorGroup
-    - SiegeSniperCannonGroup
-    - SiegeRefundGroup
-    - SiegeLaserAffixGroup
-    - SiegeEmergencyShieldGroup
-    - SiegePortableBarracksGroup
-    - SiegeMissileBarrageGroup
-
-    #what
-    - _ItemGroupDefaults.txt
-    - AllLegendaries #I think this is just how many slots you have
-    - Impact
-    - Flasks #not to be confused with "FlaskGroup" which is different
+    #Includes
+    # - Oracles Extract
+    # - Elixirs
+    # - Cookies
+    # - Wards
+    - Consumable
 
 #Quote Excluded IDs since they are strings in the json blob.
 Excluded IDs:
   #The Cull is a "DoransItems" without the tag
   - "1083" #Cull
-
-  #O-Extract is a consumable that is not a health potion or the like
-  #I don't exclude all consumables because it includes the Eyes
-  #Or flasks which I think are ok.
-  - "2047" #Oracle's Extract
 
   #Bogus enchantments
   #They just show up as shoes
@@ -67,9 +29,30 @@ Excluded IDs:
   - "3673"
   - "3671"
 
+  #Kalista plz
+  - "3599" #The Black Spear
+
+  #Poacher's Dirk you're silly
+  #You turn into things that turn into other things
+  - "3252"
+
+  #Seige mode plz
+  - "3631" #Siege Ballista
+  - "3634" #Tower: Beam of Ruination
+  - "3635" #Port Pad
+  - "3636" #Tower: Storm Bulwark
+  - "3640" #Flash Zone
+  - "3641" #Vanguard Banner
+  - "3642" #Siege Refund
+  - "3643" #Entropy Field
+  - "3647" #Shield Totem
+
+
 Remove from Map:
   #Quick Charge is only for certain events in SR
-  "3007": #Archangel's Staff (Quick Charge)
-    - '11' #Summoner's Rift
-  "3008": #Manamune (Quick Charge)
-    - '11' #Summoner's Rift
+  "3007":  #Archangel's Staff (Quick Charge)
+    - '11' # - Summoner's Rift
+  "3008":  #Manamune (Quick Charge)
+    - '11' # - Summoner's Rift
+  "3029":  #Rod of Ages (Quick Charge)
+    - '11' # - Summoner's Rift

@@ -70,9 +70,6 @@ class Tristana
 
     remove_inapproprate_items_from items
 
-    #While we're here, lets axe groups where we've removed items from
-    items['groups'].reject! { |blob| item_info_dict['Rejected Properties']['group'].include? blob['id'] }
-
     items
   end
 
@@ -115,7 +112,7 @@ class Tristana
       maps.each do |mapID|
         idata[itemID]['maps'][mapID] = false
       end
-    end
+    end if item_info_dict['Remove from Map']
 
     ids = idata.keys.dup
 
