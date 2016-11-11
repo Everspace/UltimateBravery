@@ -53,7 +53,9 @@ export default class ChampionPool extends React.Component {
   }
 
   textUpdate(event) {
-    this.setState({filter: event.target.value})
+
+    this.setState({
+      filter: new RegExp(`\\b${event.target.value}`, "i")})
   }
 
   render() {
@@ -94,7 +96,7 @@ export default class ChampionPool extends React.Component {
         </div>
         <div className='ChampionPool'>
           {this.props.championData.ubrave.ids.filter((id)=>{
-            let champName = this.props.championData.ubrave.convert.id[id]
+            let champName = this.props.championData.ubrave.convert.id[id].toLowerCase()
             return champName.search(this.state.filter) > -1
           }).map((id)=>{
             return <ChampionIcon
