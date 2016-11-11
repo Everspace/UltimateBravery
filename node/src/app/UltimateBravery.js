@@ -152,36 +152,38 @@ export default class UltimateBravery extends React.Component {
       default:
         return(
           <div className='UltimateBravery'>
-            <DropdownSelector
-              items={this.state.items.ubrave.available_maps}
-              defaultValue={'11'}
-              languageData={this.state.languages.data}
-              transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
-              events={{
-                onChange: (event)=>{
-                  console.log(event.target.value)
-                  this.setSelectedMap(event.target.value)
-                }
-              }}
-            />
-            <DropdownSelector
-              items={['en_US', 'ja_JP', 'es_MX']}
-              defaultValue={window.dd.language}
-              languageData={this.state.languages.data}
-              transformKey={(lang)=>`native_${lang.split('_')[0]}`}
-              events={{
-                onChange: (event)=>{
-                  DataDragon.update(null, event.target.value, this.dataDragonUpdated)
-                  this.setState({display:'PleaseWait'})
-                }
-              }}
-            />
-            <DropdownSelector
-              items={Object.keys(choices)}
-              events={{
-                onChange: (event)=>this.setState({display: event.target.value})
-              }}
-            />
+            <div className='Menu'>
+              <DropdownSelector
+                items={this.state.items.ubrave.available_maps}
+                defaultValue={'11'}
+                languageData={this.state.languages.data}
+                transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
+                events={{
+                  onChange: (event)=>{
+                    console.log(event.target.value)
+                    this.setSelectedMap(event.target.value)
+                  }
+                }}
+              />
+              <DropdownSelector
+                items={['en_US', 'ja_JP', 'es_MX']}
+                defaultValue={window.dd.language}
+                languageData={this.state.languages.data}
+                transformKey={(lang)=>`native_${lang.split('_')[0]}`}
+                events={{
+                  onChange: (event)=>{
+                    DataDragon.update(null, event.target.value, this.dataDragonUpdated)
+                    this.setState({display:'PleaseWait'})
+                  }
+                }}
+              />
+              <DropdownSelector
+                items={Object.keys(choices)}
+                events={{
+                  onChange: (event)=>this.setState({display: event.target.value})
+                }}
+              />
+            </div>
             <DisplayedThing {...combinedProps} />
           </div>
       )
