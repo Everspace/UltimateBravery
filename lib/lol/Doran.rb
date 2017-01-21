@@ -76,6 +76,9 @@ class Doran
     items.delete "basic"
     items.delete "tree"
 
+    items_remove_via_config items
+    item_remove_inapproprate_items_from items
+
     item_create_maps_structure items
     item_sanitize_groups items
     item_create_champion_unique_structure items
@@ -90,6 +93,134 @@ class Doran
       a << id if info['tags'].include? 'Boots'
       a
     end
+  end
+
+  def self.items_remove_via_config(items, config='./config/Item.yaml')
+    item_info_dict = YAML::load_file "#{config_directory}/Item.yaml"
+
+    items_remove_explicitly_removed items, item_info_dict
+    item_remove_with_rejected_properties items, item_info_dict
+  end
+
+  def self.items_remove_explicitly_removed(items, item_info_dict)
+    #Remove things we said are not ok
+    item_info_dict['Excluded IDs'].each{|id| items['data'].delete id}
+  end
+
+  def self.item_remove_unpurchasables(items)
+    items['data'].reject!{|id, info| not info.dig('gold', 'purchasable') }
+  end
+
+  def self.item_remove_with_rejected_properties(items, item_info_dict)
+    #take snapshot of keys to iterate while we muck with the poor thing.
+    ids = items['data'].keys.dup
+
+    #Drop items that have groups or tags I think are stupid.
+    ids.each do |id|
+      item_info_dict['Rejected Properties'].each do |rejected_property, rejected_info|
+        item_property = items['data'].dig(id, rejected_property)
+        case item_property
+        when Array
+          items['data'].delete id unless (item_property & rejected_info).empty?
+        when nil
+          #pass
+        else
+          items['data'].delete id if rejected_info.include? item_property
+        end
+      end
+    end
+  end
+
+  #Remove items from certain maps using the config file
+  #Used for Quickcharge versions of Rod of Ages and such when
+  # Summoner's Rift (slow) gets a mode like Seige (fast).
+  def self.item_remove_items_from_map(items, item_info_dict)
+    item_info_dict['Remove from Map'].each do |item_id, maps|
+      maps.each do |mapID|
+        items['data'][item_id]['maps'][mapID] = false
+      end
+    end if item_info_dict['Remove from Map']
+  end
+
+  def self.item_cleanup_into_category(items)
+    #clean up the "into" category with only things that exist
+    items['data'].each do |key, info|
+      info['into'].keep_if {|id| idata.has_key? id}
+    end
+  end
+
+  def self.item_approprate?(item_id)
+    #doesn't have an into, so doesn't build into anything
+    return true if is_item_end_of_build? item_id
+    return true if all_item_builds_valid?
+  end
+
+  def self.item_end_of_build?(item_id)
+    return true if items.dig('data', item_id, 'into').empty?
+  end
+
+  def self.item_exists?(item_id)
+    return not items.dig('data', item_id).nil?
+  end
+
+  def item_is_swappable?(item_id, possible_id)
+    other_item_builds = items.dig('data', possible_id, 'into')
+    return false if other_item_builds.empty?
+    return other_item_builds.contains? item_id
+  end
+
+  def self.all_item_builds_valid?(item_id)
+    #perform cleanup before we inspect
+    info['into'].keep_if {|item| item_exists? item}
+
+    #If we scrubbed all the other items this builds into already for
+    #other reasons (transformations, other exclusions), this is probably fine
+    return true if info['into'].empty?
+
+
+
+    info['into'].each do |possible_id|
+      #Move along if we've deleted this item already
+      return false unless item_exists? possible_id
+
+      #If this thing can swap between for instance, Titanic and Ravenous Hydra,
+      #or all the different shoes, it's fine.
+      return true if item_is_swappable?(item_id, possible_id)
+
+
+      #Anything that builds into stuff that we don't like is also
+      #something we're not interested in?
+      unless items['data'].has_key? possible_id
+        idata.delete id
+        next
+      end
+
+      #This item is a result of transformation.
+      if idata.dig(possible_id, 'gold', 'purchasable')
+        idata.delete id
+        next
+      end
+    end
+  end
+
+  #
+  # Handles removing items that are not "full build only" from items['data']
+  #
+  def self.remove_inapproprate_items_from(items)
+    items_remove_via_config items
+
+    ids = idata.keys.dup
+
+    #handle things that build into themselves?
+    ids.each do |id|
+      if is_item_approprate? id then
+        next
+      else
+        items['data'].delete id
+      end
+    end
+
+    items
   end
 
   #
