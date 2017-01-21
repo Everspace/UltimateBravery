@@ -1,3 +1,47 @@
+#How to define what's going on groups.
+Group:
+  hydra: #group name
+    #how many of a group you're allowed to build on 1 character
+    #outside of the "1 of any particular item" rule
+    #specifically for groups like hydra or boots where it's 1 of any in the
+    #same "group"
+    limit: 1
+    #Specific items to shunt into the group
+    items:
+      - '3074' #Ravenous Hydra
+      - '3748' #Titanic Hydra
+
+  boot:
+    limit: 1
+    #Things with "tags" are automatically gathered/sorted and such
+    tags:
+      - 'Boots'
+
+  jungle:
+    limit: 1
+    #Enchantable things have an "extra step" that we have to account for
+    #In addition it appends the name of the "source" item to the enchantment
+    #so that tooltips are nicer to read
+    # "Stalkers blade -> Enchantment: Ruinic Echos"
+    enchantable: true
+    tags:
+      - 'Jungle'
+
+  #Some champions are excluded from certain groups based on their autoattack range.
+  #These items have no identifiers (that I know of) to automatically generate these
+  #groups.
+  #
+  #Also perhaps if there are "energy only" items or something like it
+  #in the future it will be easy to add them in the same way.
+  melee:
+    items:
+      - '3074' #Ravenous Hydra
+      - '3748' #Titanic Hydra
+
+  range:
+    items:
+      - '3085' #Runnan's Hurricane
+
 Rejected Properties:
   tags:
     # Tronket upgrades
@@ -19,40 +63,39 @@ Rejected Properties:
 
 #Quote Excluded IDs since they are strings in the json blob.
 Excluded IDs:
-  #The Cull is a "DoransItems" without the tag
-  - "1083" #Cull
+  #The Cull is a 'DoransItems' without the tag
+  - '1083' #Cull
 
   #Bogus enchantments
   #They just show up as shoes
-  - "3675"
-  - "3672"
-  - "3673"
-  - "3671"
+  - '3675'
+  - '3672'
+  - '3673'
+  - '3671'
 
   #Kalista plz
-  - "3599" #The Black Spear
+  - '3599' #The Black Spear
 
   #Poacher's Dirk you're silly
   #You turn into things that turn into other things
-  - "3252"
+  - '3252'
 
   #Seige mode plz
-  - "3631" #Siege Ballista
-  - "3634" #Tower: Beam of Ruination
-  - "3635" #Port Pad
-  - "3636" #Tower: Storm Bulwark
-  - "3640" #Flash Zone
-  - "3641" #Vanguard Banner
-  - "3642" #Siege Refund
-  - "3643" #Entropy Field
-  - "3647" #Shield Totem
-
+  - '3631' #Siege Ballista
+  - '3634' #Tower: Beam of Ruination
+  - '3635' #Port Pad
+  - '3636' #Tower: Storm Bulwark
+  - '3640' #Flash Zone
+  - '3641' #Vanguard Banner
+  - '3642' #Siege Refund
+  - '3643' #Entropy Field
+  - '3647' #Shield Totem
 
 Remove from Map:
   #Quick Charge is only for certain events in SR
-  "3007":  #Archangel's Staff (Quick Charge)
+  '3007':  #Archangel's Staff (Quick Charge)
     - '11' # - Summoner's Rift
-  "3008":  #Manamune (Quick Charge)
+  '3008':  #Manamune (Quick Charge)
     - '11' # - Summoner's Rift
-  "3029":  #Rod of Ages (Quick Charge)
+  '3029':  #Rod of Ages (Quick Charge)
     - '11' # - Summoner's Rift
