@@ -84,13 +84,13 @@ export default class ChampionPool extends React.Component {
           <button onClick={()=>{this.textUpdate({target:{value: ''}}); this.refs.Search.value = ''}}>X</button>
         </div>
         <div>
-          {roles.map((type)=>{
-            return <button
-              key={type}
-              value={type}
-              onClick={()=>this.activateOnlyRole(type)}
-              >{this.props.languageData.data[type]}</button>
-          })}
+    {roles.map((type)=>{
+      return <button
+        key={type}
+        value={type}
+        onClick={()=>this.activateOnlyRole(type)}
+        >{this.props.languageData.data[type]}</button>
+    })}
           <button key="enableAll" onClick={() => this.setAllChampions(true)}  >ENABLE ALL</button>
           <button key="disableAll" onClick={() => this.setAllChampions(false)} >DISABLE ALL</button>
         </div>

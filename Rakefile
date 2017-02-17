@@ -2,7 +2,8 @@ $LOAD_PATH.unshift File.expand_path('lib', File.dirname(__FILE__))
 
 require 'Utils'
 require 'lol/DataDragon'
-require 'lol/Doran'
+#require 'lol/Doran'
+require 'lol/ItemJudge'
 require 'lol/Tristana'
 
 require 'benchmark'
@@ -19,12 +20,18 @@ dev_url = "http://localhost:9001/static/index.html"
 all_languages = DataDragon.get_generic "cdn/languages.json"
 all_realms = YAML::load_file("#{config_directory}/Realms.yaml")
 
+task :default => :package
+
 task :uglify_data do
   ENV['pretty'] = nil
   Rake::Task['dd:download:all'].invoke()
 end
+
 multitask :package => [:uglify_data, 'node:package'] do
   puts 'Copying artifacts around'
+  cp_r "#{node_dir}/static/.", output_directory
+  cp_r "#{node_dir}/build/.", output_directory
+  puts 'Package should be complete'
 end
 
 namespace :aws do
@@ -71,9 +78,7 @@ namespace :node do
 
   assets = FileList["#{node_dir}/static", "#{node_dir}/static/**/*"]
 
-  task :package => ["^clean", :build] do
-    puts "I cleaned?"
-  end
+  task :package => ["^clean", :build]
 end
 
 namespace :dd do
@@ -102,8 +107,9 @@ namespace :dd do
           puts "Updating #{lang}:#{thing}"
           trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
           blob = trist.send("get_#{thing}".to_sym)
-          blob = Doran.send("refine_#{thing}".to_sym, blob) if Doran.REFINEABLE_THINGS.include? thing
-
+          Utils.dump(blob, '_RawBlob')
+          blob = ItemJudge.new(blob).process #Doran.send("refine_#{thing}".to_sym, blob) if Doran.REFINEABLE_THINGS.include? thing
+          Utils.dump(blob, '_JudgedBlob')
           Utils.write(
             blob,
             "#{output_directory}/json/#{lang}/#{thing}.json",

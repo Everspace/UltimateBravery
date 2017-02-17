@@ -1,0 +1,26 @@
+#A list of things about champions that is just true that we really don't
+#or can't know programatically
+Elise:
+  group:
+    - melee
+    - range
+
+Gnar:
+  group:
+    - melee
+    - range
+
+Ivern:
+  group:
+    - melee
+    - range
+
+Jayce:
+  group:
+    - melee
+    - range
+
+Kayle:
+  group:
+    - melee
+    - range

@@ -15,45 +15,50 @@ module.exports = {
 
   resolve: {
     root: sourceDirectory,
-    extensions: ['', '.js', '.css']
+    extensions: ['', '.js', '.less']
   },
 
   plugins: [
-	new webpack.optimize.UglifyJsPlugin({
-		compress: {
-			screw_ie8: true,
-	        sequences: true,
-	        dead_code: true,
-	        conditionals: true,
-	        booleans: true,
-	        unused: true,
-	        if_return: true,
-	        join_vars: true,
-	        drop_console: true
-      	},
-		mangle: {
-			screw_ie8: true,
-			except: ['$','require','exports']
-		},
-		output: {
-			comments: false
-		}
+  	new webpack.optimize.UglifyJsPlugin({
+  		compress: {
+  			screw_ie8: true,
+  	        sequences: true,
+  	        dead_code: true,
+  	        conditionals: true,
+  	        booleans: true,
+  	        unused: true,
+  	        if_return: true,
+  	        join_vars: true,
+  	        drop_console: true
+        	},
+  		mangle: {
+  			screw_ie8: true,
+  			except: [
+          '$' /*sacred is the jquery*/,
+          'require',
+          'exports'
+        ]
+  		},
+  		output: {
+  			comments: false
+  		}
 
-	}),
-	new webpack.optimize.OccurrenceOrderPlugin(),
+  	}),
+  	new webpack.optimize.OccurrenceOrderPlugin(),
     new ExtractTextPlugin('style.css')
   ],
 
   module: {
     loaders: [{
-      test: /\.js$/,
-      loaders: ['babel'],
-      include: sourceDirectory
-    },{
-      test: /\.css$/,
-      loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
-      include: sourceDirectory
-    }]
+        test: /\.js$/,
+        loaders: ['babel'],
+        include: sourceDirectory
+      },{
+        test: /\.less$/,
+        loader: ExtractTextPlugin.extract(['css', 'less']),
+        include: sourceDirectory
+      }
+    ]
   }
 };
 

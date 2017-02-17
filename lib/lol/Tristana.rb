@@ -9,9 +9,9 @@ require 'threadparty'
 class Tristana
 
   @@UPDATEABLE_THINGS = [
-    :languages,
+    #:languages,
     :items,
-    :champions
+    #:champions
     #:summoner_spells,
     #:masteries
   ].freeze
@@ -24,6 +24,7 @@ class Tristana
   attr_reader :output_directory
   attr_reader :data_dragon
   attr_reader :item_info_dict
+  attr_reader :champion_info_dict
 
   def initialize(
     language: 'en_US',
@@ -32,6 +33,7 @@ class Tristana
   )
     @groomer = Groomer.new "#{config_directory}/Grooming.yaml"
     @item_info_dict = YAML::load_file "#{config_directory}/Item.yaml"
+    @champion_info_dict = YAML::load_file "#{config_directory}/Champions.yaml"
     @output_directory = output_directory
     @data_dragon = DataDragon.new realm, language
   end
@@ -66,11 +68,7 @@ class Tristana
   end
 
   def get_items
-    items = @groomer.groom_blob @data_dragon.get('item')
-
-    remove_inapproprate_items_from items
-
-    items
+    @data_dragon.get('item')
   end
 
 end

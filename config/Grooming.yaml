@@ -4,14 +4,14 @@ image:
   #image alone
   full: ""
 
-  #big farking blob of them together
-  #for optimization if you draw all the champions/items
-  sprite: ""
-
   #What type of thing is this, used to sub in the
   #data request string
   #"item/spell/champion"
   group: ""
+
+  #big farking blob of them together
+  #for optimization if you draw all the champions/items
+  sprite: ""
 
   #location of the image in the sprite
   x: ""
@@ -57,6 +57,13 @@ champion:
   #MP, or something else like "Rage"
   partype: ""
 
+  #Use it to determine if we can build certain things
+  #or not
+  stats: "championStats"
+
+championStats:
+  attackrange: "" #Used to determine Hydra vs Hurricane
+
 spell:
   key: ""
   name: ""
@@ -78,17 +85,17 @@ item:
 
   #Unique group thing tag.
   #Like "boots" or "jungle"
-  group: ""
+  #group: ""
 
   #colloquialisms. Like "tri" for triforce
-  colloq: ""
+  #colloq: ""
 
   #id(s) to other object that this turns into
   #can be an array
-  into: ""
+  #into: ""
 
   #Purchace information
-  gold: ""
+  #gold: ""
 
   #Is searchable in game
   #not very useful now, but could be in the future
@@ -97,13 +104,13 @@ item:
   #Item's "tier", do you have to build
   # subcomponents, or is it all by itself?
   # Triforce is a 3 depth item, and ruby crystal is 1
-  depth: ""
+  #depth: ""
 
   #Where can this item be built.
   maps: ""
 
   #???
-  tags: ""
+  #tags: ""
 
   #Viktor/Gangplank only item?
   requiredChampion: ""
@@ -112,11 +119,20 @@ language:
   #The word for "Champion" or "Item"
   categoryChampion: ""
   categoryItem: ""
-  categoryMastery: ""
   categorySummoner: ""
+
+  categoryMastery: ""
+  masteryFerocity: ""
+  masteryCunning: ""
+  masteryResolve: ""
+
   Abilities: ""
   Gold: ""
   Level: ""
+
+  #Nice strings
+  Language: ""
+  mobilePleaseWait: ""
 
   #Categories? 'Details:'
   Details_: ""
@@ -124,6 +140,7 @@ language:
   Require_: ""
 
   #I'm terrible at reccomending things
+  RecommendedItems: ""
   recommended_essential: ""
 
   #Available maps
@@ -136,6 +153,14 @@ language:
   #Map1: "" Origional Gangster Summoner's Rift
   #Map4: "" #Origional Gangster Twisted Treeline
   #Map14: "" #Butcher's Bridge
+
+  #Champion categories:
+  Assassin: ""
+  Fighter: ""
+  Marksman: ""
+  Mage: ""
+  Support: ""
+  Tank: ""
 
   #Language names for other languages
   native_bg: ""
@@ -162,4 +187,4 @@ language:
   native_zh_CN: ""
   native_zh_MY: ""
   native_zh_TW: ""
-  native_﻿ar': ""
+  native_﻿ar: ""

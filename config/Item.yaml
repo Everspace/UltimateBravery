@@ -1,3 +1,8 @@
+#consumed: true/false #Unfortunately also collides with GP's shit
+#specialRecipe: <int> #For transformable items?
+#inStore: #buyable? Gets rid of lots of things but fights with Viktor's shit
+
+
 #How to define what's going on groups.
 Group:
   hydra: #group name
@@ -15,17 +20,12 @@ Group:
     limit: 1
     #Things with "tags" are automatically gathered/sorted and such
     tags:
-      - 'Boots'
+    - 'Boots'
 
   jungle:
     limit: 1
-    #Enchantable things have an "extra step" that we have to account for
-    #In addition it appends the name of the "source" item to the enchantment
-    #so that tooltips are nicer to read
-    # "Stalkers blade -> Enchantment: Ruinic Echos"
-    enchantable: true
     tags:
-      - 'Jungle'
+    - 'Jungle'
 
   #Some champions are excluded from certain groups based on their autoattack range.
   #These items have no identifiers (that I know of) to automatically generate these
@@ -35,67 +35,91 @@ Group:
   #in the future it will be easy to add them in the same way.
   melee:
     items:
-      - '3074' #Ravenous Hydra
-      - '3748' #Titanic Hydra
+    - '3074' #Ravenous Hydra
+    - '3748' #Titanic Hydra
 
   range:
     items:
-      - '3085' #Runnan's Hurricane
+    - '3085' #Runnan's Hurricane
+
+#Enchantable things have an "extra step" that we have to account for
+#In addition it appends the name of the "source" item to the enchantment
+#so that tooltips are nicer to read
+# "Stalkers blade -> Enchantment: Ruinic Echos"
+Enchantables:
+#Jungle Items
+- '3706' #Stalker's Blade
+- '3711' #Tracker's Knife
+- '3715' #Skirmisher's Sabre
 
 Rejected Properties:
   tags:
-    # Tronket upgrades
-    - Trinket
+  # Tronket upgrades
+  - Trinket
 
-    #Includes
-    # - Flask items (Corrupting Potion)
-    # - Doran's Items
-    # - Guardian (ARAM Doran)
-    # - Cull
-    - Lane
+  #Includes
+  # - Flask items (Corrupting Potion)
+  # - Doran's Items
+  # - Guardian (ARAM Doran)
+  # - Cull
+  - Lane
 
-    #Includes
-    # - Oracles Extract
-    # - Elixirs
-    # - Cookies
-    # - Wards
-    - Consumable
+  #Includes
+  # - Oracles Extract
+  # - Elixirs
+  # - Cookies
+  # - Wards
+  - Consumable
 
 #Quote Excluded IDs since they are strings in the json blob.
 Excluded IDs:
-  #The Cull is a 'DoransItems' without the tag
-  - '1083' #Cull
+#The Cull is a 'DoransItems' without the tag
+- '1083' #Cull
 
-  #Bogus enchantments
-  #They just show up as shoes
-  - '3675'
-  - '3672'
-  - '3673'
-  - '3671'
+#Bogus enchantments
+#They just show up as shoes
+- '3675'
+- '3672'
+- '3673'
+- '3671'
 
-  #Kalista plz
-  - '3599' #The Black Spear
+#Kalista plz
+- '3599' #The Black Spear
 
-  #Poacher's Dirk you're silly
-  #You turn into things that turn into other things
-  - '3252'
+#Poacher's Dirk you're silly
+#You turn into things that turn into other things
+- '3252'
 
-  #Seige mode plz
-  - '3631' #Siege Ballista
-  - '3634' #Tower: Beam of Ruination
-  - '3635' #Port Pad
-  - '3636' #Tower: Storm Bulwark
-  - '3640' #Flash Zone
-  - '3641' #Vanguard Banner
-  - '3642' #Siege Refund
-  - '3643' #Entropy Field
-  - '3647' #Shield Totem
+#Seige mode plz
+- '3631' #Siege Ballista
+- '3634' #Tower: Beam of Ruination
+- '3635' #Port Pad
+- '3636' #Tower: Storm Bulwark
+- '3640' #Flash Zone
+- '3641' #Vanguard Banner
+- '3642' #Siege Refund
+- '3643' #Entropy Field
+- '3647' #Shield Totem
+- '3637' #Nexus Siege: Siege Weapon Slot
+- '3630' #Seige Teleport
+- '3633' #also Seige Teleport wtf
+- '3648' #Siege Teleport (Inactive)
+
+#Buiscuits please
+- '2009' #Total Biscuit of Rejuvenation
+- '2010' #Total Biscuit of Rejuvenation
+
+#Poro king plz
+- '2052' #Poro-Snax
+
+#Just a weird thing
+- '3632'
 
 Remove from Map:
   #Quick Charge is only for certain events in SR
   '3007':  #Archangel's Staff (Quick Charge)
-    - '11' # - Summoner's Rift
+  - '11'   # - Summoner's Rift
   '3008':  #Manamune (Quick Charge)
-    - '11' # - Summoner's Rift
+  - '11'   # - Summoner's Rift
   '3029':  #Rod of Ages (Quick Charge)
-    - '11' # - Summoner's Rift
+  - '11'   # - Summoner's Rift

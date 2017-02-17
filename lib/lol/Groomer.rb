@@ -41,7 +41,7 @@ class Groomer
 
     data.each do |key, value|
       case value
-      when Hash
+      when Hash #recurse down
         data_compilation['data'][key] = groom(value, @grooming_dictionary[type])
       else
         data_compilation['data'][key] = value if @grooming_dictionary[type].has_key? key

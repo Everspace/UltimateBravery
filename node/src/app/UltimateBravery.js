@@ -154,18 +154,6 @@ export default class UltimateBravery extends React.Component {
           <div className='UltimateBravery'>
             <div className='Menu'>
               <DropdownSelector
-                items={this.state.items.ubrave.available_maps}
-                defaultValue={'11'}
-                languageData={this.state.languages.data}
-                transformKey={(mapID)=>(mapID === '11') ? 'Map1' : `Map${mapID}`}
-                events={{
-                  onChange: (event)=>{
-                    console.log(event.target.value)
-                    this.setSelectedMap(event.target.value)
-                  }
-                }}
-              />
-              <DropdownSelector
                 items={['en_US', 'ja_JP', 'es_MX']}
                 defaultValue={window.dd.language}
                 languageData={this.state.languages.data}
@@ -184,7 +172,8 @@ export default class UltimateBravery extends React.Component {
                 }}
               />
             </div>
-            <DisplayedThing {...combinedProps} />
+
+            <DebugItems {...combinedProps} />
           </div>
       )
       break;
