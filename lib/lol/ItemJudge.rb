@@ -3,7 +3,6 @@ require 'lol/Judge'
 class ItemJudge < Judge
 
   def default_config
-    puts "config from ItemJudge?"
     "./config/Item.yaml"
   end
 
@@ -14,6 +13,15 @@ class ItemJudge < Judge
     remove_bad_items
     #groupify_items
     debug_namify_items
+
+    @used_items.each {|item_id|
+      @result['data'][item_id] = @base['data'][item_id] unless @result['data'][item_id]
+    }
+
+    ['type', 'version'].each {|attribute|
+      @result[attribute] = @base[attribute]
+    }
+
     return @result
   end
 
@@ -67,12 +75,10 @@ class ItemJudge < Judge
   ##
   ## I'M LOOKING AT YOU MANAMUNE (QUICK CHARGE) ON SUMMONER'S RIFT!
   def remove_items_from_maps
-    puts @config['Remove from Map']
+    puts "INFO: Removing certain items from certain maps"
     @config['Remove from Map'].each do |item_id, maps|
-      puts "#{namify item_id} has bad map_ids"
-      puts maps
+      puts "#{namify item_id} removing from maps: #{maps}"
       @result['data'][item_id] = get_item(item_id).dup
-      puts @result['data'].keys.to_s
       maps.each do |map|
         @result['data'][item_id]['maps'][map] = false
       end
@@ -103,7 +109,7 @@ class ItemJudge < Judge
     #Nice name that states the build path too
     r['name'] = "#{source_data['name']} → #{target_data['name']}"
     #Hoist tags up to enchantment.
-    r['tags'] = (source_data['tags'] + ['target_data']).uniq
+    r['tags'] = (source_data['tags'] + target_data['tags'].to_a).uniq
 
     #TODO: gold values and stuff?
 
@@ -125,7 +131,7 @@ class ItemJudge < Judge
   ## Drop items that are specified in the config
   ##
   def ignore_explicitly_removed_items()
-    puts "*Removing excplicity ignored items"
+    puts "INFO: Removing excplicity ignored items"
     @config['Excluded IDs'].each {|id| remove_item id}
   end
 
@@ -133,10 +139,10 @@ class ItemJudge < Judge
   ## Use the config to drop whole categories of items
   ## in a generic way
   def ignore_item_with_rejected_property()
-    puts "* Removing items with bad properties"
+    puts "INFO:  Removing items with bad properties"
     # #Drop items that have groups or tags I think are stupid.
     @config['Rejected Properties'].each do |property_name, bad_things|
-      puts "- Removing based on #{property_name}"
+      puts "INFO: Removing based on #{property_name}"
       @potential_items
         .inject({}) {|memory, item_id|
           #turn items into hash of "item_id => property to inspect"
@@ -223,7 +229,7 @@ class ItemJudge < Judge
   ###
   ## Convienience method for
   ##
-  def add_item(item_id)
+  def add_item_id(item_id)
     add_item(item_id: item_id)
   end
 
@@ -278,10 +284,22 @@ class ItemJudge < Judge
   #################################################
 
   def item_approprate?(item_id)
-    if all_item_builds_valid?(item_id)
+    if item_has_a_valid_map(item_id) && all_item_builds_valid?(item_id)
       return item_end_of_build?(item_id)
     else
       return false
+    end
+  end
+
+  def item_has_a_valid_map(item_id)
+    has_a_map = get_item(item_id)['maps']
+    .values
+    .inject(false) {|mem, is_valid| mem || is_valid}
+    unless has_a_map
+      puts "#{namify item_id} isn't valid on any map!"
+      return false
+    else
+      return true
     end
   end
 
@@ -293,10 +311,11 @@ class ItemJudge < Judge
   ## If it's at the end of it's build, it's ok
   ##
   def item_end_of_build?(item_id)
+    item = get_item(item_id)
     #If this turns into something, then this is the end of the line
-    return true unless get_item(item_id)['into']
-    return true if get_item(item_id)['into'].empty?
-    get_item(item_id)['into'].each do |possible_id|
+    return true unless item['into']
+    return true if item['into'].empty?
+    item['into'].each do |possible_id|
       if item_is_from_transforming? possible_id
         return true
       else
@@ -308,7 +327,9 @@ class ItemJudge < Judge
   end
 
   def all_item_builds_valid?(item_id)
-    get_item(item_id)['into'].each do |possible_id|
+    item = get_item(item_id)
+    return true unless item['into'] #No build paths is vaild?
+    item['into'].each do |possible_id|
       #Move along if we've deleted this item already
       return false if @ignored_items.include? possible_id
       #usually if 1 is swappable everything is just peechy-keen
@@ -320,8 +341,9 @@ class ItemJudge < Judge
   ## Find out if this is Muramana
   ##
   def item_is_from_transforming?(item_id)
-    return false unless get_item(item_id) #garbage items
-    return true unless get_item(item_id).dig('gold', 'purchasable')
+    item = get_item(item_id)
+    return false unless item #garbage items
+    return true unless item.dig('gold', 'purchasable')
   end
 
   ###
@@ -332,6 +354,7 @@ class ItemJudge < Judge
   def item_is_swappable?(item_id, possible_id)
     other_item = get_item(possible_id)
     return false unless other_item #Item is dead
+    return false unless other_item['into'] #Item doesn't go into stuff
     return false if other_item['into'].empty?
     return other_item['into'].include? item_id
   end
