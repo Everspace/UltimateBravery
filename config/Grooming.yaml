@@ -115,6 +115,9 @@ item:
   #Viktor/Gangplank only item?
   requiredChampion: ""
 
+  #custom fields added by ItemJudge
+  groups: ""
+
 language:
   #The word for "Champion" or "Item"
   categoryChampion: ""
