@@ -9,11 +9,19 @@ require 'lol/Tristana'
 require 'benchmark'
 require 'rake/clean'
 
+is_pretty = if ENV['pretty'] then true else false end
+is_debug = if ENV['debug'] then true else false end
+
 config_directory = File.expand_path(ENV['config_directory'] || './config')
 output_directory = File.expand_path(ENV['output_directory'] || './build')
 CLEAN << output_directory
 
 node_dir = File.expand_path 'node'
+# - starting in the directory NODE_DIR
+# - passing our current environment to it
+# - staying until it stops,
+win_invoke = "START \"ULTIMATE %1$s\" /D \"#{node_dir}\" /I /WAIT %1$s"
+
 dev_url = "http://localhost:9001/static/index.html"
 
 #TODO: Handle being offline
@@ -46,13 +54,6 @@ namespace :node do
   #Note that we have to do run npm in a seperate process
   #lest other tasks blow up if we just cd'ed into the directory
 
-  #invoke npm
-  # - starting in the directory NODE_DIR
-  # - passing our current environment to it
-  # - staying until it stops,
-  # - without making a new window
-  windows_npm = "START /D \"#{node_dir}\" /I /WAIT /B npm"
-
   directory "#{node_dir}/node_modules" do |t|
     puts "node_modules missing, running npm install"
 
@@ -60,7 +61,7 @@ namespace :node do
     when /win[0-9+]/, /i386-mingw32/
       #make a window named npm, passing our current environment to it
       #staying until it stops, starting in the directory NODE_DIR
-      system("#{windows_npm} install --progress=false")
+      system("#{win_invoke % 'npm'} install --progress=false")
     else
       raise NotImplementedException
     end
@@ -70,7 +71,7 @@ namespace :node do
 
     case RUBY_PLATFORM.downcase
     when /win[0-9+]/, /i386-mingw32/
-      system("#{windows_npm} run build")
+      system("#{win_invoke % 'npm'} run build")
     else
       raise NotImplementedException
     end
@@ -104,17 +105,30 @@ namespace :dd do
       things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
 
         task "#{lang}:#{thing}" do |t|
+
           puts "Updating #{lang}:#{thing}"
+          #Fire up a tristana
           trist = Tristana.new language: lang, realm: (ENV['realm'] || 'NA')
+          #Get the blob
           blob = trist.send("get_#{thing}".to_sym)
-          Utils.dump(blob, '_RawBlob')
-          blob = ItemJudge.new(blob).process #Doran.send("refine_#{thing}".to_sym, blob) if Doran.REFINEABLE_THINGS.include? thing
-          Utils.dump(blob, '_JudgedBlob')
+          #Hire the judge
+          judge = case thing
+                  when :champions
+                    #ChampionJudge
+                  when :items
+                    ItemJudge
+                  end
+
+          Utils.dump(blob, '_RawBlob') if is_debug
+          judge = judge.new(blob, debug: is_debug).process if judge
+          Utils.dump(blob, '_JudgedBlob') if is_debug
+
           Utils.write(
-            blob,
+            trist.groomer.groom_blob(blob),
             "#{output_directory}/json/#{lang}/#{thing}.json",
-            if ENV['pretty'] then true else false end
+            is_pretty
           )
+
           puts "Finished updating #{lang}:#{thing}"
         end
 
@@ -194,8 +208,8 @@ namespace :dev do
   when /win[0-9]+/, /i386-mingw32/
     desc "Run the dev webserver and pop open the website"
     multitask :start => ["#{node_dir}/node_modules", dev_json_dir] do
-      system("START /D \"#{node_dir}\" npm start")
-      system("START \"\" \"#{dev_url}\"")
+      system(win_invoke % 'npm start')
+      system("START \"\" /B \"#{dev_url}\" ")
     end
   else
     #I don't know how this would work on *nixes
