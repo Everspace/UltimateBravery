@@ -17,7 +17,7 @@ Group:
       - '3748' #Titanic Hydra
 
   boot:
-    limit: 1
+    limit: 1 #Not entirely true in the case of boots, but obnoxious
     #Things with "tags" are automatically gathered/sorted and such
     tags:
     - 'Boots'
@@ -37,6 +37,11 @@ Group:
     items:
     - '3074' #Ravenous Hydra
     - '3748' #Titanic Hydra
+
+  gold:
+    limit: 1
+    tags:
+    - 'GoldPer'
 
   range:
     items:
@@ -76,8 +81,12 @@ Excluded IDs:
 #The Cull is a 'DoransItems' without the tag
 - '1083' #Cull
 
+#Invisible Item?
+- '3632' # literally empty string
+
 #Bogus enchantments
 #They just show up as shoes
+#From old hatchet jungle item
 - '3675'
 - '3672'
 - '3673'
@@ -111,6 +120,7 @@ Excluded IDs:
 
 #Poro king plz
 - '2052' #Poro-Snax
+- '2054' #Diet Poro-Snax
 
 #Just a weird thing
 - '3632'
