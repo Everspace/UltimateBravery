@@ -2,6 +2,7 @@ class Judge
   @base = {}
   @result = {}
   @config = nil
+  @debug = false
 
   ###
   ## Location for config for type of Judge.
@@ -11,9 +12,14 @@ class Judge
     nil
   end
 
-  def initialize(data_blob, config=nil)
+  #Discard text if not debug
+  def log(*things)
+    puts things.join(' ') if @debug
+  end
+
+  def initialize(data_blob, config:nil, debug:false)
+    @debug = debug
     @base = data_blob.dup.freeze
-    puts @default_config
     @config = YAML::load_file(config || default_config)
   end
 

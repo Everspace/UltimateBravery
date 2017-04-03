@@ -12,8 +12,8 @@ class ItemJudge < Judge
 
     remove_bad_items
     #groupify_items
-    debug_namify_items
 
+    debug_namify_items if @debug
     @used_items.each {|item_id|
       @result['data'][item_id] = @base['data'][item_id] unless @result['data'][item_id]
     }
@@ -75,9 +75,9 @@ class ItemJudge < Judge
   ##
   ## I'M LOOKING AT YOU MANAMUNE (QUICK CHARGE) ON SUMMONER'S RIFT!
   def remove_items_from_maps
-    puts "INFO: Removing certain items from certain maps"
+    log "INFO: Removing certain items from certain maps"
     @config['Remove from Map'].each do |item_id, maps|
-      puts "#{namify item_id} removing from maps: #{maps}"
+      log "#{namify item_id} removing from maps: #{maps}"
       @result['data'][item_id] = get_item(item_id).dup
       maps.each do |map|
         @result['data'][item_id]['maps'][map] = false
@@ -131,7 +131,7 @@ class ItemJudge < Judge
   ## Drop items that are specified in the config
   ##
   def ignore_explicitly_removed_items()
-    puts "INFO: Removing excplicity ignored items"
+    log "INFO: Removing excplicity ignored items"
     @config['Excluded IDs'].each {|id| remove_item id}
   end
 
@@ -139,10 +139,10 @@ class ItemJudge < Judge
   ## Use the config to drop whole categories of items
   ## in a generic way
   def ignore_item_with_rejected_property()
-    puts "INFO:  Removing items with bad properties"
+    log "INFO:  Removing items with bad properties"
     # #Drop items that have groups or tags I think are stupid.
     @config['Rejected Properties'].each do |property_name, bad_things|
-      puts "INFO: Removing based on #{property_name}"
+      log "INFO: Removing based on #{property_name}"
       @potential_items
         .inject({}) {|memory, item_id|
           #turn items into hash of "item_id => property to inspect"
@@ -166,7 +166,7 @@ class ItemJudge < Judge
           end
         }
         .each {|id, words|
-          puts "Because '#{namify id}' has #{property_name} #{words & bad_things}"
+          log "Because '#{namify id}' has #{property_name} #{words & bad_things}"
         }
         .keys
         .each {|id| remove_item id}
@@ -296,7 +296,7 @@ class ItemJudge < Judge
     .values
     .inject(false) {|mem, is_valid| mem || is_valid}
     unless has_a_map
-      puts "#{namify item_id} isn't valid on any map!"
+      log "#{namify item_id} isn't valid on any map!"
       return false
     else
       return true
