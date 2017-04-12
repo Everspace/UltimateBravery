@@ -11,9 +11,9 @@ class ItemJudge < Judge
     modify_data
 
     remove_bad_items
-    #groupify_items
-
+    groupify_items
     debug_namify_items if @debug
+    #funally, add all the items that have been chosen (but don't overwrite what's already happened)
     @used_items.each {|item_id|
       @result['data'][item_id] = @base['data'][item_id] unless @result['data'][item_id]
     }
@@ -237,20 +237,33 @@ class ItemJudge < Judge
   ## Adds an item to @result. Does checking for group and stuff too.
   ##
   def add_item(item_id:, group:nil, data:nil)
-    #Let's be horribly biased to ignoring items
-    return nil if item_already_processed? item_id
-
     item_data = data || get_item(item_id)
     raise "#{item_id} did not exist in the base data when we went to add it to results" unless item_data
-    @result['data'][item_id] = data if data
 
-    @ignored_items.delete item_id
-    @potential_items.delete item_id
-    @used_items << item_id
+    #Let's not re-add items
+    unless item_already_processed? item_id
+      @ignored_items.delete item_id
+      @potential_items.delete item_id
+      @used_items |= [item_id]
+    end
 
+    #Allow for data fanagaling if provided
+    if data
+      @result['data'][item_id] = data
+    else
+      #Add the base to the result, unless there's something already there
+      @result['data'][item_id] = @base['data'][item_id] unless @result['data'][item_id]
+    end
+
+    #group-on, apply directly to result
     if group then
+      #Let's keep a quick list of what IDs are part of what groups
       @result['group'][group] = [] unless @result['group'][group]
-      @result['group'][group] << item_id
+      @result['group'][group] |= [item_id]
+
+      #and also add it to the item's properties for easy going backwards
+      @result['data'][item_id]['groups'] = [] unless @result['data'][item_id]['groups']
+      @result['data'][item_id]['groups'] |= [group]
     end
   end
 
@@ -258,11 +271,11 @@ class ItemJudge < Judge
   ## Scours the item from the @result
   ##
   def remove_item(item_id)
-    puts "Removing #{namify item_id}"
+    log "Removing #{namify item_id}"
     #I've deemed this item unworthy
     @potential_items.delete item_id
     @used_items.delete item_id
-    @ignored_items << item_id
+    @ignored_items |= [item_id]
 
     #You can not hide from me in the groups either
     @result['group'].each {|_, list| list.delete item_id}
