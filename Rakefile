@@ -112,7 +112,7 @@ namespace :dd do
           #Get the blob
           blob = trist.send("get_#{thing}".to_sym)
           #Hire the judge
-          judge = case thing
+          judger = case thing
                   when :champions
                     #ChampionJudge
                   when :items
@@ -120,7 +120,7 @@ namespace :dd do
                   end
 
           Utils.dump(blob, '_RawBlob') if is_debug
-          judge = judge.new(blob, debug: is_debug).process if judge
+          blob = judger.new(blob, debug: is_debug).process if judger
           Utils.dump(blob, '_JudgedBlob') if is_debug
 
           Utils.write(
