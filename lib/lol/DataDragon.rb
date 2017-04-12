@@ -18,21 +18,37 @@ class DataDragon
 
   @@realm_infos = {}
 
-  def self.get_generic(item)
-    url = "#{DDRAGON_URL}/#{item}"
-    r = HTTParty.get url
-    JSON.parse(r.body, symbolize_names: true)
-  end
-
   #Method to get data so that we're not repeatedly fetching data all the time.
   def self.cache_realm_info(realm)
     @@realm_infos[realm] = @@realm_infos[realm] || get_generic("realms/#{realm.downcase}.json")
     @@realm_infos[realm]
   end
 
+  #Get a sybolized version of whatever you want
+  def self.get_generic(item)
+    url = "#{DDRAGON_URL}/#{item}"
+    get_blob(url, json: {symbolize_names: true})
+  end
+
+  def self.get_blob(url, **options)
+    #Defaulting to no args
+    options = {
+      http:{},
+      json:{}
+    }.merge(options)
+    begin
+      JSON.parse(
+        HTTParty.get(url, **options[:http]).body,
+        **options[:json]
+      )
+    rescue
+      raise "ERROR: failed to get and parse #{url}"
+    end
+  end
+
   #
   def self.get_languages
-    "#{DDRAGON_URL}/cdn/languages.json"
+    get_blob("#{DDRAGON_URL}/cdn/languages.json")
   end
 
   #You should do realm based on your current IP, not nessisarily
@@ -47,9 +63,6 @@ class DataDragon
   end
 
   def get(item)
-    JSON.parse(
-      HTTParty.get(URL_FORMAT % @realm_info.merge({item: item})).body
-    )
+    DataDragon.get_blob(URL_FORMAT % @realm_info.merge({item: item}))
   end
-
 end
