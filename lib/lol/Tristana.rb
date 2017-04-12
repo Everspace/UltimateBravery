@@ -11,7 +11,7 @@ class Tristana
   @@UPDATEABLE_THINGS = [
     #:languages,
     :items,
-    #:champions
+    :champions
     #:summoner_spells,
     #:masteries
   ].freeze
@@ -54,7 +54,15 @@ class Tristana
       ProcessQueue do
         queue base_champ_data['data'].keys
         perform do |champ_id|
-          groomer.groom_blob data_dragon.get("champion/#{champ_id}")
+          begin
+            groomer.groom_blob data_dragon.get("champion/#{champ_id}")
+          rescue #Try to handle riot legacy issue around Fiddlesticks
+            if champ_id == "Fiddlesticks"
+              groomer.groom_blob data_dragon.get("champion/FiddleSticks")
+            else
+              raise
+            end
+          end
         end
       end
     end.iteratively.reduce do |compiled, blob|
