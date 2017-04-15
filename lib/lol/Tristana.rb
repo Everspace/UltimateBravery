@@ -55,10 +55,10 @@ class Tristana
         queue base_champ_data['data'].keys
         perform do |champ_id|
           begin
-            groomer.groom_blob data_dragon.get("champion/#{champ_id}")
+            data_dragon.get("champion/#{champ_id}")
           rescue #Try to handle riot legacy issue around Fiddlesticks
             if champ_id == "Fiddlesticks"
-              groomer.groom_blob data_dragon.get("champion/FiddleSticks")
+              data_dragon.get("champion/FiddleSticks")
             else
               raise
             end

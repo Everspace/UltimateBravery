@@ -18,9 +18,7 @@ class ItemJudge < Judge
       @result['data'][item_id] = @base['data'][item_id] unless @result['data'][item_id]
     }
 
-    ['type', 'version'].each {|attribute|
-      @result[attribute] = @base[attribute]
-    }
+    prep_result_with_metadata
 
     return @result
   end

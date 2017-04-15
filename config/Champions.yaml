@@ -1,5 +1,8 @@
 #A list of things about champions that is just true that we really don't
 #or can't know programatically
+General:
+  Max Melee Range: 250
+
 Elise:
   group:
     - melee

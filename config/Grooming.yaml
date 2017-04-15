@@ -34,11 +34,12 @@ champion:
   # of the QWER skills
   spells: "spell"
 
-  #Unique Number ID
+  #Internal name (MonkeyKing)
   id: ""
 
-  #Internal name (MonkeyKing)
+  #Unique Number ID
   key: ""
+
   #Localized name (Wukong)
   name: ""
 
@@ -53,13 +54,9 @@ champion:
   #Brawler/Mage/Whatever
   tags: ""
 
-  #What the resource bar is.
-  #MP, or something else like "Rage"
-  partype: ""
-
-  #Use it to determine if we can build certain things
-  #or not
-  stats: "championStats"
+  #Custom fields
+  isMelee: ""
+  isRange: ""
 
 championStats:
   attackrange: "" #Used to determine Hydra vs Hurricane

@@ -3,6 +3,7 @@ $LOAD_PATH.unshift File.expand_path('lib', File.dirname(__FILE__))
 require 'Utils'
 require 'lol/DataDragon'
 #require 'lol/Doran'
+require 'lol/ChampionJudge'
 require 'lol/ItemJudge'
 require 'lol/Tristana'
 
@@ -114,7 +115,7 @@ namespace :dd do
           #Hire the judge
           judger = case thing
                   when :champions
-                    #ChampionJudge
+                    ChampionJudge
                   when :items
                     ItemJudge
                   end
@@ -175,6 +176,8 @@ namespace :dev do
   end
 
   desc "Update data for use in local development"
+  task :update => 'update:everything'
+
   namespace :update do
     task :everything do
       Rake::Task['dd:download:all'].invoke()

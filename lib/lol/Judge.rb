@@ -26,4 +26,10 @@ class Judge
 	def process()
     raise NotImplementedExecption
   end
+
+  def prep_result_with_metadata
+    ['type', 'version'].each {|attribute|
+      @result[attribute] = @base[attribute]
+    }
+  end
 end
