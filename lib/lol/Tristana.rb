@@ -9,7 +9,7 @@ require 'threadparty'
 class Tristana
 
   @@UPDATEABLE_THINGS = [
-    #:languages,
+    :languages,
     :items,
     :champions
     #:summoner_spells,
@@ -39,7 +39,7 @@ class Tristana
   end
 
   def get_languages
-    @groomer.groom_blob @data_dragon.get('language')
+    @data_dragon.get('language')
   end
 
   def get_champions
