@@ -25,7 +25,7 @@ native:
   zh_CN: zh_CN
   zh_MY: zh_MY
   zh_TW: zh_TW
-  ﻿ar: es_AR
+  ar: es_AR
 
   #Doesn't have an explicit language yet...
   bg: ro_RO #Bulgaria
