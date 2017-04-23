@@ -1,6 +1,7 @@
 #Personal tool and such
 _*
 *.sublime-*
+**/.vscode/
 
 #Generated json
 **/json/
@@ -17,4 +18,5 @@ _*
 
 #other crap
 **/*.log
+**/log.txt
 
