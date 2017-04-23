@@ -2,7 +2,6 @@ $LOAD_PATH.unshift File.expand_path('lib', File.dirname(__FILE__))
 
 require 'Utils'
 require 'lol/DataDragon'
-#require 'lol/Doran'
 require 'lol/ChampionJudge'
 require 'lol/ItemJudge'
 require 'lol/Tristana'
@@ -16,6 +15,7 @@ is_debug = if ENV['debug'] then true else false end
 config_directory = File.expand_path(ENV['config_directory'] || './config')
 output_directory = File.expand_path(ENV['output_directory'] || './build')
 CLEAN << output_directory
+CLOBBER << './temp'
 
 node_dir = File.expand_path 'node'
 dev_url = "http://localhost:9001/static/index.html"
@@ -50,12 +50,6 @@ Dir.glob('lib/tasks/**/*.rake').each do |full_path|
   end
 end
 
-namespace :dd do
-  namespace :download do
-
-  end
-end
-
 namespace :dev do
   #Temp area for when doing dev work because webserver
   dev_json_dir = "#{node_dir}/static/json"
@@ -65,11 +59,36 @@ namespace :dev do
     Rake::Task["dev:update:everything"].invoke()
   end
 
+  desc "Prepares the local cache with the Dragontail so we're not jerks to the devs"
+  task :init do
+    latest_version = DataDragon.versions.first
+
+    file_name = "dragontail-#{latest_version}.tgz"
+    remote_file = "#{DataDragon.DDRAGON_URL}/cdn/#{file_name}"
+    local_file = File.join('temp', file_name)
+    if File.exist?(local_file)
+      puts "Didn't have to download #{local_file}"
+    else
+      puts "Beginning lengthy download of: %s\n\tto:%s" % [remote_file, local_file]
+      Utils.download_file(remote_file, local_file)
+      puts "Finished downloading #{file_name}"
+    end
+    
+    version_dir = File.join(DataDragon.CACHE_DIR, latest_version)
+    if Dir.exist?(version_dir)
+      puts "Skipping extraction of %s since %s exists already" % [file_name, version_dir]
+    else
+      puts "Extracting %s\n\tto:%s" % [file_name, DataDragon.CACHE_DIR]
+      Utils.unpack(local_file, DataDragon.CACHE_DIR)
+      puts "Finished #{file_name} extraction"
+    end
+  end
+
   desc "Update data for use in local development"
   task :update => 'update:everything'
 
   namespace :update do
-    task :everything do
+    task :everything => ['dev:init'] do
       Rake::Task['dd:download:all'].invoke()
       cp_r "#{output_directory}/json", File.dirname(dev_json_dir)
     end

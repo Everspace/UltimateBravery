@@ -19,7 +19,7 @@ download_all_languages = all_languages.collect do |lang|
 
   things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
 
-    task "#{lang}:#{thing}" do |t|
+    task "#{lang}:#{thing}" => "realm:#{ENV['realm'] || 'NA'}" do |t|
 
       puts "Updating #{lang}:#{thing}"
       #Fire up a tristana
@@ -62,7 +62,7 @@ download_all_realms = all_realms.collect do |realm|
   task "realm:#{realm}" do |t|
     puts "Downloading realm #{realm}"
     Utils.write(
-      DataDragon.cache_realm_info(realm),
+      DataDragon.realm_info(realm),
       "#{output_directory}/json/realm_#{realm.downcase}.json",
       if ENV['pretty'] then true else false end
     )

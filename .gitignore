@@ -11,6 +11,7 @@ _*
 
 #Build directory
 **/build/
+**/temp/
 
 #node garbage
 **/node_modules/

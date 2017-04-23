@@ -4,7 +4,9 @@ require 'json'
 class DataDragon
 
   #very specifically not https location for fetching realm.json
-  DDRAGON_URL = "http://ddragon.leagueoflegends.com"
+  def self.DDRAGON_URL
+  "http://ddragon.leagueoflegends.com"
+  end
 
   #cdn = cdn url
   #dd = datadragon version
@@ -13,21 +15,57 @@ class DataDragon
   #used for every request ever
   URL_FORMAT = "%{cdn}/%{dd}/data/%{l}/%{item}.json"
 
+  # temp/cache/%{dd}/... the rest?
+  def self.CACHE_DIR
+    "temp/cache"
+  end
+
   #DDragon definition about the realm for reuse.
   @realm_info = {}
 
+  @@versions = []
   @@realm_infos = {}
 
   #Method to get data so that we're not repeatedly fetching data all the time.
-  def self.cache_realm_info(realm)
-    @@realm_infos[realm] = @@realm_infos[realm] || get_generic("realms/#{realm.downcase}.json")
-    @@realm_infos[realm]
+  def self.realm_info(realm)
+    @@realm_infos[realm] ||= get_generic("realms/#{realm.downcase}.json")
+  end
+
+  def self.versions
+    if @@versions.empty?
+      @@versions |= get_generic("api/versions.json")
+    else
+      @@versions
+    end
   end
 
   #Get a sybolized version of whatever you want
   def self.get_generic(item)
-    url = "#{DDRAGON_URL}/#{item}"
+    url = "#{DataDragon.DDRAGON_URL}/#{item}"
     get_blob(url, json: {symbolize_names: true})
+  end
+
+  #Anything with a cdn in the url could be in the dragontail if it exists
+  def self.should_be_cached?(url)
+    url.include?('cdn/')
+  end
+
+  #Turns a cacheable url into a file path
+  def self.url_to_cache_location(url)
+    path = url.partition("/cdn/").last #drop ddragon url
+    File.join(DataDragon.CACHE_DIR, path)
+  end
+
+  #Ailiases a url request to the cache directory if it's there
+  #TODO: perhaps notifying if I'm going to be using a cache?
+  def self.get(url, **perhaps_html_options)
+    cache_path = url_to_cache_location url
+    if should_be_cached?(url) && File.exist?(cache_path)
+      #I should attempt to load from the file before requesting
+      File.open(cache_path) {|f| f.read }
+    else
+      HTTParty.get(url, **perhaps_html_options).body
+    end
   end
 
   def self.get_blob(url, **options)
@@ -36,9 +74,10 @@ class DataDragon
       http:{},
       json:{}
     }.merge(options)
+
     begin
       JSON.parse(
-        HTTParty.get(url, **options[:http]).body,
+        get(url, **options[:http]),
         **options[:json]
       )
     rescue
@@ -48,13 +87,13 @@ class DataDragon
 
   #
   def self.get_languages
-    get_blob("#{DDRAGON_URL}/cdn/languages.json")
+    get_blob("#{DataDragon.DDRAGON_URL}/cdn/languages.json")
   end
 
   #You should do realm based on your current IP, not nessisarily
   #Where you're going.
   def initialize(realm = 'NA', language)
-    @realm_info = (@@realm_infos[realm] || DataDragon.cache_realm_info(realm)).dup
+    @realm_info = DataDragon.realm_info(realm).dup
     set_language! language if language
   end
 
