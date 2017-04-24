@@ -5,7 +5,7 @@ directory "#{$node_dir}/static/json" do
   Rake::Task["dev:update:everything"].invoke()
 end
 
-desc "Prepares the local cache with the Dragontail so we're not jerks to the devs"
+desc "Prepares the local cache (BIG DOWNLOAD)"
 task :init do
   latest_version = DataDragon.versions.first
 
@@ -32,6 +32,3 @@ end
 
 desc "Update data for use in local development"
 task :update => 'update:everything'
-
-
-

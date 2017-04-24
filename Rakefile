@@ -1,10 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('lib', File.dirname(__FILE__))
 
-require 'Utils'
 require 'lol/DataDragon'
-require 'lol/ChampionJudge'
-require 'lol/ItemJudge'
-require 'lol/Tristana'
 
 require 'rake/clean'
 require 'pathname'
@@ -25,7 +21,7 @@ $all_languages = DataDragon.get_generic "cdn/languages.json"
 task :default => :package
 
 task :uglify_data do
-  ENV['pretty'] = nil
+  $is_pretty = false
   Rake::Task['dd:download:all'].invoke()
 end
 
@@ -41,8 +37,10 @@ Dir.glob('lib/tasks/**/*.rake').each do |full_path|
   path = File.dirname(full_path)
   filename = File.basename(full_path, '.*')
   paths = Pathname(path).each_filename.to_a
-  
-  namespace_path = (paths[2..-1] | [File.basename(filename)]).join(":")
+  everything_but_lib_tasks = paths[2..-1]
+  #The | also condenses things like dev/dev.rake into just dev
+  #So that dev/dev.rake is in the "root" of the dev namespace
+  namespace_path = (everything_but_lib_tasks | [File.basename(filename)]).join(":")
   namespace namespace_path do
     load full_path
   end

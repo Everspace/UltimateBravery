@@ -47,3 +47,5 @@ multitask :start => ["#{$node_dir}/node_modules", "#{$node_dir}/static/json"] do
     chdir: $node_dir
   )
 end
+
+#Todo alias all the scripts in the package.json as well
