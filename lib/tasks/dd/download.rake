@@ -1,12 +1,13 @@
 require 'lol/DataDragon'
 
+#TODO: Handle being offline
 all_tasks = []
 
 task "versions" do
   puts "Downloading versions.json"
   Utils.write(
     DataDragon.get_generic("api/versions.json"),
-    "#{output_directory}/json/versions.json",
+    "#{$output_directory}/json/versions.json",
     if ENV['pretty'] then true else false end
   )
   puts "Finished downloading versions.json"
@@ -14,7 +15,7 @@ end
 all_tasks << "versions"
 
 #Actual language data
-download_all_languages = all_languages.collect do |lang|
+download_all_languages = $all_languages.collect do |lang|
   things_to_do = []
 
   things_to_update = Tristana.UPDATEABLE_THINGS.collect do |thing|
@@ -34,14 +35,14 @@ download_all_languages = all_languages.collect do |lang|
                 ItemJudge
               end
 
-      Utils.dump(blob, '_RawBlob') if is_debug
-      blob = judger.new(blob, debug: is_debug).process if judger
-      Utils.dump(blob, '_JudgedBlob') if is_debug
+      Utils.dump(blob, '_RawBlob') if $is_debug
+      blob = judger.new(blob, debug: $is_debug).process if judger
+      Utils.dump(blob, '_JudgedBlob') if $is_debug
 
       Utils.write(
         trist.groomer.groom_blob(blob),
-        "#{output_directory}/json/#{lang}/#{thing}.json",
-        is_pretty
+        "#{$output_directory}/json/#{lang}/#{thing}.json",
+        $is_pretty
       )
 
       puts "Finished updating #{lang}:#{thing}"
@@ -58,13 +59,13 @@ download_all_languages = all_languages.collect do |lang|
 end
 all_tasks |= download_all_languages
 
-download_all_realms = all_realms.collect do |realm|
+download_all_realms = $all_realms.collect do |realm|
   task "realm:#{realm}" do |t|
     puts "Downloading realm #{realm}"
     Utils.write(
       DataDragon.realm_info(realm),
-      "#{output_directory}/json/realm_#{realm.downcase}.json",
-      if ENV['pretty'] then true else false end
+      "#{$output_directory}/json/realm_#{realm.downcase}.json",
+      $is_pretty
     )
     puts "Finished downloading realm #{realm}"
   end
