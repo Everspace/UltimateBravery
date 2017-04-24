@@ -10,9 +10,9 @@ Things are currently highly experimental and probably very broken until a `0.2` 
 * A web browser
 * Bravery
 
-#How to run:
+# How to run:
 
-##Init
+## Init
 
     git clone <this repo>
     cd UltimateBravery
@@ -24,20 +24,20 @@ Things are currently highly experimental and probably very broken until a `0.2` 
 
 Navigate your browser to `localhost:9001/static/index.html` (or let it pop open automatically)
     
-##Deployment
+## Deployment
 
-###1. Build the things
+### 1. Build the things
 
     rake clean
-    rake dd:download:all
+    rake 
     rake node:build
     
-###2. Combine assets
+### 2. Combine assets
 Copy the contents of `./node/build` and `./node/static` into `./build`
 
-###3. Deploy
+### 3. Deploy
 Put the contents of `./build` on your favourite dumb fileserver. I'm using an S3 bucket to host http://bravery.lol/
 
-#Disclaimers and such
+# Disclaimers and such
 
 UltimateBravery isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
