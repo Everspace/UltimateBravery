@@ -4,7 +4,6 @@ require 'lol/Groomer'
 
 require 'yaml'
 require 'benchmark'
-require 'threadparty'
 
 class Tristana
 
@@ -43,36 +42,7 @@ class Tristana
   end
 
   def get_champions
-    data_dragon = @data_dragon
-    groomer = @groomer
-
-    #We grab the 'all champion' json just to get
-    #the names of all champions, and then get the specifics
-    #afterwards
-    base_champ_data = data_dragon.get('champion')
-    data = ThreadParty.new do
-      ProcessQueue do
-        queue base_champ_data['data'].keys
-        perform do |champ_id|
-          begin
-            data_dragon.get("champion/#{champ_id}")
-          rescue #Try to handle riot legacy issue around Fiddlesticks
-            if champ_id == "Fiddlesticks"
-              data_dragon.get("champion/FiddleSticks")
-            else
-              raise
-            end
-          end
-        end
-      end
-    end.iteratively.reduce do |compiled, blob|
-      data_compiled = compiled['data']
-      data_blob = blob['data']
-      compiled['data'] = data_compiled.merge data_blob
-      compiled
-    end
-
-    return data
+    @data_dragon.get('championFull')
   end
 
   def get_items
