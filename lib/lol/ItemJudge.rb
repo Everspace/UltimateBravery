@@ -286,6 +286,8 @@ class ItemJudge < Judge
   ## Turns ID into name.
   ##
   def namify(id)
+    item = get_item(id)
+    raise "#{id} doesn't exist?" unless item
     n = get_item(id)['name'] || "#{id} is nameless?!"
     "#{n} (#{id})"
   end
@@ -370,38 +372,9 @@ class ItemJudge < Judge
     return other_item['into'].include? item_id
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # def self.item_remove_unpurchasables(items)
-  #   items['data'].reject!{|id, info| not info.dig('gold', 'purchasable') }
-  # end
-
-  #################################################
-  # Item queries
-  #################################################
-
+  ###
+  ## Returns a list of item ids that match the list of tags given 
+  ##
   def find_with_tags(*tags)
     return tags if tags.to_a.empty?
     items = all_data.keys - @ignored_items
@@ -409,12 +382,11 @@ class ItemJudge < Judge
     return items
   end
 
+  ###
+  ## Gets an item by ID, looking at result first then base.
+  ##
   def get_item(id)
     return @result.dig('data', id) || @base.dig('data', id)
-  end
-
-  def all_data
-    @base['data'].merge @result['data']
   end
 
 end
