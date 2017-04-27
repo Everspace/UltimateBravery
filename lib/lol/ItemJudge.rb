@@ -389,4 +389,10 @@ class ItemJudge < Judge
     return @result.dig('data', id) || @base.dig('data', id)
   end
 
+  ###
+  ## Provides a "complete" object by combining @result and @base.
+  ##
+  def all_data
+    @base['data'].merge @result['data']
+  end
 end
