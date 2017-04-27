@@ -1,4 +1,7 @@
 require 'lol/DataDragon'
+require 'lol/ChampionJudge'
+require 'lol/ItemJudge'
+require 'lol/Tristana'
 
 #TODO: Handle being offline
 all_tasks = []
