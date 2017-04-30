@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jquery'
 import React from 'react'
 import MainDisplay from 'app/MainDisplay/MainDisplay'
 import DebugItems from 'app/DebugItems'
@@ -18,7 +18,7 @@ export default class UltimateBravery extends React.Component {
   // onLanguageUpdate(ddrag)
   //    this.changeState({window: <BraveryWindow />})
 
-  constructor() {
+  constructor () {
     super()
     this.loadUser = this.loadUser.bind(this)
     this.saveUser = this.saveUser.bind(this)
@@ -30,11 +30,11 @@ export default class UltimateBravery extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     DataDragon.update(null, null, this.init)
   }
 
-  init() {
+  init () {
     this.setState({
       user: this.loadUser(),
       display: 'MainDisplay',
@@ -45,70 +45,69 @@ export default class UltimateBravery extends React.Component {
     })
   }
 
-  saveUser() {
-    if(this.state && this.state.user) {
+  saveUser () {
+    if (this.state && this.state.user) {
       StorageManager.saveObject('user', this.state.user)
     }
   }
 
-  loadUser() {
-    console.log("loading user")
+  loadUser () {
+    console.log('loading user')
     let defaultUser = {
-      championData: {},   //YOU HAVE NOTHING
+      championData: {},   // YOU HAVE NOTHING
       itemData: {},
-      lolMap: '11',        //Is current summoner's rift
+      lolMap: '11',        // Is current summoner's rift
       summonerLevel: 30
     }
 
     let user = StorageManager.loadObject('user', defaultUser)
     console.log(user)
-    user.championData = window.dat.champions.ubrave.ids.reduce((mem,id)=>{
-        let champStatus = user.championData[id]
-        mem[id] = champStatus || false
-        return mem
-      },{})
+    user.championData = window.dat.champions.ubrave.ids.reduce((mem, id) => {
+      let champStatus = user.championData[id]
+      mem[id] = champStatus || false
+      return mem
+    }, {})
 
     return user
   }
 
-  setChampionData(state) {
+  setChampionData (state) {
     this.modifyUser('championData', state)
   }
 
-  setSelectedMap(state) {
+  setSelectedMap (state) {
     this.modifyUser('lolMap', state)
   }
 
-  modifyUser(key, value) {
+  modifyUser (key, value) {
     let newUserState = {}
 
-    if(value instanceof Object) {
-      //Merge the key target and the new values togethereerrrr
+    if (value instanceof Object) {
+      // Merge the key target and the new values togethereerrrr
       newUserState[key] = Object.assign({}, this.state.user[key], value)
     } else {
       newUserState[key] = value
     }
 
-
-    //Glue new and old state together
+    // Glue new and old state together
     this.setState({
       user: Object.assign({}, this.state.user, newUserState)
     })
     this.saveUser()
   }
 
-  dataDragonUpdated() {
-    console.log("DataDragon updated, refangling state")
+  dataDragonUpdated () {
+    console.log('DataDragon updated, refangling state')
     this.setState({
       items: window.dat.items,
       display: 'MainDisplay',
       champions: window.dat.champions,
       languages: window.dat.languages,
       dd: window.dd
-    });
+    })
   }
 
-  render() {
+  render () {
     let style = {
       display: 'flex',
       flexWrap: 'wrap',
@@ -145,38 +144,38 @@ export default class UltimateBravery extends React.Component {
     let DisplayedThing = choice.item
     let combinedProps = Object.assign({}, defaultProps, choice.props)
 
-    switch(this.state.display){
+    switch (this.state.display) {
       case 'PleaseWait':
-        return(<DisplayedThing/>)
-        break;
+        return (<DisplayedThing />)
+        break
       default:
-        return(
+        return (
           <div className='UltimateBravery'>
             <div className='Menu'>
               <DropdownSelector
                 items={['en_US', 'ja_JP', 'es_MX']}
                 defaultValue={window.dd.language}
                 languageData={this.state.languages.data}
-                transformKey={(lang)=>`native_${lang.split('_')[0]}`}
+                transformKey={(lang) => `native_${lang.split('_')[0]}`}
                 events={{
-                  onChange: (event)=>{
+                  onChange: (event) => {
                     DataDragon.update(null, event.target.value, this.dataDragonUpdated)
-                    this.setState({display:'PleaseWait'})
+                    this.setState({display: 'PleaseWait'})
                   }
                 }}
               />
               <DropdownSelector
                 items={Object.keys(choices)}
                 events={{
-                  onChange: (event)=>this.setState({display: event.target.value})
+                  onChange: (event) => this.setState({display: event.target.value})
                 }}
               />
             </div>
 
             <DebugItems {...combinedProps} />
           </div>
-      )
-      break;
+        )
+        break
     }
   }
 }

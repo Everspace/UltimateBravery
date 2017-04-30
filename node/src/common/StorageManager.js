@@ -1,26 +1,26 @@
 export default class StorageManager {
-  static loadObject(location) {
+  static loadObject (location) {
     var object = {}
     let data = localStorage.getItem(`UltimateBravery_${location}`)
 
-    if(data) {
-      object = JSON.parse(data);
+    if (data) {
+      object = JSON.parse(data)
     }
 
     return object
   }
 
-  static loadObject(location, defaultValue) {
+  static loadObject (location, defaultValue) {
     var object = {}
     let data = localStorage.getItem(`UltimateBravery_${location}`)
 
-    if(data) {
-      object = JSON.parse(data);
+    if (data) {
+      object = JSON.parse(data)
     }
 
-    //TODO: recurse
-    for(let prop in defaultValue) {
-      if(!object[prop]) {
+    // TODO: recurse
+    for (let prop in defaultValue) {
+      if (!object[prop]) {
         object[prop] = defaultValue[prop]
       }
     }
@@ -28,14 +28,14 @@ export default class StorageManager {
     return object
   }
 
-  static save(location, object) {
+  static save (location, object) {
     localStorage.setItem(
       `UltimateBravery_${location}`,
       object
     )
   }
 
-  static saveObject(location, object) {
+  static saveObject (location, object) {
     localStorage.setItem(
       `UltimateBravery_${location}`,
       JSON.stringify(object)

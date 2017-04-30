@@ -14,22 +14,22 @@ import Random from 'common/Random'
 */
 export default class ChampionRandomizers {
 
-  static Viktor(braveFactory) {
-    //Add a perfect hex-core to our chosen items
+  static Viktor (braveFactory) {
+    // Add a perfect hex-core to our chosen items
     braveFactory.addItemById('3198')
     braveFactory.completeBravery()
   }
 
-  static Gangplank(braveFactory) {
-    let serpentItems = Random.shuffle(['3901','3902','3903'])
-    for(let index in serpentItems) {
+  static Gangplank (braveFactory) {
+    let serpentItems = Random.shuffle(['3901', '3902', '3903'])
+    for (let index in serpentItems) {
       braveFactory.addExtraItemById(serpentItems[index])
     }
 
     braveFactory.completeBravery()
   }
 
-  static Cassiopeia(braveFactory) {
+  static Cassiopeia (braveFactory) {
     braveFactory.fillWithItems()
     braveFactory.completeBravery()
   }

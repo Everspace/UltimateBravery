@@ -3,12 +3,12 @@ import './DropdownSelector.less'
 
 class DropdownSelector extends React.Component {
 
-  constructor() {
+  constructor () {
     super()
     this.makeOption = this.makeOption.bind(this)
   }
 
-  makeOption(id) {
+  makeOption (id) {
     let key = (this.props.transformKey) ? this.props.transformKey(id) : id
     let text = (this.props.languageData) ? this.props.languageData[key] : key
     return (
@@ -18,9 +18,9 @@ class DropdownSelector extends React.Component {
     )
   }
 
-  render() {
+  render () {
     return (
-      <select className="DropdownSelector"
+      <select className='DropdownSelector'
         defaultValue={(this.props.defaultValue) ? this.props.defaultValue : this.props.items[0]}
         {...this.props.events}
       >
@@ -31,16 +31,16 @@ class DropdownSelector extends React.Component {
 }
 
 DropdownSelector.propTypes = {
-  //What to render
+  // What to render
   items: React.PropTypes.array.isRequired,
-  //Converts the key given to a new key for use
+  // Converts the key given to a new key for use
   // if localized
   transformKey: React.PropTypes.func,
-  //If provided languageData, will localize
+  // If provided languageData, will localize
   languageData: React.PropTypes.object,
-  //Default default is item at index[0]
+  // Default default is item at index[0]
   defaultValue: React.PropTypes.any,
-  //onChange and things map.
+  // onChange and things map.
   events: React.PropTypes.objectOf(React.PropTypes.func)
 }
 

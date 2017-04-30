@@ -1,12 +1,12 @@
 import React from 'react'
-import SpriteImage from 'lol/common/SpriteImage';
+import SpriteImage from 'lol/common/SpriteImage'
 import './ChampionIcon.less'
 
-export default class ChampionIcon extends React.Component  {
-  render() {
+export default class ChampionIcon extends React.Component {
+  render () {
     let classes = 'ChampionIcon'
 
-    if(!this.props.have) {
+    if (!this.props.have) {
       classes += ' Disabled'
     }
 
@@ -15,6 +15,6 @@ export default class ChampionIcon extends React.Component  {
       onClick={this.props.onClick}
       image={this.props.image}
       dd={this.props.dd}
-    />;
+    />
   }
 }
