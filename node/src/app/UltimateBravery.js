@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import React from 'react'
 import MainDisplay from 'app/MainDisplay/MainDisplay'
 import DebugItems from 'app/DebugItems'
@@ -31,7 +30,8 @@ export default class UltimateBravery extends React.Component {
   }
 
   componentDidMount () {
-    DataDragon.update(null, null, this.init)
+    DataDragon.update(null, null)
+    .then(this.dataDragonUpdated)
   }
 
   init () {
