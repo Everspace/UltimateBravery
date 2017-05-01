@@ -2,33 +2,25 @@
 // - window.dd (datadragon info)
 // - window.dat (json blob collection)
 export default class DataDragon {
-  // Begins the flow for rerouting the update. Returns a jquery promice that you can
-  // .then(f()) off of.
-  //
-  // All other functions are just to help this one.
-  //
-  // Start request for the realm json
-  // .then drop down ddragon info
-  // .then for each of the points of data
-  //   Start request for items
-  //   requests.map($.when).then(()=>callback)
+
+  static dataPoints = [
+    'items',
+    'champions',
+    'languages'
+  ]
+
   static update (realm = null, language = null) {
     return new Promise((resolve, reject) => {
       realm = DataDragon.setRealm(realm)
 
-      fetch(`json/realm_${realm}.json`)
-        .catch((reason) => console.error(reason))
-
-        .then((res) => res.json())
-        .catch((reason) => console.error(reason))
-
+      DataDragon.getJSON(`json/realm_${realm}.json`)
         .then((realmJSON) => {
           DataDragon.updateDataDragon(realmJSON)
           DataDragon.setLanguage(language)
 
           window.dat = window.dat || {}
           return Promise.all(
-            ['items', 'champions', 'languages'].map(DataDragon.requestData)
+            DataDragon.dataPoints.map(DataDragon.requestData)
           )
         })
 
@@ -63,9 +55,15 @@ export default class DataDragon {
   }
 
   static requestData (dataPoint) {
-    return fetch(`json/${window.dd.language}/${dataPoint}.json`)
-          .then((res) => { res.json() })
+    return DataDragon.getJSON(`json/${window.dd.language}/${dataPoint}.json`)
           .then((blob) => { window.dat[dataPoint] = blob })
+  }
+
+  static getJSON (item) {
+    return fetch(item)
+          .catch(console.error)
+          .then((res) => res.json())
+          .catch(console.error)
   }
 
 }
