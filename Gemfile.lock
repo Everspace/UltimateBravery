@@ -4,7 +4,7 @@ GEM
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     multi_xml (0.5.5)
-    threadparty (0.1.1)
+    ruby-progressbar (1.8.1)
 
 PLATFORMS
   ruby
@@ -12,4 +12,7 @@ PLATFORMS
 
 DEPENDENCIES
   httparty
-  threadparty
+  ruby-progressbar
+
+BUNDLED WITH
+   1.14.6

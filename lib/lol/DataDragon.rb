@@ -5,7 +5,7 @@ class DataDragon
 
   #very specifically not https location for fetching realm.json
   def self.DDRAGON_URL
-  "http://ddragon.leagueoflegends.com"
+    "https://ddragon.leagueoflegends.com"
   end
 
   #cdn = cdn url
@@ -64,6 +64,7 @@ class DataDragon
       #I should attempt to load from the file before requesting
       File.open(cache_path) {|f| f.read }
     else
+      perhaps_html_options.merge!({verify: false})
       HTTParty.get(url, **perhaps_html_options).body
     end
   end
