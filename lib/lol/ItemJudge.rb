@@ -193,7 +193,7 @@ class ItemJudge < Judge
   ###
   ## Puts the items in the baskets or else it gets the hose again.
   ##
-  ## Specifically takes stuff from the 'Group' config, and puts it
+  ## Also takes stuff from the 'Group' config, and puts it
   ## in the 'group' and 'limit' subobject of the exported JSON.
   def groupify_items()
     group_explicit
@@ -254,15 +254,49 @@ class ItemJudge < Judge
     end
 
     #group-on, apply directly to result
-    if group then
-      #Let's keep a quick list of what IDs are part of what groups
-      @result['group'][group] = [] unless @result['group'][group]
-      @result['group'][group] |= [item_id]
+    add_to_group(item_id, group) if group
 
-      #and also add it to the item's properties for easy going backwards
-      @result['data'][item_id]['groups'] = [] unless @result['data'][item_id]['groups']
-      @result['data'][item_id]['groups'] |= [group]
+    add_to_maps(item_id)
+    add_to_champion_unique(item_id)
+  end
+
+  ##
+  # Builds up the maps key for easy randomization.
+  def add_to_maps(item_id)
+    item = get_item(item_id)
+    @result['map'] = {} unless @result.has_key? 'map'
+    item['maps'].each do |map_id, is_valid|
+      add_to_map(item_id, map_id) if is_valid
     end
+  end
+
+  ##
+  # Checks null/empty and stuff before putting it into the map key
+  def add_to_map(item_id, map_id)
+    @result['map'] = {} unless @result.dig('map')
+    @result['map'][map_id] = [] unless @result.dig('map', map_id)
+    @result['map'][map_id] |= [item_id]
+  end
+  
+  ##
+  # Adds to a list of champion unique items. Will deal with them
+  # on a champ by champ basis.
+  def add_to_champion_unique(item_id)
+    item = get_item(item_id)
+    if item.has_key? ['requiredChampion']
+      @result['championUnique'] = [] unless @result.dig('championUnique')
+      @result['championUnique'] |= [item_id]      
+    end
+  end
+
+  def add_to_group(item_id, group)
+    #Let's keep a quick list of what IDs are part of what groups
+    @result['group'][group] = [] unless @result['group'][group]
+    @result['group'][group] |= [item_id]
+
+    #and also add it to the item's properties for easy going backwards
+    @result['data'][item_id]['groups'] = [] unless @result['data'][item_id]['groups']
+    @result['data'][item_id]['groups'] |= [group]
   end
 
   ###
@@ -276,7 +310,9 @@ class ItemJudge < Judge
     @ignored_items |= [item_id]
 
     #You can not hide from me in the groups either
-    @result['group'].each {|_, list| list.delete item_id}
+    ['group', 'map', 'championUnique'].each do |place|
+      @result[place].each {|_, list| list.delete item_id} if @result.has_key? place
+    end
 
     #And your data is worthless.
     @result['data'].delete item_id
