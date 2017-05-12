@@ -38,13 +38,21 @@ class ItemJudge < Judge
   end
 
   def debug_namify_items
-    @result['group'].each do |_, list|
-      list.map! {|id| namify id }.sort!
+    namifyables = [
+      'map',
+      'group'
+    ]
+
+    namifyables.each do |area|
+      @result[area].each do |_, list|
+        list.map! {|id| namify id }.sort!
+      end
     end
 
-    @result['zzzyet to do'] = @potential_items.map{|id| namify id}.sort
-    @result['zzzgarbage']   = @ignored_items.map{|id| namify id}.sort
-    @result['zzzgood shit'] = @used_items.map{|id| namify id}.sort
+    @result['zza - yet to do']   = @potential_items.map{|id| namify id}.sort
+    @result['zzb - good shit'] = @used_items.map{|id| namify id}.sort
+    @result['zzc - garbage']   = @ignored_items.map{|id| namify id}.sort
+    @result = Hash[@result.sort]
   end
 
 
@@ -195,7 +203,7 @@ class ItemJudge < Judge
   ##
   ## Also takes stuff from the 'Group' config, and puts it
   ## in the 'group' and 'limit' subobject of the exported JSON.
-  def groupify_items()
+  def groupify_items()    
     group_function_tags.each do |tag|
       get_all_group_with(tag).each do |group_name, group_data|
         send(
@@ -204,7 +212,7 @@ class ItemJudge < Judge
           group_data[tag],
           group_data
         )
-  end
+      end
     end
   end
 
@@ -236,7 +244,7 @@ class ItemJudge < Judge
   ## given by the api
   def group_process_tags(group_name, tag_data, group_data)
     find_with_tags(*tag_data).each do |item_id|
-          add_item(item_id: item_id, group: group_name)
+        add_item(item_id: item_id, group: group_name)
     end
   end
 
