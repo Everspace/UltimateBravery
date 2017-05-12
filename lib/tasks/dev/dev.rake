@@ -33,9 +33,16 @@ desc "Prepares the local cache (BIG DOWNLOAD)"
 task :init do
   download_tarball
   Rake::Task["dd:download:versions"].invoke()
-  cp "#{$output_dir}/json/versions.json", "#{$node_dir}/static/json/versions.json"
   Rake::Task["dd:download:realms"].invoke()
-  cp_r "#{$output_dir}/json/realm_.*\.json", "#{$node_dir}/static/json"
+  jsons = FileList["#{$output_dir}/json/*\.json"]
+  nice_names = jsons.to_a
+    .map {|f| File.basename(f) }
+    .sort
+    .each_slice(3).to_a
+    .map {|a| a.join(', ')}
+    .join ",\n  "
+  puts "Copying [\n  #{nice_names}\n]\nto: #{$node_dir}/static/json"
+  cp jsons, "#{$node_dir}/static/json"
 end
 
 desc "Update data for use in local development"
