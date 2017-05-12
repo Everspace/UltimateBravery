@@ -8,14 +8,14 @@ require 'pathname'
 $is_pretty = if ENV['pretty'] then true else false end
 $is_debug = if ENV['debug'] then true else false end
 
-$config_directory = File.expand_path(ENV['config_directory'] || './config')
-$output_directory = File.expand_path(ENV['output_directory'] || './build')
-CLEAN << $output_directory
+$config_dir = File.expand_path(ENV['config_dir'] || './config')
+$output_dir = File.expand_path(ENV['output_dir'] || './build')
+CLEAN << $output_dir
 CLOBBER << './temp'
 
 $node_dir = File.expand_path 'node'
 $dev_url = "http://localhost:9001/"
-$all_realms = YAML::load_file("#{$config_directory}/Realms.yaml")
+$all_realms = YAML::load_file("#{$config_dir}/Realms.yaml")
 $all_languages = DataDragon.get_generic "cdn/languages.json"
 
 task :default => :package
@@ -25,10 +25,10 @@ task :uglify_data do
   Rake::Task['dd:download:all'].invoke()
 end
 
-desc "Gets everything needed to deploy in the output_directory"
+desc "Gets everything needed to deploy in the output_dir"
 multitask :package => [:uglify_data, 'node:package'] do
   puts 'Copying artifacts around'
-  cp_r "#{$node_dir}/build/.", $output_directory
+  cp_r "#{$node_dir}/build/.", $output_dir
   puts 'Package should be complete'
 end
 
