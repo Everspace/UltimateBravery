@@ -46,7 +46,11 @@ Group:
   range:
     items:
     - '3085' #Runnan's Hurricane
-
+  
+  championUnique:
+    hasAttributes: 
+      requiredChampion: null
+    
 #Enchantable things have an "extra step" that we have to account for
 #In addition it appends the name of the "source" item to the enchantment
 #so that tooltips are nicer to read

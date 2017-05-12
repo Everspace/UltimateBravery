@@ -196,28 +196,67 @@ class ItemJudge < Judge
   ## Also takes stuff from the 'Group' config, and puts it
   ## in the 'group' and 'limit' subobject of the exported JSON.
   def groupify_items()
-    group_explicit
-    group_tagged
+    group_function_tags.each do |tag|
+      get_all_group_with(tag).each do |group_name, group_data|
+        send(
+          "group_process_#{tag}".to_sym,
+          group_name,
+          group_data[tag],
+          group_data
+        )
+  end
+    end
   end
 
-  def group_explicit()
+  def group_function_tags
+    [
+      'items', 
+      'tags',
+      'hasAttributes',
+      'removeFromMapPools'
+    ]
+  end
+
+  def get_all_group_with(attribute)
     @config['Group']
-      .each {|group_name, data|
-        next unless data['items']
-        data['items'].each {|item_id|
+      .find_all {|group_name, group_data| group_data[attribute] }
+  end
+
+  ###
+  ## Adds excplicitly added items for a particular group
+  ##
+  def group_process_items(group_name, tag_data, data)
+    tag_data.each do |item_id|
+      add_item(item_id: item_id, group: group_name)
+    end
+  end
+
+  ###
+  ## Adds all items to the group that match all of the 'tags'
+  ## given by the api
+  def group_process_tags(group_name, tag_data, group_data)
+    find_with_tags(*tag_data).each do |item_id|
           add_item(item_id: item_id, group: group_name)
-        }
-      }
+    end
   end
 
-  def group_tagged()
-    @config['Group']
-      .each {|name, data|
-        next unless data['tags']
-        find_with_tags(*data['tags']).each {|item_id|
-          add_item(item_id: item_id, group: name)
-        }
-      }
+  ###
+  ## Match items that have particular attributes in them
+  ## mostly used to pull out "requiredChampion" special items
+  def group_process_hasAttributes(group_name, tag_data, data)
+    tag_data.each do |attr_name, attr_value|      
+      find_with_attributes(attr_name).each do |item_id|
+        item = get_item(item_id)
+
+        should_add = case attr_value
+          when Array, Hash
+            raise "TODO: support Array and Hashes in Item.yaml"
+          when nil then item[attr_name]
+          else item[attr_name] == attr_value
+        end
+        add_item(item_id: item_id, group: group_name) if should_add
+      end
+    end
   end
 
   #################################################
@@ -413,9 +452,24 @@ class ItemJudge < Judge
   ##
   def find_with_tags(*tags)
     return tags if tags.to_a.empty?
-    items = all_data.keys - @ignored_items
-    items.keep_if {|item_id| not (get_item(item_id)['tags'] & tags).empty?}
-    return items
+    (all_data.keys - @ignored_items).keep_if do |item_id| 
+      not (get_item(item_id)['tags'] & tags).empty?
+    end
+  end
+
+  ###
+  ## Returns a list of item ids that have the list of attributes given
+  ##
+  def find_with_attributes(*attributes)
+    return attributes if attributes.to_a.empty?
+    (all_data.keys - @ignored_items).find_all do |item_id| 
+      item = get_item(item_id)
+      not (item.keys & attributes).empty? and 
+      attributes.collect {|a| item[a]}
+        .none? {|value|
+          value.nil? or (if value.respond_to? :empty? then value.empty? else false end)
+        }
+    end
   end
 
   ###
