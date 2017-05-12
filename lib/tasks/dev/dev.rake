@@ -5,10 +5,9 @@ directory "#{$node_dir}/static/json" do
   Rake::Task["dev:update:everything"].invoke()
 end
 
-desc "Prepares the local cache (BIG DOWNLOAD)"
-task :init do
-  latest_version = DataDragon.versions.first
 
+def download_tarball
+  latest_version = DataDragon.versions.first
   file_name = "dragontail-#{latest_version}.tgz"
   remote_file = "#{DataDragon.DDRAGON_URL}/cdn/#{file_name}"
   local_file = File.join('temp', file_name)
@@ -28,6 +27,15 @@ task :init do
     Utils.unpack(local_file, DataDragon.CACHE_DIR)
     puts "Finished #{file_name} extraction"
   end
+end
+
+desc "Prepares the local cache (BIG DOWNLOAD)"
+task :init do
+  download_tarball
+  Rake::Task["dd:download:versions"].invoke()
+  cp "#{$output_dir}/json/versions.json", "#{$node_dir}/static/json/versions.json"
+  Rake::Task["dd:download:realms"].invoke()
+  cp_r "#{$output_dir}/json/realm_.*\.json", "#{$node_dir}/static/json"
 end
 
 desc "Update data for use in local development"

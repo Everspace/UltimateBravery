@@ -10,7 +10,7 @@ task "versions" do
   puts "Downloading versions.json"
   Utils.write(
     DataDragon.get_generic("api/versions.json"),
-    "#{$output_dir}/json/versions.json",
+    "#{$output_directory}/json/versions.json",
     if ENV['pretty'] then true else false end
   )
   puts "Finished downloading versions.json"
@@ -44,7 +44,7 @@ download_all_languages = $all_languages.collect do |lang|
 
       Utils.write(
         trist.groomer.groom_blob(blob),
-        "#{$output_dir}/json/#{lang}/#{thing}.json",
+        "#{$output_directory}/json/#{lang}/#{thing}.json",
         $is_pretty
       )
 
@@ -67,7 +67,7 @@ download_all_realms = $all_realms.collect do |realm|
     puts "Downloading realm #{realm}"
     Utils.write(
       DataDragon.realm_info(realm),
-      "#{$output_dir}/json/realm_#{realm.downcase}.json",
+      "#{$output_directory}/json/realm_#{realm.downcase}.json",
       $is_pretty
     )
     puts "Finished downloading realm #{realm}"
@@ -75,6 +75,9 @@ download_all_realms = $all_realms.collect do |realm|
 
   "realm:#{realm}"
 end
+
+desc "download all the different realms"
+multitask "realms" => download_all_realms
 all_tasks |= download_all_realms
 
 desc "download everything from data dragon"
