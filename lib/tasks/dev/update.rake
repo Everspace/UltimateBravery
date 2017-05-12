@@ -11,16 +11,27 @@ end
 
 task :languages, [:language] => ['dev:init'] do |t, args|
   args.with_defaults({language: 'en_US'})
-  ENV['pretty'] = 'true'
+
+  $is_pretty = true
+  
+  copy_opts = {
+    remove_destination: true,
+    verbose: true
+  }
+
   puts "Updating local server's '#{args[:language]}' data"
+
+  source = "#{$output_directory}/json"
+  target = "#{$node_dir}/static/json"
+
   case args[:language]
   when 'all'
     Rake::Task["dd:download:#{args[:language]}"].invoke()
-    cp_r "#{$output_directory}/json", File.dirname("#{$node_dir}/static/json")
+    cp_r target, File.dirname(target), **copy_opts
   else
     args[:language].split(' ').flatten.each do |lang|
       Rake::Task["dd:download:#{lang}"].invoke()
-      cp_r "#{$output_directory}/json/#{lang}", "#{$node_dir}/static/json"
+      cp_r "#{source}/#{lang}", target, **copy_opts
     end
   end
 end
