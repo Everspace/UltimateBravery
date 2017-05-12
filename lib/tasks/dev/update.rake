@@ -1,6 +1,6 @@
 task :everything => ['dev:init'] do
   Rake::Task['dd:download:all'].invoke()
-  cp_r "#{$output_directory}/json", File.dirname("#{$node_dir}/static/json")
+  cp_r "#{$output_dir}/json", File.dirname("#{$node_dir}/static/json")
 end
 
 $all_languages.collect do |lang|
@@ -21,7 +21,7 @@ task :languages, [:language] => ['dev:init'] do |t, args|
 
   puts "Updating local server's '#{args[:language]}' data"
 
-  source = "#{$output_directory}/json"
+  source = "#{$output_dir}/json"
   target = "#{$node_dir}/static/json"
 
   case args[:language]
