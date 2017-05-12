@@ -32,3 +32,6 @@ end
 
 desc "Update data for use in local development"
 task :update => 'update:everything'
+
+desc "Populates en_US and starts dev server"
+task :start => ["dev:update:languages", "node:start"]

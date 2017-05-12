@@ -9,7 +9,7 @@ $all_languages.collect do |lang|
   end
 end
 
-task :languages, [:language] do |t, args|
+task :languages, [:language] => ['dev:init'] do |t, args|
   args.with_defaults({language: 'en_US'})
   ENV['pretty'] = 'true'
   puts "Updating local server's '#{args[:language]}' data"
