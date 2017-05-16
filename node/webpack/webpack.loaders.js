@@ -2,7 +2,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var jsFiles = {
   // Find the files with this extension
-  test: /\.js$/,
+  test: /\.jsx?$/,
   // Skip this
   exclude: /node_modules/,
   // Then apply the appropreate loaders
@@ -17,11 +17,12 @@ var jsFiles = {
 
 var lessLoaders = [
   {
-    loader: 'css-loader',
-    options: {
-      modules: true,
-      localIdentName: '[local]--[hash:base64:5]'
-    }
+    loader: 'css-loader'
+    // , TODO: Add modules back in
+    // options: {
+    //   modules: true,
+    //   localIdentName: '[local]--[hash:base64:5]'
+    // }
   },
   {
     loader: 'less-loader'
