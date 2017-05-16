@@ -4,6 +4,27 @@
     <meta charset="utf-8" />
     <!-- https://developers.google.com/web/fundamentals/design-and-ui/responsive/ -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- In case of emergencies...
+    <script>
+      (function(){
+        var replace = function(oldLog) {
+          return function(message) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '/console', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+              value: message
+            }));
+            oldLog.apply(console, arguments);
+          };
+        }
+
+        console.log = replace(console.log)
+        console.warn = replace(console.warn)
+        console.error = replace(console.error)
+      })();
+    </script>
+    -->
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>

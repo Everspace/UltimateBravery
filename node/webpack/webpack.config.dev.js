@@ -6,7 +6,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   devtool: 'source-map',
-  entry: ['webpack-hot-middleware/client', './src/main.js'],
+  entry: ['whatwg-fetch', 'webpack-hot-middleware/client', './src/main.js'],
   output: {
     path: path.join(__dirname, '..', 'build'),
     filename: 'bundle.js',

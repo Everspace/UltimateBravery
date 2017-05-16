@@ -5,7 +5,7 @@ var DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
-  entry: ['./src/main.js'],
+  entry: ['whatwg-fetch', './src/main.js'],
   output: {
     path: path.join(__dirname, '..', 'build'),
     filename: 'bundle.js',
