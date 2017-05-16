@@ -8,7 +8,7 @@ class ChampionJudge < Judge
   def process()
     init_result
 
-    @result['allChamps'] = @base['data'].keys
+    @result['allChampions'] = @base['data'].keys
 
     add_groups
     determine_meleeness
@@ -29,10 +29,10 @@ class ChampionJudge < Judge
   def add_groups()
     @result['groups'] = {}
 
-    @result['allChamps'].each do |champ|
+    @result['allChampions'].each do |champ|
       groups = @config.dig(champ, 'group')
       next unless groups
-      
+
       groups.each do |group|
         @result['data'][champ]["is#{group.capitalize}"] = true;
         @result['groups'][group] = [] unless @result['groups'][group]
@@ -43,7 +43,7 @@ class ChampionJudge < Judge
 
   def determine_meleeness
 
-    @result['allChamps'].each do |champ|
+    @result['allChampions'].each do |champ|
       attackrange =  @base['data'][champ]['stats']['attackrange']
       the_max = @config['General']['Max Melee Range']
 
