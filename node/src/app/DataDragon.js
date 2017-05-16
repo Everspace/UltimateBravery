@@ -13,7 +13,7 @@ export default class DataDragon {
     return new Promise((resolve, reject) => {
       realm = DataDragon.setRealm(realm)
 
-      DataDragon.getJSON(`json/realm_${realm}.json`)
+      DataDragon.getJSON(`./json/realm_${realm}.json`)
         .then((realmJSON) => {
           DataDragon.updateDataDragon(realmJSON)
           DataDragon.setLanguage(language)
