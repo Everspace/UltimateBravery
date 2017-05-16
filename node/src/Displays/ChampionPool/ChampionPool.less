@@ -1,32 +1,32 @@
 @import '~common/Media.less';
 @import '~pallet.less';
 
-.ChampionPool {
-
+.Champions {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
+	margin: 1em auto;
 
 	.ChampionIcon {
-		margin: 0.2em;
+		margin: 0.1em;
 		transition: all 0.2s ease 0s;
 
 		.mobile_switch({
-			zoom: 135%;
-		},@else:{
+			zoom: 150%;
+		}, @else:{
 			zoom: 100%;
 		});
 
 		.clicks() {
 			&:active {
 				border-color: @color-border-intrest-high;
-				filter: grayscale(75%) brightness(1.1);
+				filter: grayscale(75%) brightness(1.2);
 			}
 		}
 
 		.hover() {
 			.if_hoverable({
-				filter: grayscale(25%) brightness(1);
+				filter: grayscale(10%) brightness(1.2);
 			});
 		}
 
@@ -49,4 +49,3 @@
 		}
 	}
 }
-

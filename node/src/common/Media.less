@@ -9,8 +9,8 @@
 }
 
 .mobile_switch(@on_mobile, @else) {
-	.mobile_switch(@on_mobile);
 	@media screen and (-webkit-min-device-pixel-ratio: 1.0) {@else();}
+	.mobile_switch(@on_mobile);
 }
 
 //Apply the following style only if
@@ -25,10 +25,10 @@
 }
 
 .if_hoverable(@DO_THE_THINGS, @else) {
-	.if_hoverable(@DO_THE_THINGS);
-	@media not (hover:hover) {
+	@media (hover: none) {
 		&:hover {
 			@else();
 		}
 	}
+	.if_hoverable(@DO_THE_THINGS);
 }
