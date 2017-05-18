@@ -1,26 +1,27 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import * as ChampionPool from 'Displays/ChampionPool'
 import DataDragon from 'app/DataDragon'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
+
+import { AppContainer } from 'react-hot-loader'
+import WindowContainer from 'WindowContainer'
+
+let render = (Component) => {
+  ReactDOM.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    document.getElementById('app')
+  )
+}
 
 DataDragon.update()
 .then(() => {
-  let initialState = {
-    champions: window.dat.champions.allChampions.reduce((memory, id) => {memory[id] = true; return memory}, {})
+  render(WindowContainer)
+})
+.then(() => {
+  if (module.hot) {
+    module.hot.accept('WindowContainer', () => {
+      render(WindowContainer)
+    })
   }
-
-  let store = createStore(
-    ChampionPool.reducer,
-    initialState
-  )
-
-  let ToRender = ChampionPool.MainWindow
-  ReactDOM.render(
-    <Provider store={store}>
-      <ToRender />
-    </Provider>,
-    document.getElementById('app')
-  )
 })

@@ -6,27 +6,29 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
+  context: path.resolve(__dirname, '..', 'src'),
   entry: [
+    // activate HMR for React
+    'react-hot-loader/patch',
+
     // bundle the client for webpack-dev-server
     // and connect to the provided endpoint
-    'webpack-dev-server/client?http://localhost:9001',
+    'webpack-hot-middleware/client',
 
     // bundle the client for hot reloading
     // only- means to only hot reload for successful updates
     'webpack/hot/only-dev-server',
 
-    // activate HMR for React
-    'react-hot-loader/patch',
-
-
     // App
-    './src/main.js'
+    './main.js'
   ],
+
   output: {
     path: path.join(__dirname, '..', 'build'),
     filename: 'bundle.js',
-    publicPath: '/static/'
+    publicPath: '/'
   },
+
   module: {
     rules: require('./webpack.loaders.js')
   },
@@ -38,18 +40,21 @@ module.exports = {
     new ExtractTextPlugin('style.css'),
 
     new webpack.DefinePlugin({
-      'environment': '"development"',
+      'environment': 'development',
       NODE_ENV: JSON.stringify('development')
     }),
 
     new HtmlWebpackPlugin({
       title: 'ULTIMATE BRAVERY!!!',
-      template: path.join('src', 'public', 'index.ejs')
+      template: path.join('public', 'index.ejs')
     })
   ],
 
   resolve: {
     modules: ['node_modules', 'src'],
+    alias: { // for use in less, a quirk that requires a '~<IDENTIFIER>/' to use the files
+      '#': path.resolve(__dirname, '..', 'src')
+    },
     plugins: [
       new DirectoryNamedWebpackPlugin()
     ]

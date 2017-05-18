@@ -1,4 +1,5 @@
 var path = require('path')
+var fs = require('fs')
 var express = require('express')
 
 var app = express()
@@ -9,7 +10,17 @@ app.use(require('connect-history-api-fallback')({verbose: false}))
 
 app.use(
   require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
+    color: true,
+    stats: {
+      colors: true,
+
+      assets: true,
+      chunks: false,
+      errors: true,
+      errorDetails: true,
+      warnings: true
+    },
+    // noInfo: true,
     publicPath: config.output.publicPath
   })
 // In case of emergencies
@@ -21,8 +32,17 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'src', 'public', 'index.ejs'))
 })
 
-app.get('/*', function (req, res) {
+const pushToStatic = (req, res) => {
   res.sendFile(path.join(__dirname, 'static', req.originalUrl))
+}
+
+[
+  '/favicon/*',
+  '/img/*',
+  '/json/*',
+  /\/favicon\.(png|ico)/
+].forEach((address) => {
+  app.get(address, pushToStatic)
 })
 
 var server = app.listen(9001, '0.0.0.0', function (err) {
