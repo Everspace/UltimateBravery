@@ -22,7 +22,6 @@ function setChampion (state, action) {
 
 function toggleChampion (state, action) {
   let s = newState(state)
-  console.log(s)
   s.champions[action.id] = !(state.champions[action.id] || false)
   return s
 }

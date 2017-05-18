@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ChampionIcon from 'lol/champion/ChampionIcon'
+import { SpriteIcon } from 'lol/ChampionComponents'
 import './ChampionPool.less'
 
 import SearchBar from './SearchBar'
@@ -60,12 +60,11 @@ class MainWindow extends React.Component {
   }
 
   makeChampionButton = (id) => {
-    let button = <ChampionIcon
+    let button = <SpriteIcon
       key={id}
+      id={id}
       onClick={() => this.props.toggleChampion(id)}
-      have={this.props.champions[id]}
-      image={window.dat.champions.data[id].image}
-      dd={window.dd}
+      className={this.props.champions[id] ? '' : 'Disabled'}
     />
     return button
   }
