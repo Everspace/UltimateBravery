@@ -71,7 +71,7 @@ class MainWindow extends React.Component {
 
   render () {
     return (
-      <div className='ChampionPool'>
+      <div className={`ChampionPool ${this.props.className}`}>
         <SearchBar onTextUpdate={this.onTextUpdate} />
         <div>
           <button

@@ -10,7 +10,10 @@ import * as types from './types'
 
 const newState = (state) => {
   return {
-    champions: { ...state.champions }
+    ...state,
+    champions: {
+      ...state.champions
+    }
   }
 }
 
@@ -23,6 +26,12 @@ function setChampion (state, action) {
 function toggleChampion (state, action) {
   let s = newState(state)
   s.champions[action.id] = !(state.champions[action.id] || false)
+
+  // If we enable'd this person, then set it as the background
+  if (s.champions[action.id]) {
+    s.background = action.id
+  }
+
   return s
 }
 

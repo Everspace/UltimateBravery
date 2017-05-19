@@ -4,6 +4,7 @@ import DataDragon from 'app/DataDragon'
 
 import { AppContainer } from 'react-hot-loader'
 import WindowContainer from 'WindowContainer'
+import 'whatwg-fetch'
 
 let render = (Component) => {
   ReactDOM.render(

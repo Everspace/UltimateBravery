@@ -1,13 +1,8 @@
-@import '~pallet.less';
-
-.BackgroundHolder {
-  background: url(https://images6.alphacoders.com/651/651136.jpg) no-repeat center center fixed;
-  background-size: cover;
-}
-
+@import '~#/pallet.less';
 .WindowContainer {
   width: 100%;
   height: 100%;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -17,52 +12,43 @@
   /* align items in Cross Axis */
   align-content: stretch;
   /* Extra space in Cross Axis */
-  background: rgba(255, 255, 255, .1);
+
+  transition: background-image ease-in-out 0.5s,
+              opacity ease-in-out 0.5s;
+
+  background-color: black;
+
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: center;
+  background-attachment: fixed;
+  background-size: cover;
 
   .Header {
-    background: rgba(255, 0, 0, .1);
+    background: rgba(255, 0, 0, 1);
   }
 
   .Footer {
-    background: rgba(0, 255, 0, .1);
+    background: rgba(0, 255, 0, 1);
   }
+
 
   .Content {
-    background: rgba(0, 0, 255, .1);
     flex: 1;
-    padding: 1em;
-    > div {
-      flex: 1;
-      border: 1px solid @color-border-divider-base;
-    }
+    padding: 0.5em;
+    opacity: 1;
+
+    /* Needed for when the area gets squished too far and there is content that can't be displayed */
+    transition: opacity 1s ease-in-out,
+                -webkit-backdrop-filter 1s ease-in-out,
+                backdrop-filter 1s ease-in-out;
+
+    overflow: auto;
+
   }
-}
-
-
-.fill-area-content {
-  background: rgba(0, 0, 0, .3);
-  border: 1px solid #000000;
-  /* Needed for when the area gets squished too far and there is content that can't be displayed */
-  overflow: auto;
-}
-
-.WindowContainer.Grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 0.2em;
-  grid-auto-rows: minmax(100px, auto);
-
-  .Header, .Footer {
-    min-height: 1em;
-  }
-
-  .Header, .Footer, .Content  {
-    grid-column: 3 / 3;
-    grid-row: 1;
-  }
-
-  .Background {
-    grid-column: 3;
-    grid-row: 3;
+  .Leaving {
+    opacity: 0;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }

@@ -52,7 +52,8 @@ module.exports = {
 
   resolve: {
     modules: ['node_modules', 'src'],
-    alias: { // for use in less, a quirk that requires a '~<IDENTIFIER>/' to use the files
+    alias: {
+      // for use in less due to a quirk that requires a '~<IDENTIFIER>/' to use the files relative to src
       '#': path.resolve(__dirname, '..', 'src')
     },
     plugins: [

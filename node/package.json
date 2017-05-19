@@ -47,7 +47,7 @@
     "eslint-config-standard-jsx": "^3.2.0",
 
     "less": "^2.7.1",
-    "less-loader": "^2.2.3",
+    "less-loader": "^4.0.3",
 
     "babel-loader": "^7.0.0",
     "css-loader": "^0.26.0",
