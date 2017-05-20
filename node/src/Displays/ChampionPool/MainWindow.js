@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { SpriteIcon } from 'lol/ChampionComponents'
-import './ChampionPool.less'
+import './MainWindow.less'
 
 import SearchBar from './SearchBar'
 import * as actions from './actions'
