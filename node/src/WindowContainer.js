@@ -1,10 +1,14 @@
 import React from 'react'
 import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
-import * as displays from 'Displays'
 import './WindowContainer.less'
 
-let SurroundingDisplay = ({background, children}) => {
+import * as displays from 'Displays'
+import DropdownSelector from 'common/DropdownSelector'
+
+let allReducers = Object.keys(displays).map(d => displays[d].reducer)
+
+let SurroundingDisplay = ({background, children, currentWindow, setState}) => {
   let location = `splash/${background}_0.jpg`
   let base = 'http://ddragon.leagueoflegends.com/cdn/img/champion'
   let style = {
@@ -12,30 +16,64 @@ let SurroundingDisplay = ({background, children}) => {
   }
   return (
     <div className='WindowContainer' style={style}>
-      <div className='Header'>Hello Header!</div>
+      <div className='Header'>
+        <DropdownSelector
+          items={Object.keys(displays)}
+          defaultValue={currentWindow}
+          events={{
+            onChange: event => setState({selectedWindow: event.target.value})
+          }}
+        />
+      </div>
       {{...React.cloneElement(children, {className: 'Content'})}}
       <div className='Footer'>Hello Footer!</div>
     </div>
   )
 }
 
-let mapStateToProps = (state) => { return { background: state.background } }
+let mapStateToProps = (state, ownprops) => {
+  return {
+    ...ownprops,
+    background: state.background
+  }
+}
 SurroundingDisplay = connect(mapStateToProps)(SurroundingDisplay)
 
 export default class WindowContainer extends React.Component {
+
+  constructor () {
+    super()
+    this.state = {
+      selectedWindow: 'Bravery'
+    }
+  }
+
   store = createStore(
-    displays.ChampionPool.reducer,
-    {
-      background: 'Galio',
-      champions: window.dat.champions.allChampions.reduce((memory, id) => { memory[id] = true; return memory }, {})
+    (state, action) => {
+      if (state === undefined) {
+        let hydrate = allReducers.map(r => r(state, action))
+        hydrate.push({background: 'Galio'})
+        hydrate = hydrate.reduce(
+          (state, newstate) => {
+            return Object.assign({}, state, newstate)
+          },
+          {}
+        )
+        return hydrate
+      } else {
+        let remap = allReducers.map(r => r(state, action))
+          .reduce((state, newstate) => Object.assign({}, state, newstate), {})
+        return remap
+      }
     }
   )
+
   render () {
-    let Window = displays.ChampionPool.MainWindow
+    let Window = displays[this.state.selectedWindow].MainWindow
 
     return (
       <Provider store={this.store}>
-        <SurroundingDisplay>
+        <SurroundingDisplay setState={(s) => this.setState(s)} currentWindow={this.state.selectedWindow}>
           <Window />
         </SurroundingDisplay>
       </Provider>

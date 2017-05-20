@@ -8,12 +8,10 @@ import * as types from './types'
 //   }
 // }
 
-const newState = (state) => {
+const newState = state => {
   return {
     ...state,
-    champions: {
-      ...state.champions
-    }
+    champions: { ...state.champions }
   }
 }
 
@@ -62,7 +60,15 @@ function enableChampionRole (state, action) {
 }
 
 function reducer (state, action) {
+  if (state === undefined) {
+    return {
+      champions: window.dat.champions.allChampions
+        .reduce((memory, id) => { memory[id] = true; return memory }, {})
+    }
+  }
+
   switch (action.type) {
+
     case types.SET_CHAMPION:
       return setChampion(state, action)
 
