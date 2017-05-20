@@ -29,7 +29,7 @@ class MainWindow extends React.Component {
   }
 
   render () {
-    console.log(this.props.bravery)
+    console.log(this.props)
     return (
       <div className={`Bravery ${this.props.className}`}>
         <DropdownSelector
