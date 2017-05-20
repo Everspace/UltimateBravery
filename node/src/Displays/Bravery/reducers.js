@@ -28,7 +28,7 @@ function reducer (state, action) {
       return doTheBravery(state, action)
 
     default:
-      return state
+      return {}
   }
 }
 

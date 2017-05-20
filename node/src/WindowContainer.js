@@ -6,7 +6,9 @@ import './WindowContainer.less'
 import * as displays from 'Displays'
 import DropdownSelector from 'common/DropdownSelector'
 
-let allReducers = Object.keys(displays).map(d => displays[d].reducer)
+let allReducers = Object.keys(displays)
+  .map(d => displays[d].reducer)
+  .filter(d => d) // Drop falsy
 
 let SurroundingDisplay = ({background, children, currentWindow, setState}) => {
   let location = `splash/${background}_0.jpg`
@@ -62,7 +64,8 @@ export default class WindowContainer extends React.Component {
         return hydrate
       } else {
         let remap = allReducers.map(r => r(state, action))
-          .reduce((state, newstate) => Object.assign({}, state, newstate), {})
+          .reduce((state, newstate) => Object.assign({}, state, newstate), state)
+
         return remap
       }
     }

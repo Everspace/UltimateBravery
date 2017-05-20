@@ -82,7 +82,7 @@ function reducer (state, action) {
       return enableChampionRole(state, action)
 
     default:
-      return state
+      return {}
   }
 }
 
