@@ -1,0 +1,36 @@
+@import '~#/pallet.less';
+
+.DebugItems {
+  margin: 1em;
+
+  .ItemHolder {
+     display: flex;
+     flex-wrap: wrap;
+     flex: 1;
+
+    .DebugItem {
+      flex: auto;
+      width: 45%;
+      margin: 0.5em;
+      padding: 0.5em;
+
+      border: 1px solid @color-border-intrest-base;
+      background-color: rgba(20,20,20, 0.75);
+
+      .Icon, pre {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      pre {
+        border: 1px solid @color-border-intrest-base;
+        background-color: @color-base;
+        padding: 0.5em;
+        margin: 1em;
+        max-width: 75%;
+        overflow-x: auto;
+      }
+    }
+  }
+
+}
