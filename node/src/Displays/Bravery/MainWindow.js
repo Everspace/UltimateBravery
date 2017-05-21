@@ -5,6 +5,7 @@ import './MainWindow.less'
 
 import DropdownSelector from 'common/DropdownSelector'
 import { SpriteImage } from 'lol/Sprite'
+import * as items from 'lol/Items'
 
 let objToLis = obj => Object.keys(obj).map(key => <li>{key}: {obj[key].toString()}</li>)
 
@@ -17,7 +18,7 @@ class MainWindow extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.brave()
   }
 
@@ -29,11 +30,10 @@ class MainWindow extends React.Component {
   }
 
   render () {
-    console.log(this.props)
     return (
       <div className={`Bravery ${this.props.className}`}>
         <DropdownSelector
-          items={Object.keys(window.dat.items.map)}
+          items={items.allMaps()}
           languageData={window.dat.languages.data}
           transformKey={key => key === '11' ? 'Map1' : `Map${key}`}
           defaultValue={this.state.map}
@@ -46,13 +46,12 @@ class MainWindow extends React.Component {
         />
         <br />
         <button onClick={this.brave}>New Bravery!</button>
-        <ol>
+        <ul>
           {objToLis(this.props.bravery)}
           <h3>{window.dat.languages.data.RecommendedItems}</h3>
           <div className='SpriteRow'>
             {(this.props.bravery.itemList ?
-              this.props.bravery.itemList
-              .map(itemID => window.dat.items.data[itemID])
+              this.props.bravery.itemList.map(items.idToObj)
               .map(item => <SpriteImage className='Item' image={item.image} name={item.name} />)
               : null
             )}
@@ -60,12 +59,12 @@ class MainWindow extends React.Component {
           <ol>
             {(this.props.bravery.itemList ?
               this.props.bravery.itemList
-              .map(itemID => window.dat.items.data[itemID].name)
+              .map(items.idToName)
               .map(itemName => <li>{itemName}</li>)
               : null
             )}
           </ol>
-        </ol>
+        </ul>
       </div>
     )
   }

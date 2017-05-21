@@ -1,16 +1,17 @@
 import React from 'react'
 import { SpriteImage } from 'lol/Sprite'
+import { idToObj } from 'lol/Items'
 
 export const DebugItem = ({itemID}) => {
-  let requiredChampion = window.dat.items.data[itemID].requiredChampion
-  let text = `- '${itemID}' ${window.dat.items.data[itemID].name}`
-  text = (requiredChampion) ? `${text} (${requiredChampion})` : text
+  let item = idToObj(itemID)
+  let text = `- '${itemID}' ${itemID.name}`
+  text = (item.requiredChampion) ? `${text} (${item.requiredChampion})` : text
 
   return (
     <div className='DebugItem' key={itemID}>
       <SpriteImage
         className='Icon'
-        {...window.dat.items.data[itemID]}
+        {...item}
       />
       <pre>
         <code>{text}</code>
