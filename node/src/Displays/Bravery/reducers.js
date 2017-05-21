@@ -1,8 +1,6 @@
 import * as types from './types'
 import * as ChampionHandler from './ChampionHandlers'
 
-let toName = (itemID) => window.dat.items.data[itemID].name
-
 function doTheBravery (state, action) {
   let newState = {
     bravery: Object.assign({}, action, {
@@ -23,12 +21,13 @@ function reducer (state, action) {
       bravery: {}
     }
   }
+
   switch (action.type) {
     case types.NEW_BRAVERY:
       return doTheBravery(state, action)
 
     default:
-      return {}
+      return state
   }
 }
 

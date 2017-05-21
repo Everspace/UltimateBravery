@@ -8,7 +8,9 @@ import DropdownSelector from 'common/DropdownSelector'
 
 let allReducers = Object.keys(displays)
   .map(d => displays[d].reducer)
-  .filter(d => d) // Drop falsy
+  .filter(d => d) // Drop falsey
+
+let mergeObjects = (memory, next) => { return {...memory, ...next} }
 
 let SurroundingDisplay = ({background, children, currentWindow, setState}) => {
   let location = `splash/${background}_0.jpg`
@@ -52,23 +54,15 @@ export default class WindowContainer extends React.Component {
 
   store = createStore(
     (state, action) => {
+      let newStates = allReducers.map(f => f(state, action))
       if (state === undefined) {
-        let hydrate = allReducers.map(r => r(state, action))
-        hydrate.push({background: 'Galio'})
-        hydrate = hydrate.reduce(
-          (state, newstate) => {
-            return Object.assign({}, state, newstate)
-          },
-          {}
-        )
-        return hydrate
-      } else {
-        let remap = allReducers.map(r => r(state, action))
-          .reduce((state, newstate) => Object.assign({}, state, newstate), state)
-
-        return remap
+        newStates = newStates.filter(s => s) // Drop undefined or the like
+        newStates.push({background: 'Galio'})
+        state = {}
       }
-    }
+      return newStates.reduce(mergeObjects, state)
+    },
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 
   render () {
