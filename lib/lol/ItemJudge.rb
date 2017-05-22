@@ -145,10 +145,11 @@ class ItemJudge < Judge
   ## Use the config to drop whole categories of items
   ## in a generic way
   def ignore_item_with_rejected_property()
-    log "INFO:  Removing items with bad properties"
+    log "INFO: Removing items with bad properties"
     # #Drop items that have groups or tags I think are stupid.
     @config['Rejected Properties'].each do |property_name, bad_things|
       log "INFO: Removing based on #{property_name}"
+      log "      The rejected values are \'#{bad_things || 'anything'}\' "
       @potential_items
         .inject({}) {|memory, item_id|
           #turn items into hash of "item_id => property to inspect"
@@ -166,13 +167,22 @@ class ItemJudge < Judge
             #If badthings is an arrayish thing
             if bad_things.respond_to? :include?
               bad_things.include? property
-            else #just compare the two things god damn it
-              bad_things == property
+            else
+              case bad_things
+              #If it was stated without anything,
+              when nil
+                true #always drop it
+              else #just compare the two things god damn it
+                bad_things == property
+              end
             end
           end
-        }
-        .each {|id, words|
-          log "Because '#{namify id}' has #{property_name} #{words & bad_things}"
+        }.each {|id, words|
+          case words
+          when Array
+            words = words & bad_things
+          end
+          log " - '#{namify id}' has #{property_name} of #{words}"
         }
         .keys
         .each {|id| remove_item id}
@@ -203,7 +213,7 @@ class ItemJudge < Judge
   ##
   ## Also takes stuff from the 'Group' config, and puts it
   ## in the 'group' and 'limit' subobject of the exported JSON.
-  def groupify_items()    
+  def groupify_items()
     group_function_tags.each do |tag|
       get_all_group_with(tag).each do |group_name, group_data|
         send(
@@ -218,7 +228,7 @@ class ItemJudge < Judge
 
   def group_function_tags
     [
-      'items', 
+      'items',
       'tags',
       'hasAttributes',
       'removeFromMapPools'
@@ -252,7 +262,7 @@ class ItemJudge < Judge
   ## Match items that have particular attributes in them
   ## mostly used to pull out "requiredChampion" special items
   def group_process_hasAttributes(group_name, tag_data, data)
-    tag_data.each do |attr_name, attr_value|      
+    tag_data.each do |attr_name, attr_value|
       find_with_attributes(attr_name).each do |item_id|
         item = get_item(item_id)
 
@@ -324,7 +334,7 @@ class ItemJudge < Judge
     @result['map'][map_id] = [] unless @result.dig('map', map_id)
     @result['map'][map_id] |= [item_id]
   end
-  
+
   ##
   # Adds to a list of champion unique items. Will deal with them
   # on a champ by champ basis.
@@ -332,7 +342,7 @@ class ItemJudge < Judge
     item = get_item(item_id)
     if item.has_key? ['requiredChampion']
       @result['championUnique'] = [] unless @result.dig('championUnique')
-      @result['championUnique'] |= [item_id]      
+      @result['championUnique'] |= [item_id]
     end
   end
 
@@ -456,11 +466,11 @@ class ItemJudge < Judge
   end
 
   ###
-  ## Returns a list of item ids that match the list of tags given 
+  ## Returns a list of item ids that match the list of tags given
   ##
   def find_with_tags(*tags)
     return tags if tags.to_a.empty?
-    (all_data.keys - @ignored_items).keep_if do |item_id| 
+    (all_data.keys - @ignored_items).keep_if do |item_id|
       not (get_item(item_id)['tags'] & tags).empty?
     end
   end
@@ -470,9 +480,9 @@ class ItemJudge < Judge
   ##
   def find_with_attributes(*attributes)
     return attributes if attributes.to_a.empty?
-    (all_data.keys - @ignored_items).find_all do |item_id| 
+    (all_data.keys - @ignored_items).find_all do |item_id|
       item = get_item(item_id)
-      not (item.keys & attributes).empty? and 
+      not (item.keys & attributes).empty? and
       attributes.collect {|a| item[a]}
         .none? {|value|
           value.nil? or (if value.respond_to? :empty? then value.empty? else false end)

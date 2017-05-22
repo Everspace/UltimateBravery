@@ -46,11 +46,11 @@ Group:
   range:
     items:
     - '3085' #Runnan's Hurricane
-  
+
   championUnique:
-    hasAttributes: 
+    hasAttributes:
       requiredChampion: null
-    
+
 #Enchantable things have an "extra step" that we have to account for
 #In addition it appends the name of the "source" item to the enchantment
 #so that tooltips are nicer to read
@@ -62,6 +62,8 @@ Enchantables:
 - '3715' #Skirmisher's Sabre
 
 Rejected Properties:
+  #For things like Head of Khazix or Muramana
+  specialRecipe: null
   tags:
   # Tronket upgrades
   - Trinket
@@ -104,19 +106,20 @@ Excluded IDs:
 - '3252'
 
 #Seige mode plz
+- '3630' #Seige Teleport
 - '3631' #Siege Ballista
+- '3633' #also Seige Teleport wtf
 - '3634' #Tower: Beam of Ruination
 - '3635' #Port Pad
 - '3636' #Tower: Storm Bulwark
+- '3637' #Nexus Siege: Siege Weapon Slot
 - '3640' #Flash Zone
 - '3641' #Vanguard Banner
 - '3642' #Siege Refund
 - '3643' #Entropy Field
 - '3647' #Shield Totem
-- '3637' #Nexus Siege: Siege Weapon Slot
-- '3630' #Seige Teleport
-- '3633' #also Seige Teleport wtf
 - '3648' #Siege Teleport (Inactive)
+- '3649' # Siege Sight Warder
 
 #Buiscuits please
 - '2009' #Total Biscuit of Rejuvenation
