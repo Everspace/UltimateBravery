@@ -133,10 +133,18 @@ Excluded IDs:
 - '3632'
 
 Remove from Map:
+  #Normal Flavour in ARAM is now QuickCharge
+  '3003': # Archangel's Staff
+  - '12'
+  '3004': # Manamune
+  - '12'
+  '3027': # Rod of Ages
+  - '12'
+
   #Quick Charge is only for certain events in SR
   '3007':  #Archangel's Staff (Quick Charge)
-  - '11'   # - Summoner's Rift
+  - '11'
   '3008':  #Manamune (Quick Charge)
-  - '11'   # - Summoner's Rift
+  - '11'
   '3029':  #Rod of Ages (Quick Charge)
-  - '11'   # - Summoner's Rift
+  - '11'
