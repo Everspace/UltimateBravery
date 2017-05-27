@@ -1,6 +1,8 @@
-require 'lol/Judge'
+require 'lol/judges/JudgeBase'
 
-class ChampionJudge < Judge
+class ChampionJudge < JudgeBase
+  MANAGES = :champions
+
   def default_config
     "./config/Champions.yaml"
   end

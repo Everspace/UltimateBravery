@@ -143,17 +143,6 @@ language:
   RecommendedItems: ""
   recommended_essential: ""
 
-  #Available maps
-  Map8: ""  #The Crystal Scar (Dominion Map) rip in pepperionies
-  Map10: "" #New Twisted Treeline
-  Map11: "" #New Summoner's Rift
-  Map12: "" #ARAMAMAMAMAMAMA
-
-  #Discontinued maps, but here for sanity's sake
-  #Map1: "" Origional Gangster Summoner's Rift
-  #Map4: "" #Origional Gangster Twisted Treeline
-  #Map14: "" #Butcher's Bridge
-
   #Champion categories:
   Assassin: ""
   Fighter: ""
@@ -188,3 +177,9 @@ language:
   native_zh_MY: ""
   native_zh_TW: ""
   native_ar: ""
+
+#Has a better representation of name <=> id
+map:
+  MapName: ""
+  MapId: ""
+

@@ -1,6 +1,5 @@
 require 'lol/DataDragon'
-require 'lol/ChampionJudge'
-require 'lol/ItemJudge'
+require 'lol/Judge'
 require 'lol/Tristana'
 
 #TODO: Handle being offline
@@ -31,12 +30,8 @@ download_all_languages = $all_languages.collect do |lang|
       #Get the blob
       blob = trist.send("get_#{thing}".to_sym)
       #Hire the judge
-      judger = case thing
-              when :champions
-                ChampionJudge
-              when :items
-                ItemJudge
-              end
+
+      judger = Judge[thing] if Judge.can_judge? thing
 
       Utils.dump(blob, '_RawBlob') if $is_debug
       blob = judger.new(blob, debug: $is_debug).process if judger

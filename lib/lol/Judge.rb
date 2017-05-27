@@ -1,35 +1,27 @@
-class Judge
-  @base = {}
-  @result = {}
-  @config = nil
-  @debug = false
+here = File.dirname(
+  File.expand_path('.', __FILE__)
+)
 
-  ###
-  ## Location for config for type of Judge.
-  ##
-  ## Change for each subclass
-  def default_config
-    nil
-  end
+the_judges = Dir.glob("#{here}/judges/*Judge.rb")
+the_judges.each &method(:require)
 
-  #Discard text if not debug
-  def log(*things)
-    puts things.join(' ') if @debug
-  end
+names = the_judges.map {|fname| File.basename(fname, '.rb')}
+  .inject({}) {|memory, class_name|
+    klass = Object.const_get class_name
+    if klass.constants.include? :MANAGES
+      sym = klass.const_get :MANAGES
+      memory[sym] = klass
+    end
+    memory
+  }
 
-  def initialize(data_blob, config:nil, debug:false)
-    @debug = debug
-    @base = data_blob.dup.freeze
-    @config = YAML::load_file(config || default_config)
-  end
+class Judge end
 
-	def process()
-    raise NotImplementedExecption
-  end
-
-  def prep_result_with_metadata
-    ['type', 'version'].each {|attribute|
-      @result[attribute] = @base[attribute]
-    }
-  end
+Judge.define_singleton_method(:can_judge?) do |symbol|
+  names.has_key? symbol
 end
+
+Judge.define_singleton_method(:[]) do |symbol|
+  names[symbol]
+end
+

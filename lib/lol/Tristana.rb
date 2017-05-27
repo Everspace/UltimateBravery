@@ -10,7 +10,8 @@ class Tristana
   @@UPDATEABLE_THINGS = [
     :languages,
     :items,
-    :champions
+    :champions,
+    :maps
     #:summoner_spells,
     #:masteries
   ].freeze
@@ -47,6 +48,10 @@ class Tristana
 
   def get_items
     @data_dragon.get('item')
+  end
+
+  def get_maps
+    @data_dragon.get('map')
   end
 
 end
