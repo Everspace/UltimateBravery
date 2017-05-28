@@ -13,7 +13,7 @@ $output_dir = File.expand_path(ENV['output_dir'] || './build')
 CLEAN << $output_dir
 CLOBBER << './temp'
 
-$node_dir = File.expand_path 'node'
+$node_dir = File.expand_path 'node', File.dirname(__FILE__)
 $dev_url = "http://localhost:9001/"
 $all_realms = YAML::load_file("#{$config_dir}/Realms.yaml")
 $all_languages = DataDragon.get_generic "cdn/languages.json"
