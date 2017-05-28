@@ -1,6 +1,7 @@
 require 'lol/DataDragon'
 require 'lol/Judge'
 require 'lol/Tristana'
+require 'Utils'
 
 #TODO: Handle being offline
 all_tasks = []

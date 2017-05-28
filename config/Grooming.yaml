@@ -183,3 +183,10 @@ map:
   MapName: ""
   MapId: ""
 
+summoner:
+  id: ""
+  key: ""
+  name: ""
+  description: ""
+  summonerLevel: ""
+  image: "image"

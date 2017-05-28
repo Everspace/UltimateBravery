@@ -1,0 +1,28 @@
+#'8'  # The Crystal Scar
+#'10' # The Twisted Treeline
+#'11' # Summoner's Rift
+#'12' # Howling Abyss
+#'14' # Butcher's Bridge
+#'16' # Cosmic Ruins
+
+Mode to Map:
+  ARAM: '12' # Howling Abyss
+  ARSR: '11' # Summoner's Rift
+  ASCENSION: '8'  # The Crystal Scar
+  CLASSIC: '11' # Summoner's Rift
+  DOOMBOTSTEEMO: '11' # Summoner's Rift
+  ODIN: '8'  # The Crystal Scar
+
+#Not used to make the json, but still useful for catching suprises.
+Discarded Modes:
+# Has it's own summoner spells/ shennanagains
+- ASSASSINATE
+- SIEGE
+- KINGPORO
+- DARKSTAR
+# I think this is only for tournament events
+- FIRSTBLOOD
+# Wherever it's being played this year you can figure it out
+- URF
+# What no you stop that
+- TUTORIAL

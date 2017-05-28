@@ -1,30 +1,21 @@
-require 'Utils'
 require 'lol/DataDragon'
 require 'lol/Groomer'
 
-require 'yaml'
-require 'benchmark'
-
 class Tristana
 
-  @@UPDATEABLE_THINGS = [
-    :languages,
-    :items,
-    :champions,
-    :maps
-    #:summoner_spells,
-    #:masteries
-  ].freeze
-
   def self.UPDATEABLE_THINGS
-    @@UPDATEABLE_THINGS
+    [
+      :languages,
+      :items,
+      :champions,
+      :maps,
+      :summonerSpells,
+      :masteries
+    ].freeze
   end
 
   attr_reader :groomer
-  attr_reader :output_directory
   attr_reader :data_dragon
-  attr_reader :item_info_dict
-  attr_reader :champion_info_dict
 
   def initialize(
     language: 'en_US',
@@ -32,9 +23,6 @@ class Tristana
     config_directory: './config'
   )
     @groomer = Groomer.new "#{config_directory}/Grooming.yaml"
-    @item_info_dict = YAML::load_file "#{config_directory}/Item.yaml"
-    @champion_info_dict = YAML::load_file "#{config_directory}/Champions.yaml"
-    @output_directory = output_directory
     @data_dragon = DataDragon.new realm, language
   end
 
@@ -52,6 +40,14 @@ class Tristana
 
   def get_maps
     @data_dragon.get('map')
+  end
+
+  def get_summonerSpells
+    @data_dragon.get('summoner')
+  end
+
+  def get_masteries
+    @data_dragon.get('mastery')
   end
 
 end

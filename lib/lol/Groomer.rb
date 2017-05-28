@@ -39,6 +39,9 @@ class Groomer
     data = datadragon_blob['data']
     type = datadragon_blob['type']
 
+    # Return early if there's no entry for a type
+    return data_compilation unless @grooming_dictionary[type]
+
     data.each do |key, value|
       case value
       when Hash #recurse down
