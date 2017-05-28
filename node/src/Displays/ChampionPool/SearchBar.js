@@ -1,10 +1,10 @@
-import React, {PropTypes} from 'react'
+import React, {PropTypes} from "react"
 
 export default class SearchBar extends React.Component {
 
   onClick = () => {
-    this.props.onTextUpdate({target: {value: ''}})
-    this.refs.SearchBar.value = ''
+    this.props.onTextUpdate({target: {value: ""}})
+    this.refs.SearchBar.value = ""
     if (this.props.onClear) {
       this.propsonClear({target: {value: true}})
     }

@@ -1,4 +1,4 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 var jsFiles = {
   // Find the files with this extension
@@ -7,7 +7,7 @@ var jsFiles = {
   exclude: /node_modules/,
   // Then apply the appropreate loaders
   use: [{
-    loader: 'babel-loader'
+    loader: "babel-loader"
     // There is also a query option to
     // pass stuff that is normally in the
     // .babelrc file, but jest doesn't like that
@@ -17,7 +17,7 @@ var jsFiles = {
 
 var lessLoaders = [
   {
-    loader: 'css-loader'
+    loader: "css-loader"
     // , TODO: Add modules back in
     // options: {
     //   modules: true,
@@ -25,16 +25,16 @@ var lessLoaders = [
     // }
   },
   {
-    loader: 'less-loader'
+    loader: "less-loader"
   }
 ]
 
 var lessFiles = {
   test: /\.less$/,
   use: (
-    (process.env.NODE_ENV === 'production')
-      ? ExtractTextPlugin.extract({use: lessLoaders})
-      : [{loader: 'style-loader'}, ...lessLoaders]
+    (process.env.NODE_ENV === "production") ?
+      ExtractTextPlugin.extract({use: lessLoaders})
+      : [{loader: "style-loader"}, ...lessLoaders]
   )
 }
 

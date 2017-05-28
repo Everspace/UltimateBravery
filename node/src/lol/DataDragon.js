@@ -5,12 +5,12 @@ export default class DataDragon {
 
   // TODO: Perhaps grab this via a request?
   static dataPoints = [
-    'champions',
-    'items',
-    'languages',
-    'maps',
-    'masteries',
-    'summonerSpells'
+    "champions",
+    "items",
+    "languages",
+    "maps",
+    "masteries",
+    "summonerSpells"
   ]
 
   static update (realm = null, language = null) {
@@ -29,8 +29,8 @@ export default class DataDragon {
         })
 
         .then(() => {
-          console.log('DataDragon finished updating')
-          resolve('DataDragon updated')
+          console.log("DataDragon finished updating")
+          resolve("DataDragon updated")
         })
         .catch((reason) => {
           reject(reason)
@@ -39,22 +39,22 @@ export default class DataDragon {
   }
 
   static setRealm (realm) {
-    realm = realm || localStorage.getItem('dd_realm') || 'na'
-    localStorage.setItem('dd_realm', realm)
+    realm = realm || localStorage.getItem("dd_realm") || "na"
+    localStorage.setItem("dd_realm", realm)
     return realm
   }
 
   static updateDataDragon (payload) {
     window.dd = {
       cdn: payload.cdn,
-      language: localStorage.getItem('dd_language'),
+      language: localStorage.getItem("dd_language"),
       version: payload.v
     }
   }
 
   static setLanguage (language) {
-    language = language || localStorage.getItem('dd_language') || 'en_US'
-    localStorage.setItem('dd_language', language)
+    language = language || localStorage.getItem("dd_language") || "en_US"
+    localStorage.setItem("dd_language", language)
     window.dd.language = language
   }
 

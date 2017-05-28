@@ -1,1 +1,1 @@
-export const NEW_BRAVERY = 'NEW_BRAVERY'
+export const NEW_BRAVERY = "NEW_BRAVERY"

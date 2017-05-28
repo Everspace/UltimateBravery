@@ -1,5 +1,5 @@
-import * as types from './types'
-import * as ChampionHandler from './ChampionHandlers'
+import * as types from "./types"
+import * as championReducer from "./championReducers"
 
 function doTheBravery (state, action) {
   let newState = {

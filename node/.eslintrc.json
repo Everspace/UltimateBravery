@@ -27,6 +27,13 @@
     "valid-typeof": "warn",
     "block-spacing": "error",
     "no-mixed-spaces-and-tabs": "error",
-    "no-trailing-spaces": "error"
+    "no-trailing-spaces": "error",
+    "no-duplicate-imports": "error",
+    "quotes": ["error", "double"],
+    "operator-linebreak": ["error", "before", {
+      "overrides": {
+        "?": "after"
+      }
+    }]
   }
 }

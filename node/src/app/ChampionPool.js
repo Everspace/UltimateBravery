@@ -1,6 +1,6 @@
-import React, { PropType } from 'react'
-import ChampionIcon from 'lol/champion/ChampionIcon'
-import './ChampionPool.less'
+import React, { PropType } from "react"
+import ChampionIcon from "lol/champion/ChampionIcon"
+import "./ChampionPool.less"
 
 export default class ChampionPool extends React.Component {
 
@@ -8,7 +8,7 @@ export default class ChampionPool extends React.Component {
     super()
     this.textUpdate = this.textUpdate.bind(this)
     this.state = {
-      filter: ''
+      filter: ""
     }
   }
 
@@ -54,17 +54,17 @@ export default class ChampionPool extends React.Component {
 
   textUpdate (event) {
     this.setState({
-      filter: new RegExp(`\\b${event.target.value}`, 'i')})
+      filter: new RegExp(`\\b${event.target.value}`, "i")})
   }
 
   render () {
     let roles = [
-      'Assassin',
-      'Fighter',
-      'Marksman',
-      'Mage',
-      'Support',
-      'Tank'
+      "Assassin",
+      "Fighter",
+      "Marksman",
+      "Mage",
+      "Support",
+      "Tank"
     ]
 
     return (
@@ -80,7 +80,7 @@ export default class ChampionPool extends React.Component {
             onKeyUp={this.textUpdate}
             ref='Search'
           />
-          <button onClick={() => { this.textUpdate({target: {value: ''}}); this.refs.Search.value = '' }}>X</button>
+          <button onClick={() => { this.textUpdate({target: {value: ""}}); this.refs.Search.value = "" }}>X</button>
         </div>
         <div>
           {roles.map((type) => {

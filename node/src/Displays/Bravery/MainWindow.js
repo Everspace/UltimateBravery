@@ -1,11 +1,11 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import * as actions from './actions'
-import './MainWindow.less'
+import React from "react"
+import { connect } from "react-redux"
+import * as actions from "./actions"
+import "./MainWindow.less"
 
-import DropdownSelector from 'common/DropdownSelector'
-import { SpriteImage } from 'lol/Sprite'
-import * as items from 'lol/Items'
+import DropdownSelector from "common/DropdownSelector"
+import { SpriteImage } from "lol/Sprite"
+import * as items from "lol/Items"
 
 let objToLis = obj => Object.keys(obj).map(key => <li>{key}: {obj[key].toString()}</li>)
 
@@ -14,7 +14,7 @@ class MainWindow extends React.Component {
     super()
 
     this.state = {
-      map: '11'
+      map: "11"
     }
   }
 
@@ -35,7 +35,7 @@ class MainWindow extends React.Component {
         <DropdownSelector
           items={items.allMaps()}
           languageData={window.dat.languages.data}
-          transformKey={key => key === '11' ? 'Map1' : `Map${key}`}
+          transformKey={key => key === "11" ? "Map1" : `Map${key}`}
           defaultValue={this.state.map}
           events={{
             onChange: (event) => {
@@ -80,5 +80,3 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps, actions
 )(MainWindow)
-
-

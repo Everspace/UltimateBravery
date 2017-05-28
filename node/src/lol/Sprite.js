@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from "react"
 
 let spriteStyleFromImage = (image) => {
   return {
@@ -12,7 +12,7 @@ let spriteStyleFromImage = (image) => {
     backgroundImage: `url('${window.dd.cdn}/${window.dd.version}/img/sprite/${image.sprite}')`,
     backgroundPositionX: -image.x,
     backgroundPositionY: -image.y,
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: "no-repeat"
   }
 }
 

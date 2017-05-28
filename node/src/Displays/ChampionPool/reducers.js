@@ -1,4 +1,4 @@
-import * as types from './types'
+import * as types from "./types"
 
 // defaultState = {
 //   assert that window.dd exists?
@@ -37,7 +37,7 @@ function setChampions (state, action) {
   let s = newState(state)
   let ids = action.ids
 
-  if (ids === 'all') {
+  if (ids === "all") {
     ids = window.dat.champions.allChampions
   }
   ids.forEach((id) => {

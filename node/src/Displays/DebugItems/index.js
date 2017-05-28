@@ -1,4 +1,4 @@
-import MainWindow from './MainWindow'
+import MainWindow from "./MainWindow"
 
 export {
   MainWindow

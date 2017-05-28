@@ -1,10 +1,10 @@
-import React from 'react'
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
-import './WindowContainer.less'
+import React from "react"
+import { createStore } from "redux"
+import { Provider, connect } from "react-redux"
+import "./WindowContainer.less"
 
-import * as displays from 'Displays'
-import DropdownSelector from 'common/DropdownSelector'
+import * as displays from "Displays"
+import DropdownSelector from "common/DropdownSelector"
 
 let allReducers = Object.keys(displays)
   .map(d => displays[d].reducer)
@@ -14,7 +14,7 @@ let mergeObjects = (memory, next) => { return {...memory, ...next} }
 
 let SurroundingDisplay = ({background, children, currentWindow, setState}) => {
   let location = `splash/${background}_0.jpg`
-  let base = 'http://ddragon.leagueoflegends.com/cdn/img/champion'
+  let base = "http://ddragon.leagueoflegends.com/cdn/img/champion"
   let style = {
     backgroundImage: `url(${base}/${location})`
   }
@@ -29,7 +29,7 @@ let SurroundingDisplay = ({background, children, currentWindow, setState}) => {
           }}
         />
       </div>
-      {{...React.cloneElement(children, {className: 'Content'})}}
+      {{...React.cloneElement(children, {className: "Content"})}}
       <div className='Footer'>Hello Footer!</div>
     </div>
   )
@@ -48,7 +48,7 @@ export default class WindowContainer extends React.Component {
   constructor () {
     super()
     this.state = {
-      selectedWindow: 'Bravery'
+      selectedWindow: "Bravery"
     }
   }
 
@@ -57,7 +57,7 @@ export default class WindowContainer extends React.Component {
       let newStates = allReducers.map(f => f(state, action))
       if (state === undefined) {
         newStates = newStates.filter(s => s) // Drop undefined or the like
-        newStates.push({background: 'Galio'})
+        newStates.push({background: "Galio"})
         state = {}
       }
       return newStates.reduce(mergeObjects, state)

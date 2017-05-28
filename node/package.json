@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "webpack --config webpack/webpack.config.production.js --colors -p",
-    "lint": "eslint src"
+    "lint": "eslint src webpack",
+    "lint:fix": "eslint src webpack --fix"
   },
   "repository": {
     "type": "git",

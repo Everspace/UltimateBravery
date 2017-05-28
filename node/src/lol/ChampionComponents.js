@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react'
-import { SpriteImage } from 'lol/Sprite'
-import './ChampionComponents.less'
+import React, { PropTypes } from "react"
+import { SpriteImage } from "lol/Sprite"
+import "./ChampionComponents.less"
 
 let champ = (id) => window.dat.champions.data[id]
 
 export const SpriteIcon = ({id, className, onClick}) =>
   <SpriteImage
-    className={className ? `ChampionIcon ${className}` : 'ChampionIcon'}
+    className={className ? `ChampionIcon ${className}` : "ChampionIcon"}
     onClick={onClick}
     image={champ(id).image}
   />

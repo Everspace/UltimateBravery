@@ -1,16 +1,16 @@
-import React from 'react'
-import './MainWindow.less'
+import React from "react"
+import "./MainWindow.less"
 
-import * as items from 'lol/Items'
-import DropdownSelector from 'common/DropdownSelector'
-import { DebugItem } from './ItemDisplays'
+import * as items from "lol/Items"
+import DropdownSelector from "common/DropdownSelector"
+import { DebugItem } from "./ItemDisplays"
 
 class MainWindow extends React.Component {
   constructor () {
     super()
 
     this.state = {
-      map: '11',
+      map: "11",
       showGroups: []
     }
   }
@@ -26,7 +26,7 @@ class MainWindow extends React.Component {
 
   toggleButton = (group) => {
     let isShown = this.state.showGroups.indexOf(group) !== -1
-    let style = isShown ? null : {color: 'grey'}
+    let style = isShown ? null : {color: "grey"}
     return <button
       onClick={() => this.toggleFilter(group)}
       style={style}
@@ -40,7 +40,7 @@ class MainWindow extends React.Component {
           <DropdownSelector
             items={items.allItemGroups()}
             languageData={window.dat.languages.data}
-            transformKey={key => key === '11' ? 'Map1' : `Map${key}`}
+            transformKey={key => key === "11" ? "Map1" : `Map${key}`}
             defaultValue={this.state.map}
             events={{
               onChange: (event) => {
@@ -56,8 +56,8 @@ class MainWindow extends React.Component {
         </div>
         <div className='ItemHolder'>
           {
-            (this.state.showGroups.length === 0
-              ? items.allInMap(this.state.map)
+            (this.state.showGroups.length === 0 ?
+              items.allInMap(this.state.map)
               : this.state.showGroups
                 .map(items.allInGroup)
                 .reduce((items, itemsInGroup) => {

@@ -1,17 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import DataDragon from 'app/DataDragon'
+import React from "react"
+import ReactDOM from "react-dom"
+import DataDragon from "lol/DataDragon"
 
-import { AppContainer } from 'react-hot-loader'
-import WindowContainer from 'WindowContainer'
-import 'whatwg-fetch'
+import { AppContainer } from "react-hot-loader"
+import WindowContainer from "WindowContainer"
+import "whatwg-fetch"
 
 let render = (Component) => {
   ReactDOM.render(
     <AppContainer>
       <Component />
     </AppContainer>,
-    document.getElementById('app')
+    document.getElementById("app")
   )
 }
 
@@ -21,7 +21,7 @@ DataDragon.update()
 })
 .then(() => {
   if (module.hot) {
-    module.hot.accept('WindowContainer', () => {
+    module.hot.accept("WindowContainer", () => {
       render(WindowContainer)
     })
   }

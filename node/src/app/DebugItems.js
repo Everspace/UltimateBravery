@@ -1,5 +1,5 @@
-import React from 'react'
-import SpriteImage from 'lol/common/SpriteImage'
+import React from "react"
+import SpriteImage from "lol/common/SpriteImage"
 
 export default class DebugItems extends React.Component {
 
@@ -23,18 +23,18 @@ export default class DebugItems extends React.Component {
   generateItem (itemID) {
     let itemData = this.state.json.data[itemID]
     return (
-      <div style={{padding: 0, width: '50%'}} key={itemID}>
+      <div style={{padding: 0, width: "50%"}} key={itemID}>
         <SpriteImage
           {...itemData}
           dd={this.props.dd}
           style={{
-            display: 'inline-block',
-            verticalAlign: 'middle'
+            display: "inline-block",
+            verticalAlign: "middle"
           }}
         />
         <p style={{
-          margin: '1em',
-          display: 'inline-block'
+          margin: "1em",
+          display: "inline-block"
         }}><pre>- '{itemID}' #{itemData.name} {
             (itemData.requiredChampion) ? `(${itemData.requiredChampion})` : null
           }</pre>
@@ -52,8 +52,8 @@ export default class DebugItems extends React.Component {
         .map(this.generateItem)
 
       let style = {
-        display: 'flex',
-        flexWrap: 'wrap'
+        display: "flex",
+        flexWrap: "wrap"
       }
 
       return (

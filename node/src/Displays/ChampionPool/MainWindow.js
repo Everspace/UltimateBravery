@@ -1,11 +1,11 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from "react"
+import { connect } from "react-redux"
 
-import { SpriteIcon } from 'lol/ChampionComponents'
-import './MainWindow.less'
+import { SpriteIcon } from "lol/ChampionComponents"
+import "./MainWindow.less"
 
-import SearchBar from './SearchBar'
-import * as actions from './actions'
+import SearchBar from "./SearchBar"
+import * as actions from "./actions"
 
 // this.props.champions
 
@@ -19,17 +19,17 @@ class MainWindow extends React.Component {
   constructor () {
     super()
     this.state = {
-      filter: ''
+      filter: ""
     }
   }
 
   roles = [
-    'Assassin',
-    'Fighter',
-    'Marksman',
-    'Mage',
-    'Support',
-    'Tank'
+    "Assassin",
+    "Fighter",
+    "Marksman",
+    "Mage",
+    "Support",
+    "Tank"
   ]
 
   idToName = window.dat.champions.allChampions.reduce((memory, id) => {
@@ -39,7 +39,7 @@ class MainWindow extends React.Component {
 
   onTextUpdate = (event) => {
     this.setState({
-      filter: new RegExp(`\\b${event.target.value}`, 'i')
+      filter: new RegExp(`\\b${event.target.value}`, "i")
     })
   }
 
@@ -64,7 +64,7 @@ class MainWindow extends React.Component {
       key={id}
       id={id}
       onClick={() => this.props.toggleChampion(id)}
-      className={this.props.champions[id] ? '' : 'Disabled'}
+      className={this.props.champions[id] ? "" : "Disabled"}
     />
     return button
   }
@@ -76,11 +76,11 @@ class MainWindow extends React.Component {
         <div>
           <button
             key='enableAll'
-            onClick={() => this.props.setManyChampions('all', true)}
+            onClick={() => this.props.setManyChampions("all", true)}
           >ENABLE ALL!</button>
           <button
             key='disableAll'
-            onClick={() => this.props.setManyChampions('all', false)}
+            onClick={() => this.props.setManyChampions("all", false)}
           >DISABLE ALL!</button>
         </div>
         <div className='Roles'>

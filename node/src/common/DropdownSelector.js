@@ -1,5 +1,5 @@
-import React from 'react'
-import './DropdownSelector.less'
+import React from "react"
+import "./DropdownSelector.less"
 
 class DropdownSelector extends React.Component {
 
