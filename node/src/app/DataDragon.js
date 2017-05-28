@@ -3,10 +3,14 @@
 // - window.dat (json blob collection)
 export default class DataDragon {
 
+  // TODO: Perhaps grab this via a request?
   static dataPoints = [
-    'items',
     'champions',
-    'languages'
+    'items',
+    'languages',
+    'maps',
+    'masteries',
+    'summonerSpells'
   ]
 
   static update (realm = null, language = null) {
