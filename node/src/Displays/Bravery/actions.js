@@ -1,30 +1,12 @@
 import * as types from "./types"
-import { shuffle } from "common/Random"
+import * as Random from "common/Random"
 import * as items from "lol/Items"
-
-let tossItems = function (itemList, championID, couldJungle) {
-  let champion = window.dat.champions.data[championID]
-
-  // Remove everything that actually influences the bravery based on
-  // attributes we know
-  itemList = !champion.isMelee ? itemList : items.dropAllInGroup(itemList, "melee")
-  itemList = !champion.isRanged ? itemList : items.dropAllInGroup(itemList, "range")
-  itemList = couldJungle ? itemList : items.dropAllInGroup(itemList, "jungle")
-
-  // Remove Boots because we grab those from elsewhere
-  itemList = items.dropAllInGroup(itemList, "boot")
-
-  // Remove champion unique because nobody will willingly
-  // want things baught with silver serpents.
-  itemList = items.dropAllInGroup(itemList, "championUnique")
-
-  return itemList
-}
+import * as championActions from "./championActions"
 
 export const newBravery = (mapID, availableChampions) => {
-  let champion = shuffle(availableChampions)[0]
+  let champion = Random.roll(availableChampions)
 
-  let summonerSpells = shuffle([
+  let summonerSpells = Random.shuffle([
     "Exhaust",
     "Ignite",
     "Smite",
@@ -35,20 +17,24 @@ export const newBravery = (mapID, availableChampions) => {
     "Flash"
   ]).slice(0, 2)
 
-  let couldJungle = summonerSpells.indexOf("Smite") > -1
-
-  let itemsList = tossItems(
-    shuffle(items.allInMap(mapID)),
+  let itemsList = items.filterForChampion(
+    Random.shuffle(items.allInMap(mapID)),
     champion,
-    couldJungle
+    summonerSpells.indexOf("Smite") > -1
   )
 
-  return {
+  let plainAction = {
     type: types.NEW_BRAVERY,
     mapID: mapID,
     championID: champion,
     itemList: itemsList,
-    boot: shuffle(items.allInGroup("boot"))[0],
+    boot: Random.roll(items.allInGroup("boot")),
     summonerSpells: summonerSpells
+  }
+
+  if (championActions[champion]) {
+    return championActions[champion](plainAction)
+  } else {
+    return plainAction
   }
 }
