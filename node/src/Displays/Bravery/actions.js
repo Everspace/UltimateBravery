@@ -1,6 +1,6 @@
 import * as types from "./types"
 import * as Random from "common/Random"
-import * as items from "lol/Items"
+import items from "lol/Items"
 import * as championActions from "./championActions"
 
 export const newBravery = (mapID, availableChampions) => {

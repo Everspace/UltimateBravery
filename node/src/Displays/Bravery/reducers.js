@@ -1,6 +1,6 @@
 import * as types from "./types"
 import * as championReducer from "./championReducers"
-import * as items from 'lol/Items'
+import items from "lol/Items"
 
 const addItem = (limits, ary, itemID) => {
   // Exit if the item is already inside.

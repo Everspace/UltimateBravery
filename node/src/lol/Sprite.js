@@ -1,33 +1,23 @@
-import React, { PropTypes } from "react"
+import styled from "styled-components"
+import PropTypes from "prop-types"
 
-let spriteStyleFromImage = (image) => {
-  return {
-    width: image.w,
-    minWidth: image.w,
-    height: image.h,
-    minHeight: image.h,
-    // Currently not using backgroundPositionX or Y because it sometimes
-    // doesn't set the style attribute on the div correctly
-    // background: `${} ${}px ${}px`,
-    backgroundImage: `url('${window.dd.cdn}/${window.dd.version}/img/sprite/${image.sprite}')`,
-    backgroundPositionX: -image.x,
-    backgroundPositionY: -image.y,
-    backgroundRepeat: "no-repeat"
-  }
-}
-
-export const SpriteImage = ({image, onClick, className, name, style}) =>
-  <div
-    className={className}
-    onClick={onClick}
-    name={name}
-    style={Object.assign({}, spriteStyleFromImage(image), style)}
-  />
+export const SpriteImage = styled.div`
+  width: ${props => props.image.w}px;
+  min-width: ${props => props.image.w}px;
+  height: ${props => props.image.h}px;
+  min-height: ${props => props.image.h}px;
+  background-image: url(${props => `${window.dd.cdn}/${window.dd.version}/img/sprite/${props.image.sprite}`});
+  background-position-x: ${props => -props.image.x}px;
+  background-position-y: ${props => -props.image.y}px;
+  background-repeat: no-repeat;
+`
 
 SpriteImage.propTypes = {
-  image: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  onClick: PropTypes.func,
-  name: PropTypes.string,
-  style: PropTypes.object
+  image: PropTypes.shape({
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    sprite: PropTypes.string.isRequired
+  }).isRequired
 }

@@ -5,7 +5,7 @@ import "./MainWindow.less"
 
 import DropdownSelector from "common/DropdownSelector"
 import { SpriteImage } from "lol/Sprite"
-import * as items from "lol/Items"
+import items from "lol/Items"
 
 let objToLis = obj => Object.keys(obj).map(key => <li>{key}: {obj[key].toString()}</li>)
 

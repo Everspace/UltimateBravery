@@ -1,9 +1,10 @@
 import React from "react"
 import "./MainWindow.less"
 
-import * as items from "lol/Items"
+import items from "lol/Items"
 import DropdownSelector from "common/DropdownSelector"
 import { DebugItem } from "./ItemDisplays"
+import { GlassPanel } from "styles/Panels.jsx"
 
 class MainWindow extends React.Component {
   constructor () {
@@ -36,9 +37,9 @@ class MainWindow extends React.Component {
   render () {
     return (
       <div className={`DebugItems ${this.props.className}`} >
-        <div className='Options'>
+        <GlassPanel>
           <DropdownSelector
-            items={items.allItemGroups()}
+            items={items.allMaps()}
             languageData={window.dat.languages.data}
             transformKey={key => key === "11" ? "Map1" : `Map${key}`}
             defaultValue={this.state.map}
@@ -53,8 +54,8 @@ class MainWindow extends React.Component {
           <div>{
             items.allItemGroups().map(this.toggleButton)
           }</div>
-        </div>
-        <div className='ItemHolder'>
+        </GlassPanel>
+        <GlassPanel>
           {
             (this.state.showGroups.length === 0 ?
               items.allInMap(this.state.map)
@@ -68,7 +69,7 @@ class MainWindow extends React.Component {
             )
             .map((itemID, index) => <DebugItem itemID={itemID} key={index} />)
           }
-        </div>
+        </GlassPanel>
       </div>
     )
   }

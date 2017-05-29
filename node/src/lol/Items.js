@@ -1,49 +1,65 @@
+import { SpriteImage } from "lol/Sprite"
+
 /**
  * A crapton of functions for dealing with items
  */
+const funcs = {
+  getItemDB: () => window.dat.items,
+  idToObj: (itemID) => funcs.getItemDB().data[itemID],
 
-export const getItemDB = () => window.dat.items
-export const idToObj = itemID => getItemDB().data[itemID]
-export const idToName = itemID => idToObj(itemID).name
-export const allItemGroups = () => Object.keys(getItemDB().group)
-export const allInGroup = groupID => getItemDB().group[groupID]
-export const allMaps = () => Object.keys(getItemDB().map)
-export const allInMap = mapID => getItemDB().map[mapID]
+  idToName: (itemID) => funcs.idToObj(itemID).name,
 
-export const getLimitGroup = (itemID) => {
-  return Object.keys(getItemDB().limits)
-            .find((group) => isValidInGroup(itemID, group))
+  allItemGroups: () => Object.keys(funcs.getItemDB().group),
+
+  allInGroup: (groupID) => funcs.getItemDB().group[groupID],
+
+  allMaps: () => Object.keys(funcs.getItemDB().map),
+  allInMap: (mapID) => funcs.getItemDB().map[mapID],
+
+  getLimitGroup: (itemID) =>
+    Object.keys(funcs.getItemDB().limits)
+          .find((group) => funcs.isValidInGroup(itemID, group)),
+
+  namify: (list) => list.map(funcs.idToName),
+
+  isValidInMap: (itemID, mapID) => funcs.allInMap(mapID).indexOf(itemID) >= 0,
+
+  filterForMap: (mapID) => (possibleItemIDs) =>
+      possibleItemIDs.filter(itemID => funcs.isValidInMap(itemID, mapID)),
+
+  isValidInGroup: (itemID, groupID) => funcs.allInGroup(groupID).indexOf(itemID) >= 0,
+
+  filterForGroup: (groupID) =>
+    (possibleItemIDs) =>
+      possibleItemIDs.filter(itemID => funcs.isValidInGroup(itemID, groupID)),
+
+  dropAllInGroup: (possibleItemIDs, groupID) =>
+    possibleItemIDs.filter(itemID => !funcs.isValidInGroup(itemID, groupID)),
+
+  filterForChampion: (possibleItemIDs, championID, couldJungle) => {
+    let champion = window.dat.champions.data[championID]
+    let validIDs = possibleItemIDs.slice(0) // Clone everything to start with
+    // Remove everything that actually influences the bravery based on
+    // attributes we know
+
+    validIDs = champion.isMelee ? validIDs : funcs.dropAllInGroup(validIDs, "melee")
+    validIDs = champion.isRange ? validIDs : funcs.dropAllInGroup(validIDs, "range")
+    validIDs = couldJungle ? validIDs : funcs.dropAllInGroup(validIDs, "jungle")
+
+    // Remove Boots because we grab those from elsewhere
+    validIDs = funcs.dropAllInGroup(validIDs, "boot")
+
+    // Remove champion unique because nobody will willingly
+    // want things baught with silver serpents.
+    validIDs = funcs.dropAllInGroup(validIDs, "championUnique")
+
+    return validIDs
+  }
 }
+Object.freeze(funcs)
+export default funcs
 
-export const namify = (list) => list.map(idToName)
-export const isValidInMap = (itemID, mapID) => allInMap(mapID).indexOf(itemID) >= 0
-export const filterForMap = (mapID) => {
-  return (possibleItemIDs) => possibleItemIDs.filter(itemID => isValidInMap(itemID, mapID))
-}
-
-export const isValidInGroup = (itemID, groupID) => allInGroup(groupID).indexOf(itemID) >= 0
-export const filterForGroup = (groupID) => {
-  return (possibleItemIDs) => possibleItemIDs.filter(itemID => isValidInGroup(itemID, groupID))
-}
-export const dropAllInGroup = (possibleItemIDs, groupID) => {
-  return possibleItemIDs.filter(itemID => !isValidInGroup(itemID, groupID))
-}
-
-export const filterForChampion = function (possibleItemIDs, championID, couldJungle) {
-  let champion = window.dat.champions.data[championID]
-  let validIDs = possibleItemIDs.slice(0) // Clone everything to start with
-  // Remove everything that actually influences the bravery based on
-  // attributes we know
-  validIDs = champion.isMelee ? validIDs : dropAllInGroup(validIDs, "melee")
-  validIDs = champion.isRange ? validIDs : dropAllInGroup(validIDs, "range")
-  validIDs = couldJungle ? validIDs : dropAllInGroup(validIDs, "jungle")
-
-  // Remove Boots because we grab those from elsewhere
-  validIDs = dropAllInGroup(validIDs, "boot")
-
-  // Remove champion unique because nobody will willingly
-  // want things baught with silver serpents.
-  validIDs = dropAllInGroup(validIDs, "championUnique")
-
-  return validIDs
-}
+export const ItemSprite = SpriteImage.extend`
+    border-radius (10px;
+    margin (0.2em;
+  `
