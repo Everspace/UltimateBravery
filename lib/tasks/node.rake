@@ -3,6 +3,7 @@ CLOBBER << "#{$node_dir}/node_modules"
 
 def run_node(call, logfile)
   CLEAN << logfile
+  call = "#{call} --prefix #{$node_dir}"
   puts "Starting '#{call}'"
   success = system(
     call,
@@ -25,7 +26,7 @@ task :build => ["#{$node_dir}/node_modules"] do
   run_node("npm run build", "node.log")
 end
 
-task :package => [:build] do 
+task :package => [:build] do
   assets = FileList["#{$node_dir}/static", "#{$node_dir}/static/**/*"]
   cp_r "#{$node_dir}/static/.", "#{$node_dir}/build"
 end
@@ -42,7 +43,7 @@ multitask :start => ["#{$node_dir}/node_modules", "#{$node_dir}/static/json"] do
     if File.read('/proc/version') =~ /.*Microsoft.*/
       #hoooooo boy we've gone around the bend again
       case $node_dir
-      when /^\/mnt\/[a-z]\// 
+      when /^\/mnt\/[a-z]\//
         #we're poking in the windows system so we can open a thing there natrually
         #We'll invoke cmd.exe from the wsl bash to call START in a new window
         path = $node_dir
@@ -59,10 +60,10 @@ multitask :start => ["#{$node_dir}/node_modules", "#{$node_dir}/static/json"] do
         cmd #Shouldn't touch linux dir in windows.
       end
     else
-      cmd 
+      cmd
     end
   end
-  
+
   puts call
   system(
     call,

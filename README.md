@@ -5,14 +5,15 @@ Things are currently highly experimental and probably very broken until a `0.2` 
 
 # Requirements:
 
-* Node `v6.9.1`
+* Node `^7.0.0`
+* npm `^5.0.0`
 * Ruby `>=2.3.0`
 * A web browser
-* Bravery
+* A heart full of **BRAVERY**
 
-#How to run:
+# How to run:
 
-##Init
+## Init
 
     git clone <this repo>
     cd UltimateBravery
@@ -20,22 +21,23 @@ Things are currently highly experimental and probably very broken until a `0.2` 
 
 ## Start the dev server
 
+(note that this takes a while to set up the dev server due to downloading the dragontail tarball for quicker iteration time and not being as greedy downloading from datadragon all the time)
+
     rake dev:start
 
-Navigate your browser to `localhost:9001/static/index.html` (or let it pop open automatically)
-    
-##Deployment
+Navigate your browser to `localhost:9001`
 
-###1. Build the things
+## Deployment
 
-    rake clean
-    rake dd:download:all
-    rake node:build
-    
-###2. Combine assets
+### 1. Build the things
+
+    rake clean // (or rake clobber)
+    rake package
+
+### 2. Combine assets
 Copy the contents of `./node/build` and `./node/static` into `./build`
 
-###3. Deploy
+### 3. Deploy
 Put the contents of `./build` on your favourite dumb fileserver. I'm using an S3 bucket to host http://bravery.lol/
 
 #Disclaimers and such
