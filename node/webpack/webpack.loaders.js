@@ -15,7 +15,7 @@ var jsFiles = {
   }]
 }
 
-var lessLoaders = [
+var cssLoaders = [
   {
     loader: "css-loader"
     // , TODO: Add modules back in
@@ -23,22 +23,19 @@ var lessLoaders = [
     //   modules: true,
     //   localIdentName: '[local]--[hash:base64:5]'
     // }
-  },
-  {
-    loader: "less-loader"
   }
 ]
 
-var lessFiles = {
-  test: /\.less$/,
+var cssFiles = {
+  test: /\.css$/,
   use: (
     (process.env.NODE_ENV === "production") ?
-      ExtractTextPlugin.extract({use: lessLoaders})
-      : [{loader: "style-loader"}, ...lessLoaders]
+      ExtractTextPlugin.extract({use: cssLoaders})
+      : [{loader: "style-loader"}, ...cssLoaders]
   )
 }
 
 module.exports = [
   jsFiles,
-  lessFiles
+  cssFiles
 ]

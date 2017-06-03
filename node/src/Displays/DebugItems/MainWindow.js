@@ -1,10 +1,24 @@
 import React from "react"
-import "./MainWindow.less"
 
 import items from "lol/Items"
-import DropdownSelector from "common/DropdownSelector"
 import { DebugItem } from "./ItemDisplays"
-import { GlassPanel } from "styles/Panels.jsx"
+import { GlassPanel } from "common/components/Panels"
+import { DropdownSelector, Button } from "common/components/Inputs"
+import { AppWindowContent } from "common/components/FlexboxAppWindow"
+
+const DebugItems = AppWindowContent
+
+const OptionsPanel = GlassPanel.extend`
+  margin: 1em;
+  padding: 1em;
+  flex: 1;
+`
+
+const ItemsPanel = GlassPanel.extend`
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+`
 
 class MainWindow extends React.Component {
   constructor () {
@@ -17,6 +31,7 @@ class MainWindow extends React.Component {
   }
 
   toggleFilter = (groupID) => {
+
     if (this.state.showGroups.indexOf(groupID) === -1) {
       this.setState({showGroups: [...this.state.showGroups, groupID]})
     } else {
@@ -28,20 +43,30 @@ class MainWindow extends React.Component {
   toggleButton = (group) => {
     let isShown = this.state.showGroups.indexOf(group) !== -1
     let style = isShown ? null : {color: "grey"}
-    return <button
+    return <Button
+      key={group}
       onClick={() => this.toggleFilter(group)}
       style={style}
-    >{group}</button>
+    >{group}</Button>
   }
 
   render () {
+    let theItems = this.state.showGroups.length === 0 ?
+      items.allInMap(this.state.map)
+      : this.state.showGroups
+          .map(items.allInGroup)
+          .reduce((mem, next) => [...mem, ...next], [])
+          .filter((item, index, ary) => ary.indexOf(item) === index) // uniq, not very good
+          .filter(items.filterForMap(this.state.map))
+
+    theItems = theItems.map((itemID, index) => <DebugItem itemID={itemID} key={index} />)
+
     return (
-      <div className={`DebugItems ${this.props.className}`} >
-        <GlassPanel>
+      <DebugItems>
+        <OptionsPanel>
           <DropdownSelector
             items={items.allMaps()}
-            languageData={window.dat.languages.data}
-            transformKey={key => key === "11" ? "Map1" : `Map${key}`}
+            namify={key => window.dat.languages.data[key === "11" ? "Map1" : `Map${key}`]}
             defaultValue={this.state.map}
             events={{
               onChange: (event) => {
@@ -54,23 +79,11 @@ class MainWindow extends React.Component {
           <div>{
             items.allItemGroups().map(this.toggleButton)
           }</div>
-        </GlassPanel>
-        <GlassPanel>
-          {
-            (this.state.showGroups.length === 0 ?
-              items.allInMap(this.state.map)
-              : this.state.showGroups
-                .map(items.allInGroup)
-                .reduce((items, itemsInGroup) => {
-                  return [...items, ...itemsInGroup]
-                }, [])
-                .filter((item, index, ary) => ary.indexOf(item) === index) // uniq, not very fast
-                .filter(items.filterForGroup(this.state.map))
-            )
-            .map((itemID, index) => <DebugItem itemID={itemID} key={index} />)
-          }
-        </GlassPanel>
-      </div>
+        </OptionsPanel>
+        <ItemsPanel>
+          {theItems}
+        </ItemsPanel>
+      </DebugItems>
     )
   }
 }
