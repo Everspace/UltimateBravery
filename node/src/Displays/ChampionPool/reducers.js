@@ -22,15 +22,19 @@ function setChampion (state, action) {
 }
 
 function toggleChampion (state, action) {
-  let s = newState(state)
-  s.champions[action.id] = !(state.champions[action.id] || false)
-
-  // If we enable'd this person, then set it as the background
-  if (s.champions[action.id]) {
-    s.background = action.id
+  let newState = {
+    champions: {...state.champions}
   }
 
-  return s
+  newState.champions[action.id] = !(state.champions[action.id] || false)
+  console.assert(newState.champions[action.id] !== state.champions[action.id], "THE TOGGLES, THEY DO NOTHING!")
+
+  // If we enable'd this person, then set it as the background
+  if (newState.champions[action.id]) {
+    newState.background = action.id
+  }
+
+  return {...state, ...newState}
 }
 
 function setChampions (state, action) {
@@ -82,7 +86,7 @@ function reducer (state, action) {
       return enableChampionRole(state, action)
 
     default:
-      return state
+      return {} // Emit no change
   }
 }
 

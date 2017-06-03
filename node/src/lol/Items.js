@@ -24,8 +24,7 @@ const funcs = {
 
   isValidInMap: (itemID, mapID) => funcs.allInMap(mapID).indexOf(itemID) >= 0,
 
-  filterForMap: (mapID) => (possibleItemIDs) =>
-      possibleItemIDs.filter(itemID => funcs.isValidInMap(itemID, mapID)),
+  filterForMap: (mapID) => (itemID) => funcs.isValidInMap(itemID, mapID),
 
   isValidInGroup: (itemID, groupID) => funcs.allInGroup(groupID).indexOf(itemID) >= 0,
 
@@ -60,6 +59,6 @@ Object.freeze(funcs)
 export default funcs
 
 export const ItemSprite = SpriteImage.extend`
-    border-radius (10px;
-    margin (0.2em;
+    border-radius: 10px;
+    margin: 0.2em;
   `

@@ -1,4 +1,6 @@
-import React, {PropTypes} from "react"
+import React from "react"
+import PropTypes from "prop-types"
+import { Input, Button } from "common/components/Inputs"
 
 export default class SearchBar extends React.Component {
 
@@ -13,7 +15,7 @@ export default class SearchBar extends React.Component {
   render () {
     return (
       <div className='SearchBar'>
-        <input
+        <Input
           // inputmode={(this.props.languageData.language === 'ja_JP')?kana:latin}
           placeholder='🔎'
           type='text'
@@ -23,7 +25,7 @@ export default class SearchBar extends React.Component {
           onKeyUp={this.props.onTextUpdate}
           ref='SearchBar'
         />
-        <button onClick={this.onClick}>X</button>
+        <Button onClick={this.onClick}>X</Button>
       </div>
     )
   }

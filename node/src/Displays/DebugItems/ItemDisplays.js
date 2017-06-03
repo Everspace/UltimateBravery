@@ -1,7 +1,30 @@
 import React from "react"
-import { SpriteImage } from "lol/Sprite"
 import items, { ItemSprite } from "lol/Items"
-import { GlassPanel } from "styles/Panels.jsx"
+import { GlassPanel } from "common/components/Panels"
+
+const DebugItemPanel = GlassPanel.extend`
+  border: 1px solid ${props => props.theme.colorBorderIntrestBase};
+  background-color: rgba(20,20,20, 0.75);
+
+  flex: auto;
+  width: 45%;
+  margin: 0.5em;
+  padding: 0.5em;
+
+  & > * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  pre {
+    border: 1px solid ${props => props.theme.colorBorderIntrestBase};
+    background-color: ${props => props.theme.colorBase};
+    padding: 0.5em;
+    margin: 0.2em;
+    max-width: 87%;
+    overflow-x: auto;
+  }
+`
 
 export const DebugItem = ({itemID}) => {
   let item = items.idToObj(itemID)
@@ -9,11 +32,11 @@ export const DebugItem = ({itemID}) => {
   text = (item.requiredChampion) ? `${text} (${item.requiredChampion})` : text
 
   return (
-    <GlassPanel key={itemID}>
-      <ItemSprite {...item} />
-      <pre>
+    <DebugItemPanel key={itemID}>
+      <ItemSprite key={itemID} {...item} />
+      <pre key='code'>
         <code>{text}</code>
       </pre>
-    </GlassPanel>
+    </DebugItemPanel>
   )
 }

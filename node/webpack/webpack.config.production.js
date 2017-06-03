@@ -1,24 +1,25 @@
-var path = require('path')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var path = require("path")
+var webpack = require("webpack")
+var HtmlWebpackPlugin = require("html-webpack-plugin")
+var DirectoryNamedWebpackPlugin = require("directory-named-webpack-plugin")
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
-  entry: ['whatwg-fetch', './src/main.js'],
+  context: path.resolve(__dirname, "..", "src"),
+  entry: ["./main.js"],
   output: {
-    path: path.join(__dirname, '..', 'build'),
-    filename: 'bundle.js',
-    publicPath: '/'
+    path: path.join(__dirname, "..", "build"),
+    filename: "bundle.js",
+    publicPath: "/"
   },
   module: {
-    rules: require('./webpack.loaders.js')
+    rules: require("./webpack.loaders.js")
   },
   plugins: [
-    new ExtractTextPlugin('style.css'),
+    new ExtractTextPlugin("style.css"),
     new webpack.DefinePlugin({
-      'environment': '"production"',
-      NODE_ENV: JSON.stringify('production')
+      "environment": "\"production\"",
+      NODE_ENV: JSON.stringify("production")
     }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
@@ -36,9 +37,9 @@ module.exports = {
       },
       mangle: {
         except: [
-          '$' /* sacred is the jquery */,
-          'require',
-          'exports'
+          "$" /* sacred is the jquery */,
+          "require",
+          "exports"
         ]
       },
       output: {
@@ -46,17 +47,22 @@ module.exports = {
       }
     }),
     new HtmlWebpackPlugin({
-      title: 'ULTIMATE BRAVERY!!!',
+      title: "ULTIMATE BRAVERY!!!",
       minify: {
         html5: true,
         removeComments: true
       },
-      template: path.join('src', 'public', 'index.ejs')
+      template: path.join("public", "index.ejs")
     })
   ],
 
   resolve: {
-    modules: ['node_modules', 'src'],
+    modules: ["node_modules", "src"],
+    extensions: [".js", ".jsx", ".json"],
+    alias: {
+      // for use in less due to a quirk that requires a '~<IDENTIFIER>/' to use the files relative to src
+      "#": path.resolve(__dirname, "..", "src")
+    },
     plugins: [
       new DirectoryNamedWebpackPlugin()
     ]

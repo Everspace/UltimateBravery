@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import styled, {css} from "styled-components"
+import styled, { css } from "styled-components"
 
 const Panel = ({depth, children, ...otherProps}) => {
   return <div {...otherProps}>
@@ -17,7 +17,10 @@ const Panel = ({depth, children, ...otherProps}) => {
 
 Panel.propTypes = {
   depth: PropTypes.number,
-  children: PropTypes.arrayOf(PropTypes.element)
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element)
+  ])
 }
 
 Panel.defaultProps = {
@@ -26,6 +29,8 @@ Panel.defaultProps = {
 
 export const GlassPanel = styled(Panel)`
   border: 1px solid hsl(40, 50%, 30%);
+  padding: 1em;
+  margin 1em;
   background-color: ${props =>
     (props.depth >= 4) ?
       "#111"

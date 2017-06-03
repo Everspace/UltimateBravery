@@ -5,7 +5,7 @@ var DirectoryNamedWebpackPlugin = require("directory-named-webpack-plugin")
 var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
-  devtool: "source-map",
+  devtool: "inline-source-map",
   context: path.resolve(__dirname, "..", "src"),
   entry: [
     // activate HMR for React
@@ -26,6 +26,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "..", "build"),
     filename: "bundle.js",
+    // devtoolModuleFilenameTemplate: "/[absolute-resource-path]",
     publicPath: "/"
   },
 
@@ -52,6 +53,7 @@ module.exports = {
 
   resolve: {
     modules: ["node_modules", "src"],
+    extensions: [".js", ".jsx", ".json"],
     alias: {
       // for use in less due to a quirk that requires a '~<IDENTIFIER>/' to use the files relative to src
       "#": path.resolve(__dirname, "..", "src")
