@@ -82,5 +82,3 @@ class Utils
     end
   end
 end
-
-require 'fileutils'

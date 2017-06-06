@@ -13,6 +13,14 @@ _*
 **/build/
 **/temp/
 
+#Lets not upload anything that might
+#be AWS related
+**/*[Aa][Ww][Ss]*.*
+
+#However there's a few exceptions
+!/config/AWS_template.yaml
+!/lib/tasks/aws.rake
+
 #node garbage
 **/node_modules/
 *npm-debug*

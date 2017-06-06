@@ -1,0 +1,11 @@
+#Save this file as AWS.yaml
+:credentials:
+  #access_key_id
+  -
+  #secret_access_key
+  -
+:region: my-region-3
+:bucket: myBucket
+#The keys of things you don't want deleted from the target bucket
+:exempt_files:
+  - riot.txt
