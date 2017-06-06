@@ -7,6 +7,7 @@ require 'pathname'
 
 $is_pretty = if ENV['pretty'] then true else false end
 $is_debug = if ENV['debug'] then true else false end
+$dry_run = if ENV['dry_run'] then true else false end
 
 $config_dir = File.expand_path(ENV['config_dir'] || './config')
 $output_dir = File.expand_path(ENV['output_dir'] || './build')

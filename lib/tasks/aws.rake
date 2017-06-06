@@ -39,7 +39,6 @@ task :upload => ['package'] do
 
     if md5_matches? object_by_key[fileKey], fileKey
       no_change << fileKey
-      puts "Skipping       #{fileKey}"
       next
     end
 
@@ -57,7 +56,8 @@ task :upload => ['package'] do
   to_delete.each {|key| puts "Will Delete    #{key}"}
 
   uploading.each do |key|
-    success = bucket.object(key).upload_file("#{$output_dir}/#{key}")
+    success = bucket.object(key).upload_file("#{$output_dir}/#{key}") unless $dry_run
+    success = true if $dry_run
     if success
       puts "Uploaded #{key}"
     else
@@ -70,7 +70,12 @@ task :upload => ['package'] do
       delete: {
         objects: to_delete.map {|key| {key: key} }
       }
-    })
+    }) unless $dry_run
+
+    response = {
+      deleted: to_delete.map {|key| {key: key} },
+      errors: []
+    } if $dry_run
 
     response.deleted.each do |obj|
       puts "Deleted   #{obj.key}"
