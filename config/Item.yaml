@@ -87,9 +87,6 @@ Excluded IDs:
 #The Cull is a 'DoransItems' without the tag
 - '1083' #Cull
 
-#Invisible Item?
-- '3632' # literally empty string
-
 #Bogus enchantments
 #They just show up as shoes
 #From old hatchet jungle item
@@ -108,6 +105,7 @@ Excluded IDs:
 #Seige mode plz
 - '3630' #Seige Teleport
 - '3631' #Siege Ballista
+- '3632' #Just a weird thing
 - '3633' #also Seige Teleport wtf
 - '3634' #Tower: Beam of Ruination
 - '3635' #Port Pad
@@ -129,8 +127,6 @@ Excluded IDs:
 - '2052' #Poro-Snax
 - '2054' #Diet Poro-Snax
 
-#Just a weird thing
-- '3632'
 
 Remove from Map:
   #Normal Flavour in ARAM is now QuickCharge
