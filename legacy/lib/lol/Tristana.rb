@@ -9,8 +9,8 @@ class Tristana
       :items,
       :champions,
       :maps,
-      :summonerSpells,
-      :masteries
+      :summonerSpells#,
+      #:masteries #to be "perks"
     ].freeze
   end
 

@@ -13,7 +13,7 @@ task :languages, [:language] => ['dev:init'] do |t, args|
   args.with_defaults({language: 'en_US'})
 
   $is_pretty = true
-  
+
   copy_opts = {
     remove_destination: true,
     verbose: true

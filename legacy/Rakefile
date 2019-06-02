@@ -19,6 +19,8 @@ $dev_url = "http://localhost:9001/"
 $all_realms = YAML::load_file("#{$config_dir}/Realms.yaml")
 $all_languages = DataDragon.get_generic "cdn/languages.json"
 
+puts "Running for DD_Version: #{DataDragon.versions.first}"
+
 task :default => :package
 
 task :uglify_data do
