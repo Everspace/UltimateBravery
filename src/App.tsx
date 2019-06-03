@@ -1,25 +1,34 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import DebugItemGrid from "components/debug/ItemGrid"
-import { useRef } from "react"
-import { useFetchJson } from "lib/hooks"
+import { Panel } from "components/Panel"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
 
-const Container: React.FC = () => {
-  const mapRef = useRef<HTMLSelectElement>(null)
-  const data = useFetchJson("./data")
-  return (
-    <nav>
-      <select ref={mapRef}>Me I'm a select</select>
-      <option />
-    </nav>
-  )
-}
+const ExampleComponent: React.FC<{}> = () => (
+  <Panel>
+    <Panel />
+  </Panel>
+)
+
+const Page404: React.FC<{}> = () => (
+  <Panel>
+    404! Don't check in strange pages!
+    <br />
+    there could be a garen lurking about!
+  </Panel>
+)
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <DebugItemGrid />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Switch>
+          <Route exact path="/" component={ExampleComponent} />
+          <Route path="/items" component={DebugItemGrid} />
+          <Route component={Page404} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   )
 }
 
