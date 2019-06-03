@@ -3,6 +3,7 @@ import { jsx, css } from "@emotion/core"
 import { useFetchJson } from "lib/hooks"
 import Item from "components/Item"
 import { createContext, useContext } from "react"
+import { Panel } from "components/Panel"
 
 type ItemGridProps = { items: number[] }
 
@@ -22,11 +23,11 @@ const ItemGrid: ItemGrid = ({ items, ...props }) => {
   const mapping = useContext(ItemContext)
   const mappedItems = items.map(item => mapping[item.toString()])
   return (
-    <div css={gridStyle}>
+    <Panel css={gridStyle}>
       {mappedItems.map(item => (
         <Item key={item.id} {...item} />
       ))}
-    </div>
+    </Panel>
   )
 }
 

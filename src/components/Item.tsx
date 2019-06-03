@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
 import { ItemImage } from "./ItemImage"
+import { Panel } from "components/Panel"
+import { goldenHighlightBorder } from "style/Borders"
 
 type ItemProps = UltimateBravery.BraveryItem
 type Item = React.FC<ItemProps>
@@ -9,9 +11,13 @@ const style = css({
   display: "inline-flex",
   margin: "0.5em",
   alignItems: "center",
-  "& > img": {
-    marginRight: "0.5em",
-  },
+  "& > img": [
+    goldenHighlightBorder,
+    {
+      borderRadius: "10px", // gets rid of white on bloodthurster and such
+      marginRight: "1em",
+    },
+  ],
 })
 
 const enchantmentStyle = css({
@@ -20,10 +26,10 @@ const enchantmentStyle = css({
 
 const Item: Item = ({ id, name, children, isEnchantment, ...props }) => {
   return (
-    <span css={[style, isEnchantment && enchantmentStyle]}>
+    <Panel css={[style, isEnchantment && enchantmentStyle]}>
       <ItemImage id={id} />
       {id} - {name}
-    </span>
+    </Panel>
   )
 }
 
