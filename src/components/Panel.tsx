@@ -18,7 +18,7 @@ export const Panel: Panel = ({ children, depth = 0 }) => {
         padding: "1em",
         margin: "1em",
         backgroundColor:
-          depth >= 4 ? "#111" : `rgba(11,11,11 0.${20 + depth * 30})`,
+          depth >= 4 ? "rgb(11,11,11)" : `rgba(11,11,11, 0.${30 + depth * 20})`,
         backdropFilter: depth < 4 ? `blur(${8 * depth}px)` : undefined,
       }}
     >
