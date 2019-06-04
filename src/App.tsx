@@ -2,7 +2,7 @@
 import { jsx, Global } from "@emotion/core"
 import DebugItemGrid from "components/debug/ItemGrid"
 import { Panel } from "components/Panel"
-import { BrowserRouter, Route, Switch } from "react-router-dom"
+import { BrowserRouter, Route, Switch, NavLink } from "react-router-dom"
 
 const PanelDemo: React.FC<{}> = () => (
   <Panel>
@@ -69,7 +69,9 @@ const Container: React.FC<{}> = ({ children }) => (
         borderBottomWidth: 1,
         margin: 0,
       }}
-    />
+    >
+      |<NavLink to="/">Home</NavLink>|<NavLink to="/items">Items</NavLink>|
+    </Panel>
     <main
       css={{
         gridArea: "content",
@@ -88,7 +90,11 @@ const Container: React.FC<{}> = ({ children }) => (
         gridArea: "footer",
         margin: 0,
       }}
-    />
+    >
+      Bravery.lol was created under Riot Games' "Legal Jibber Jabber" policy
+      using assets owned by Riot Games. Riot Games does not endorse or sponsor
+      this project.
+    </Panel>
   </div>
 )
 
