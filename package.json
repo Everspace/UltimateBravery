@@ -29,12 +29,12 @@
     "typescript": "3.4.1",
     "yaml": "^1.0.3"
   },
-  "resolutions": {
-    "@types/react": "16.7.11"
-  },
+  "workspaces": [
+    "scripts"
+  ],
   "scripts": {
-    "data:watch": "nodemon",
-    "data": "ts-node -T scripts/ddragon.ts",
+    "data:watch": "yarn workspace scripts data:watch",
+    "data": "yarn workspace scripts data",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
