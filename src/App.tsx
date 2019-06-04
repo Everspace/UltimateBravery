@@ -3,6 +3,7 @@ import { jsx, Global } from "@emotion/core"
 import DebugItemGrid from "components/debug/ItemGrid"
 import { Panel } from "components/Panel"
 import { BrowserRouter, Route, Switch, NavLink } from "react-router-dom"
+import { fullHeight, championSplashBackground } from "style/Util"
 
 const PanelDemo: React.FC<{}> = () => (
   <Panel>
@@ -27,24 +28,14 @@ const Page404: React.FC<{}> = () => (
   </Panel>
 )
 
-const fullHeight = {
-  width: "100vw",
-  height: "100vh",
-  minHeight: "100vh",
-}
-
-const championSplashBackground = {
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "center center",
-  backgroundAttachment: "fixed",
-  backgroundSize: "cover",
-}
+const containerFraction = (n: number) =>
+  `${n.toFixed(2)}fr auto ${n.toFixed(2)}fr`
 
 const Container: React.FC<{}> = ({ children }) => (
   <div
     css={[
-      fullHeight,
       championSplashBackground,
+      fullHeight,
       {
         display: "grid",
         backgroundImage:
@@ -55,7 +46,7 @@ const Container: React.FC<{}> = ({ children }) => (
         "content"
         "footer"
       `,
-        gridTemplateRows: "0.08fr auto 0.08fr",
+        gridTemplateRows: containerFraction(0.05),
       },
     ]}
     id="container"
