@@ -1,102 +1,18 @@
 /** @jsx jsx */
-import { jsx, Global } from "@emotion/core"
+import { Global, jsx } from "@emotion/core"
+import { Container } from "components/Container"
 import DebugItemGrid from "components/debug/ItemGrid"
-import { Panel } from "components/Panel"
-import { BrowserRouter, Route, Switch, NavLink } from "react-router-dom"
-import { fullHeight, championSplashBackground } from "style/Util"
-
-const PanelDemo: React.FC<{}> = () => (
-  <Panel>
-    0
-    <Panel>
-      1
-      <Panel>
-        2
-        <Panel>
-          3<Panel>4</Panel>
-        </Panel>
-      </Panel>
-    </Panel>
-  </Panel>
-)
-
-const Page404: React.FC<{}> = () => (
-  <Panel>
-    404! Don't check in strange pages!
-    <br />
-    there could be a garen lurking about!
-  </Panel>
-)
-
-const containerFraction = (n: number) =>
-  `${n.toFixed(2)}fr auto ${n.toFixed(2)}fr`
-
-const Container: React.FC<{}> = ({ children }) => (
-  <div
-    css={[
-      championSplashBackground,
-      fullHeight,
-      {
-        display: "grid",
-        backgroundImage:
-          "url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Galio_0.jpg)",
-        maxWidth: "100%",
-        gridTemplateAreas: `
-        "header"
-        "content"
-        "footer"
-      `,
-        gridTemplateRows: containerFraction(0.05),
-      },
-    ]}
-    id="container"
-  >
-    <Panel
-      depth={2}
-      type="header"
-      css={{
-        gridArea: "header",
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        margin: 0,
-      }}
-    >
-      |<NavLink to="/">Home</NavLink>|<NavLink to="/items">Items</NavLink>|
-    </Panel>
-    <main
-      css={{
-        gridArea: "content",
-        padding: "1em",
-        overflowY: "auto",
-      }}
-    >
-      {children}
-    </main>
-    <Panel
-      depth={2}
-      type="footer"
-      css={{
-        borderWidth: 0,
-        borderTopWidth: 1,
-        gridArea: "footer",
-        margin: 0,
-      }}
-    >
-      Bravery.lol was created under Riot Games' "Legal Jibber Jabber" policy
-      using assets owned by Riot Games. Riot Games does not endorse or sponsor
-      this project.
-    </Panel>
-  </div>
-)
+import { PanelDemo } from "components/debug/PanelDemo"
+import { Page404 } from "components/Page404"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
+import { fullHeight } from "style/Util"
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Global
         styles={{
-          "html, body, #root": {
-            ...fullHeight,
-          },
+          "html, body, #root": [fullHeight],
           body: {
             color: "white",
           },
