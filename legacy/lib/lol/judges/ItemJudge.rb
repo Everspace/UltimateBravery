@@ -398,18 +398,6 @@ class ItemJudge < JudgeBase
     end
   end
 
-  def item_has_a_valid_map(item_id)
-    has_a_map = get_item(item_id)['maps']
-    .values
-    .inject(false) {|mem, is_valid| mem || is_valid}
-    unless has_a_map
-      log "#{namify item_id} isn't valid on any map!"
-      return false
-    else
-      return true
-    end
-  end
-
   def item_already_processed?(item_id)
     return (@used_items + @ignored_items).include? item_id
   end
@@ -419,11 +407,14 @@ class ItemJudge < JudgeBase
   ##
   def item_end_of_build?(item_id)
     item = get_item(item_id)
+
     #If this turns into something, then this is the end of the line
-    return true unless item['into']
+    return true if not item['into']
     return true if item['into'].empty?
     item['into'].each do |possible_id|
       if item_is_from_transforming? possible_id
+        return true
+      elsif item_is_from_ally? possible_id
         return true
       else
         return false
@@ -451,6 +442,15 @@ class ItemJudge < JudgeBase
     item = get_item(item_id)
     return false unless item #garbage items
     return true unless item.dig('gold', 'purchasable')
+  end
+
+  ###
+  ## Ornn made?
+  ##
+  def item_is_from_ally?(item_id)
+    item = get_item(item_id)
+    return false unless item
+    return true if item['requiredAlly']
   end
 
   ###

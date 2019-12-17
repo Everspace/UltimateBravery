@@ -45,14 +45,14 @@ class ChampionJudge < JudgeBase
 
   def determine_meleeness
 
+    @result['groups']['melee'] = [] unless @result['groups']['melee']
+    @result['groups']['range'] = [] unless @result['groups']['range']
+    the_max = @config['General']['Max Melee Range']
+
+    raise "'General:Max Melee Range' has to be in config" unless the_max
+
     @result['allChampions'].each do |champ|
       attackrange =  @base['data'][champ]['stats']['attackrange']
-      the_max = @config['General']['Max Melee Range']
-
-      raise "'General:Max Melee Range' has to be in config" unless the_max
-
-      @result['groups']['melee'] = [] unless @result['groups']['melee']
-      @result['groups']['range'] = [] unless @result['groups']['range']
 
       #Here we only set the result to "true" because we may
       #have added the particular champ to the other if

@@ -49,6 +49,7 @@ Group:
 
   championUnique:
     hasAttributes:
+      requiredAlly: null
       requiredChampion: null
 
 #Enchantable things have an "extra step" that we have to account for
@@ -95,37 +96,44 @@ Excluded IDs:
 - '3673'
 - '3671'
 
-#Kalista plz
-- '3599' #The Black Spear
+# # Rune things
+# - '2403' # Minion Dematerializer
+
+# # Kleptomancy bits
+# - '2012' # Looted Biscuit of Rejuvenation
+# - '2057' # Peering Farsight Ward
+
+# #Kalista plz
+# - '3599' #The Black Spear
 
 #Poacher's Dirk you're silly
 #You turn into things that turn into other things
 - '3252'
 
-#Seige mode plz
-- '3630' #Seige Teleport
-- '3631' #Siege Ballista
-- '3632' #Just a weird thing
-- '3633' #also Seige Teleport wtf
-- '3634' #Tower: Beam of Ruination
-- '3635' #Port Pad
-- '3636' #Tower: Storm Bulwark
-- '3637' #Nexus Siege: Siege Weapon Slot
-- '3640' #Flash Zone
-- '3641' #Vanguard Banner
-- '3642' #Siege Refund
-- '3643' #Entropy Field
-- '3647' #Shield Totem
-- '3648' #Siege Teleport (Inactive)
-- '3649' # Siege Sight Warder
+# #Seige mode plz
+# - '3630' #Seige Teleport
+# - '3631' #Siege Ballista
+# #- '3632' #Just a weird thing
+# - '3633' #also Seige Teleport wtf
+# - '3634' #Tower: Beam of Ruination
+# - '3635' #Port Pad
+# - '3636' #Tower: Storm Bulwark
+# - '3637' #Nexus Siege: Siege Weapon Slot
+# - '3640' #Flash Zone
+# - '3641' #Vanguard Banner
+# - '3642' #Siege Refund
+# - '3643' #Entropy Field
+# - '3647' #Shield Totem
+# - '3648' #Siege Teleport (Inactive)
+# - '3649' # Siege Sight Warder
 
-#Buiscuits please
-- '2009' #Total Biscuit of Rejuvenation
-- '2010' #Total Biscuit of Rejuvenation
+# #Buiscuits please
+# - '2009' #Total Biscuit of Rejuvenation
+# - '2010' #Total Biscuit of Rejuvenation
 
-#Poro king plz
-- '2052' #Poro-Snax
-- '2054' #Diet Poro-Snax
+# #Poro king plz
+# - '2052' #Poro-Snax
+# - '2054' #Diet Poro-Snax
 
 
 Remove from Map:
