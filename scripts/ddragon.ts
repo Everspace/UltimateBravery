@@ -36,36 +36,30 @@ const main = async () => {
   const mapIds = new Set<string>()
   const modeIds = new Set<string>()
 
-  const itemMappings = itemsGood.reduce(
-    (memory, item) => {
-      item.mapStringIdInclusions.forEach(map => {
-        mapIds.add(map)
-        const arr = memory[map] || []
-        arr.push(item.id)
-        memory[map] = arr
-      })
-      item.modeNameInclusions.forEach(mode => {
-        modeIds.add(mode)
-        const arr = memory[mode] || []
-        arr.push(item.id)
-        memory[mode] = arr
-      })
-      return memory
-    },
-    {} as Record<string, number[]>,
-  )
+  const itemMappings = itemsGood.reduce((memory, item) => {
+    item.mapStringIdInclusions.forEach(map => {
+      mapIds.add(map)
+      const arr = memory[map] || []
+      arr.push(item.id)
+      memory[map] = arr
+    })
+    item.modeNameInclusions.forEach(mode => {
+      modeIds.add(mode)
+      const arr = memory[mode] || []
+      arr.push(item.id)
+      memory[mode] = arr
+    })
+    return memory
+  }, {} as Record<string, number[]>)
 
   const mapInfo: Record<string, string[]> = {}
   mapInfo.mapIds = Array.from(mapIds.keys())
   mapInfo.modeIds = Array.from(modeIds.keys())
 
-  const itemIds = itemsGood.reduce(
-    (memory, item) => {
-      memory[item.id.toString()] = item
-      return memory
-    },
-    {} as Record<string, cdragon.Item>,
-  )
+  const itemIds = itemsGood.reduce((memory, item) => {
+    memory[item.id.toString()] = item
+    return memory
+  }, {} as Record<string, cdragon.Item>)
   saveJson(mapInfo, `${outputDir}/mapInfo.json`, true)
   saveJson(itemIds, `${outputDir}/items.json`, true)
   saveJson(itemMappings, `${outputDir}/item-mappings.json`, true)

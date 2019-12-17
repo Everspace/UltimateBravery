@@ -1,11 +1,12 @@
 import { itemIn } from "lib/common"
 import { arraysIntersect } from "lib/common"
+import { filter, curry, overEvery } from "lodash"
 
 type ItemMapping = Record<cdragon.ItemID, cdragon.Item>
 let itemMap: Record<string, cdragon.Item>
 
 const discardReason = (item: cdragon.Item, reason: string) => {
-  // console.log(`Discarding ${item.id} ${item.name} - ${reason}`)
+  console.log(`Discarding ${item.id} ${item.name} - ${reason}`)
 }
 
 const getItem = (itemId: cdragon.ItemID) => {
@@ -25,86 +26,99 @@ const isItemFromAlly = (itemId: cdragon.ItemID) => {
   }
 }
 
-const isItemEndOfBuild = (itemId: cdragon.ItemID) => {
-  const item = getItem(itemId)
-
-  if (!item) {
-    console.log(`Discarding ${itemId} - it doesn't exist`)
-    return false
-  }
-
+const itemEndOfBuildFilter = (item: cdragon.Item) => {
   if (item.to.length === 0) {
     return true
   }
 
+  // Check to see if to item is from Orrn
   const result = item.to.find(possibleID => {
-    if (!item) {
-      // Item doesn't exist I guess
-      return false
-    }
+    // If it is from Ornn, we want that id
     if (isItemFromAlly(possibleID)) {
       return true
     }
     return false
   })
 
-  return result !== undefined
+  // If we didn't get an id, then all the to's were actual items
+  // rather than orrn provided ones,
+  // and the item fails
+  if (result === undefined) {
+    discardReason(item, `built into something ${result}`)
+    return false
+  }
+
+  return true
 }
 
-export const itemJudge = (cdragonItems: cdragon.ItemJson) => {
-  itemMap = cdragonItems.reduce(
-    (memory, item) => {
-      memory[item.id] = item
-      return memory
-    },
-    {} as ItemMapping,
-  )
+type ItemJudgeFilter = (item: cdragon.Item) => boolean
 
-  return cdragonItems
-    .filter(item => isItemEndOfBuild(item.id))
-    .filter(item => {
-      if (item.isEnchantment) {
-        discardReason(item, `was bad enchantment`)
-        return false
-      }
-      return true
-    })
-    .filter(item => {
-      const { requiredBuffCurrencyName: currency } = item
-      const badCurrencies = ["SiegeCurrency"]
-      if (itemIn(currency, badCurrencies)) {
-        discardReason(item, `currency: ${currency}`)
-        return false
-      }
-      return true
-    })
-    .filter(item => {
-      const badCategories = ["Lane", "Consumable"]
-      const badCategory = arraysIntersect(badCategories, item.categories)
+const enchantmentFilter: ItemJudgeFilter = item => {
+  if (item.isEnchantment) {
+    discardReason(item, `was bad enchantment`)
+    return false
+  }
+  return true
+}
 
-      if (badCategory) {
-        discardReason(item, `category: ${badCategory}`)
-        return false
-      }
+const specialCurrencyFilter: ItemJudgeFilter = item => {
+  const { requiredBuffCurrencyName: currency } = item
+  const badCurrencies = ["SiegeCurrency"]
+  if (itemIn(currency, badCurrencies)) {
+    discardReason(item, `currency: ${currency}`)
+    return false
+  }
+  return true
+}
 
-      return true
-    })
-    .filter(item => {
-      const { requiredChampion } = item
-      const badChampions = ["Kalista", "Rengar", "Sylas"]
-      if (itemIn(requiredChampion, badChampions)) {
-        discardReason(item, `requiredChampion: ${requiredChampion}`)
-        return false
-      }
-      return true
-    })
-    .filter(item => {
-      const { inStore, requiredChampion } = item
-      const willDrop = !inStore && requiredChampion === ""
-      if (willDrop) {
-        discardReason(item, `inStore: ${item.inStore} ${item.requiredChampion}`)
-        return false
-      }
-      return true
-    })
+const categoryFilter: ItemJudgeFilter = item => {
+  const badCategories = ["Lane", "Consumable"]
+  const badCategory = arraysIntersect(badCategories, item.categories)
+
+  if (badCategory) {
+    discardReason(item, `category: ${badCategory}`)
+    return false
+  }
+
+  return true
+}
+
+const championUniqueFilter: ItemJudgeFilter = item => {
+  const { requiredChampion } = item
+  const badChampions = ["Kalista", "Rengar", "Sylas"]
+  if (itemIn(requiredChampion, badChampions)) {
+    discardReason(item, `requiredChampion: ${requiredChampion}`)
+    return false
+  }
+  return true
+}
+
+const inStoreFilter: ItemJudgeFilter = item => {
+  const { inStore, requiredChampion } = item
+  const willDrop = !inStore && requiredChampion === ""
+  if (willDrop) {
+    discardReason(item, `inStore: ${item.inStore} ${item.requiredChampion}`)
+    return false
+  }
+  return true
+}
+
+const allFilters = overEvery(
+  ...[
+    itemEndOfBuildFilter,
+    inStoreFilter,
+    categoryFilter,
+    enchantmentFilter,
+    specialCurrencyFilter,
+    championUniqueFilter,
+  ].map(curry),
+)
+
+export const itemJudge = (cdragonItems: cdragon.Item[]) => {
+  itemMap = cdragonItems.reduce((memory, item) => {
+    memory[item.id] = item
+    return memory
+  }, {} as ItemMapping)
+
+  return filter(cdragonItems, allFilters)
 }
