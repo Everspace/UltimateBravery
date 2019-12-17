@@ -1,3 +1,7 @@
+# This is all lies
+
+I need to redo all this.
+
 # UltimateBravery
 A React based static website driven by Riot API and static data, so that it (hopefully) remains more up to date, and people can bravely go where few have gone before in League of Legends
 
