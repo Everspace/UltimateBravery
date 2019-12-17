@@ -2,7 +2,7 @@ version: "3"
 
 services:
   data:
-    image: node:10
+    image: node:12
     command: yarn data:watch
     working_dir: /home/node/app
     volumes:
@@ -13,7 +13,7 @@ services:
       TS_NODE_COMPILER_OPTIONS: '{"module":"commonjs"}'
 
   app:
-    image: node:10
+    image: node:12
     command: yarn start
     working_dir: /home/node/app
     ports:
