@@ -17,7 +17,9 @@ injectGlobal`
 
 let SurroundingDisplay = (props) => {
   let base = "http://ddragon.leagueoflegends.com/cdn/img/champion"
-  let location = `splash/${props.background}_0.jpg`
+  // The double slash is a bug in ddragon to force "latest image"
+  // Otherwise we get green galio which is no fun.
+  let location = `splash//${props.background}_0.jpg`
   return (
     <AppWindow background={`${base}/${location}`}>
       <AppHeader>
