@@ -1,7 +1,5 @@
 #Personal tool and such
 _*
-*.sublime-*
-**/.vscode/
 
 #Generated json
 **/json/
@@ -11,7 +9,11 @@ _*
 
 #Build directory
 **/build/
-**/temp/
+**/tmp/
+/public/data
+
+# testing
+/coverage
 
 #Lets not upload anything that might
 #be AWS related
@@ -28,4 +30,15 @@ _*
 #other crap
 **/*.log
 **/log.txt
+**/riot downloads
 
+# misc
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

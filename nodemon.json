@@ -1,0 +1,11 @@
+{
+  "watch": [
+    "scripts"
+  ],
+  "ext": "ts",
+  "legacyWatch": true,
+  "ignore": [
+    "scripts/**/*.test.ts"
+  ],
+  "exec": "ts-node -T scripts/ddragon.ts"
+}
