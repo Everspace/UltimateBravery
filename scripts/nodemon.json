@@ -1,11 +1,13 @@
 {
   "watch": [
-    "scripts"
+    "src",
+    "*.ts",
+    "tsconfig.json"
   ],
   "ext": "ts",
   "legacyWatch": true,
   "ignore": [
     "scripts/**/*.test.ts"
   ],
-  "exec": "ts-node -T scripts/ddragon.ts"
+  "exec": "yarn data"
 }
