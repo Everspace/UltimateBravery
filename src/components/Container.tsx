@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx, css } from "@emotion/core"
 import { Panel } from "components/Panel"
 import { NavLink } from "react-router-dom"
 import { fullHeight, championSplashBackground } from "style/Util"
@@ -7,24 +7,22 @@ import { fullHeight, championSplashBackground } from "style/Util"
 export const containerFraction = (n: number) =>
   `${n.toFixed(2)}fr auto ${n.toFixed(2)}fr`
 
+const containerStyle = css({
+  display: "grid",
+  backgroundImage:
+    "url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Galio_0.jpg)",
+  maxWidth: "100%",
+  gridTemplateAreas: `
+    "header"
+    "content"
+    "footer"
+  `,
+  gridTemplateRows: containerFraction(0.05),
+})
+
 export const Container: React.FC<{}> = ({ children }) => (
   <div
-    css={[
-      championSplashBackground,
-      fullHeight,
-      {
-        display: "grid",
-        backgroundImage:
-          "url(http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Galio_0.jpg)",
-        maxWidth: "100%",
-        gridTemplateAreas: `
-        "header"
-        "content"
-        "footer"
-      `,
-        gridTemplateRows: containerFraction(0.05),
-      },
-    ]}
+    css={[championSplashBackground, fullHeight, containerStyle]}
     id="container"
   >
     <Panel
