@@ -1,6 +1,6 @@
 import https from "https"
 import fs from "fs"
-import { downloadToDisk, wget, saveJson } from "./common"
+import { downloadToDisk, wget } from "./common"
 
 const ddragonOptions: https.RequestOptions = {
   host: "ddragon.leagueoflegends.com",
