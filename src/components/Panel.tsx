@@ -17,8 +17,8 @@ export const Panel: Panel = ({
   type = "div",
   className,
   depth = 0,
-}) => {
-  return jsx(
+}) =>
+  jsx(
     type,
     {
       css: [
@@ -27,10 +27,11 @@ export const Panel: Panel = ({
           padding: "1em",
           margin: "1em",
           backgroundColor:
-            depth >= 4
+            depth > 3
               ? "rgb(11,11,11)"
-              : `rgba(11,11,11, 0.${40 + depth * 20})`,
-          backdropFilter: depth < 4 ? `blur(${8 * depth + 4}px)` : undefined,
+              : `rgba(11,11,11, 0.${30 + (depth + 1) * 15})`,
+          backdropFilter:
+            depth < 4 ? `blur(${6 * (depth + 1) + 6}px)` : undefined,
         },
       ],
       className: className,
@@ -41,6 +42,5 @@ export const Panel: Panel = ({
         : child,
     ),
   )
-}
 
 export default Panel
